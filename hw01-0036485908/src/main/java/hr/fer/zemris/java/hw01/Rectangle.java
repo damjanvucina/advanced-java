@@ -40,10 +40,10 @@ public class Rectangle {
 
 		} else if (args.length == 0) {
 			Scanner sc = new Scanner(System.in);
-			
+
 			double width = getArguments(sc, "širinu");
 			double height = getArguments(sc, "visinu");
-			
+
 			printResult(width, height);
 			sc.close();
 		} else {
@@ -65,21 +65,20 @@ public class Rectangle {
 	public static double getArguments(Scanner sc, String argument) {
 		while (true) {
 			System.out.print("Unesite " + argument + " > ");
+			String line = sc.nextLine();
 
-			if (sc.hasNextDouble()) {
-				double input = sc.nextDouble();
+			try {
+				double input = Double.parseDouble(line);
 
 				if (input >= 0) {
 					return input;
 				} else {
 					System.out.println("Unijeli ste negativnu vrijednost.");
 				}
-
-			} else {
-				System.out.println("'" + sc.next() + "' se ne može protumačiti kao broj.");
+			} catch (NumberFormatException ex) {
+				System.out.println("'" + line + "' se ne može protumačiti kao broj.");
 			}
 		}
-
 	}
 
 	/**
@@ -111,7 +110,6 @@ public class Rectangle {
 		} else {
 			return 2 * (width + height);
 		}
-
 	}
 
 	/**

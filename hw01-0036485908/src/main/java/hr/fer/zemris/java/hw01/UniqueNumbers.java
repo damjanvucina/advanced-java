@@ -4,7 +4,10 @@ import java.util.Scanner;
 
 /**
  * The Class that represents a binary tree for the purpose of storing TreeNode
- * elements.
+ * elements. User enters integer numbers which are added to the binary tree by
+ * natural order. User cannot add the same element twice. When the user enters
+ * "kraj" command, elements of the tree are printed to the console both in
+ * ascending and descending order.
  *
  * @author Damjan Vučina
  * @version 1.0
@@ -25,7 +28,7 @@ public class UniqueNumbers {
 		/** The value of the current node */
 		int value;
 	}
-	
+
 	/**
 	 * The method invoked when the program is run.
 	 *
@@ -38,36 +41,39 @@ public class UniqueNumbers {
 
 		while (true) {
 			System.out.print("Unesite broj > ");
+			String line = sc.nextLine();
 
-			if (sc.hasNextInt()) {
-				int input = sc.nextInt();
+			try {
+				int input = Integer.parseInt(line);
+
 				if (!containsValue(glava, input)) {
 					glava = addNode(glava, input);
 					System.out.println("Dodano.");
 				} else {
 					System.out.println("Broj već postoji. Preskačem.");
 					continue;
-
 				}
 
-			} else if (sc.hasNext("kraj")) {
-				System.out.print("Ispis od najmanjeg: ");
-				printAscending(glava);
-				System.out.println();
-				System.out.print("Ispis od najvećeg: ");
-				printDescending(glava);
-				break;
-
-			} else {
-				System.out.println("'" + sc.next() + "' nije cijeli broj.");
+			} catch (NumberFormatException ex) {
+				if (line.equals("kraj")) {
+					break;
+				} else {
+					System.out.println("'" + line + "' nije cijeli broj.");
+				}
 			}
 		}
+		System.out.print("Ispis od najmanjeg: ");
+		printAscending(glava);
+		System.out.println();
+		System.out.print("Ispis od najvećeg: ");
+		printDescending(glava);
+
 		sc.close();
 	}
 
 	/**
-	 * Adds the node to the binary tree represented by its root.
-	 * Complexity: O(log(n))
+	 * Adds the node to the binary tree represented by its root. Complexity:
+	 * O(log(n))
 	 *
 	 * @param root
 	 *            The root of the tree
@@ -124,8 +130,6 @@ public class UniqueNumbers {
 			return true;
 		}
 	}
-
-	
 
 	/**
 	 * Prints the nodes of the tree in descending order of the nodes' values.

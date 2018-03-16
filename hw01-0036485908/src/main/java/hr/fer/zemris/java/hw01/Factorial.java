@@ -22,22 +22,20 @@ public class Factorial {
 	 *            Command Line arguments. They are not used here.
 	 */
 	public static void main(String[] args) {
-
 		Scanner sc = new Scanner(System.in);
 		while (true) {
 			System.out.print("Unesite broj > ");
 			String line = sc.nextLine();
-
+			
 			try {
 				int input = Integer.parseInt(line);
-				
 
 				if (input >= MINIMUM_INPUT && input <= MAXIMUM_INPUT) {
 					System.out.println(input + "! = " + calculateFactorial(input));
 				} else {
 					System.out.println("'" + input + "' nije broj u dozvoljenom rasponu.");
 				}
-				
+
 			} catch (NumberFormatException ex) {
 				if (line.equals("kraj")) {
 					System.out.println("Doviđenja.");
@@ -65,6 +63,5 @@ public class Factorial {
 		} else {
 			return input * calculateFactorial(input - 1);
 		}
-
 	}
 }
