@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 /**
  * Class that represents a rectangle for the perimeter and surface calculation.
+ * User can provide input via command line by entering two double numbers or via
+ * console.
  *
  * @author Damjan Vučina
  * @version 1.0
@@ -38,8 +40,10 @@ public class Rectangle {
 
 		} else if (args.length == 0) {
 			Scanner sc = new Scanner(System.in);
+			
 			double width = getArguments(sc, "širinu");
 			double height = getArguments(sc, "visinu");
+			
 			printResult(width, height);
 			sc.close();
 		} else {
@@ -88,12 +92,12 @@ public class Rectangle {
 	 */
 	public static void printResult(double width, double height) {
 		System.out.format("Pravokutnik širine %.1f i visine %.1f ima površinu %.1f te opseg %.1f.", width, height,
-				getSurface(width, height), getPerimeter(width, height));
+				calculateArea(width, height), calculatePerimeter(width, height));
 
 	}
 
 	/**
-	 * Gets the perimeter of the rectangle.
+	 * Calculates the perimeter of the rectangle.
 	 *
 	 * @param width
 	 *            Width of the rectangle
@@ -101,7 +105,7 @@ public class Rectangle {
 	 *            Height of the rectangle
 	 * @return Perimeter of the rectangle
 	 */
-	public static double getPerimeter(double width, double height) {
+	public static double calculatePerimeter(double width, double height) {
 		if (width <= 0 || height <= 0) {
 			return 0;
 		} else {
@@ -111,7 +115,7 @@ public class Rectangle {
 	}
 
 	/**
-	 * Gets the surface of the rectangle.
+	 * Calculates the area of the rectangle.
 	 *
 	 * @param width
 	 *            Width of the rectangle
@@ -119,7 +123,7 @@ public class Rectangle {
 	 *            Height of the rectangle
 	 * @return Perimeter of the rectangle
 	 */
-	public static double getSurface(double width, double height) {
+	public static double calculateArea(double width, double height) {
 		if (width <= 0 || height <= 0) {
 			return 0;
 		} else {

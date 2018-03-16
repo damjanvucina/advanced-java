@@ -25,9 +25,49 @@ public class UniqueNumbers {
 		/** The value of the current node */
 		int value;
 	}
+	
+	/**
+	 * The method invoked when the program is run.
+	 *
+	 * @param args
+	 *            Command Line arguments. They are not used here.
+	 */
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		TreeNode glava = null;
+
+		while (true) {
+			System.out.print("Unesite broj > ");
+
+			if (sc.hasNextInt()) {
+				int input = sc.nextInt();
+				if (!containsValue(glava, input)) {
+					glava = addNode(glava, input);
+					System.out.println("Dodano.");
+				} else {
+					System.out.println("Broj već postoji. Preskačem.");
+					continue;
+
+				}
+
+			} else if (sc.hasNext("kraj")) {
+				System.out.print("Ispis od najmanjeg: ");
+				printAscending(glava);
+				System.out.println();
+				System.out.print("Ispis od najvećeg: ");
+				printDescending(glava);
+				break;
+
+			} else {
+				System.out.println("'" + sc.next() + "' nije cijeli broj.");
+			}
+		}
+		sc.close();
+	}
 
 	/**
-	 * Adds the node to the tree represented by its root.
+	 * Adds the node to the binary tree represented by its root.
+	 * Complexity: O(log(n))
 	 *
 	 * @param root
 	 *            The root of the tree
@@ -85,44 +125,7 @@ public class UniqueNumbers {
 		}
 	}
 
-	/**
-	 * The method invoked when the program is run.
-	 *
-	 * @param args
-	 *            Command Line arguments. They are not used here.
-	 */
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		TreeNode glava = null;
-
-		while (true) {
-			System.out.print("Unesite broj > ");
-
-			if (sc.hasNextInt()) {
-				int input = sc.nextInt();
-				if (!containsValue(glava, input)) {
-					glava = addNode(glava, input);
-					System.out.println("Dodano.");
-				} else {
-					System.out.println("Broj već postoji. Preskačem.");
-					continue;
-
-				}
-
-			} else if (sc.hasNext("kraj")) {
-				System.out.print("Ispis od najmanjeg: ");
-				printAscending(glava);
-				System.out.println();
-				System.out.print("Ispis od najvećeg: ");
-				printDescending(glava);
-				break;
-
-			} else {
-				System.out.println("'" + sc.next() + "' nije cijeli broj.");
-			}
-		}
-		sc.close();
-	}
+	
 
 	/**
 	 * Prints the nodes of the tree in descending order of the nodes' values.

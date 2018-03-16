@@ -3,13 +3,17 @@ package hr.fer.zemris.java.hw01;
 import java.util.Scanner;
 
 /**
- * The Class Factorial.
+ * The class that is used for factorial number calculation. User enters numbers
+ * ranging from 1 to 20. Program ends when the user enters "kraj" word.
  *
  * @author Damjan Vučina
  * @version 1.0
  * 
  */
 public class Factorial {
+
+	public static final int MINIMUM_INPUT = 0;
+	public static final int MAXIMUM_INPUT = 20;
 
 	/**
 	 * The method invoked when the program is run.
@@ -18,35 +22,36 @@ public class Factorial {
 	 *            Command Line arguments. They are not used here.
 	 */
 	public static void main(String[] args) {
+
 		Scanner sc = new Scanner(System.in);
 		while (true) {
 			System.out.print("Unesite broj > ");
+			String line = sc.nextLine();
 
-			if (sc.hasNextInt()) {
-				int input = sc.nextInt();
+			try {
+				int input = Integer.parseInt(line);
+				
 
-				if (input >= 1 && input <= 20) {
+				if (input >= MINIMUM_INPUT && input <= MAXIMUM_INPUT) {
 					System.out.println(input + "! = " + calculateFactorial(input));
 				} else {
 					System.out.println("'" + input + "' nije broj u dozvoljenom rasponu.");
 				}
-
-			} else if (sc.hasNext("kraj")) {
-				System.out.println("Doviđenja.");
-				break;
-
-			} else {
-				System.out.println("'" + sc.next() + "' nije cijeli broj.");
+				
+			} catch (NumberFormatException ex) {
+				if (line.equals("kraj")) {
+					System.out.println("Doviđenja.");
+					break;
+				}
+				System.out.println("'" + line + "' nije cijeli broj.");
 			}
 		}
-
 		sc.close();
-
 	}
 
 	/**
-	 * Method that calculates the factorial of the given number.
-	 *
+	 * Method that calculates the factorial of the given number. Complexity: O(n)
+	 * 
 	 * @param input
 	 *            Given argument
 	 * @return calculated factorial number as long value

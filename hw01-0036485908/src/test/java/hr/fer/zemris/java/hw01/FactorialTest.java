@@ -11,8 +11,13 @@ public class FactorialTest {
 	}
 	
 	@Test
-	public void zeroInput() {
+	public void minimumInput() {
 		Assert.assertEquals(1, Factorial.calculateFactorial(0));
+	}
+	
+	@Test
+	public void maximumInput() {
+		Assert.assertEquals(2432902008176640000L, Factorial.calculateFactorial(20));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
