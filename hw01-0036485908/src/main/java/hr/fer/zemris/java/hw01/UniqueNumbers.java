@@ -17,7 +17,7 @@ public class UniqueNumbers {
 	/**
 	 * The Class that represents a tree's node.
 	 */
-	class TreeNode {
+	static class TreeNode {
 
 		/** The left child of the current node */
 		TreeNode left;
@@ -84,7 +84,7 @@ public class UniqueNumbers {
 	 */
 	public static TreeNode addNode(TreeNode root, int value) {
 		if (root == null) {
-			root = new UniqueNumbers().new TreeNode();
+			root = new TreeNode();
 			root.value = value;
 		} else if (value < root.value) {
 			root.left = addNode(root.left, value);
