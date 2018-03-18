@@ -62,7 +62,7 @@ public class ArrayIndexedCollection extends Collection {
 	@Override
 	public boolean remove(Object value) {
 		int index = indexOf(value);
-		
+
 		if (index == -1) {
 			return false;
 		} else {
@@ -79,7 +79,7 @@ public class ArrayIndexedCollection extends Collection {
 	@Override
 	public void forEach(Processor processor) {
 		processor = Objects.requireNonNull(processor, "Processor argument cannot be null");
-		
+
 		for (Object object : elements) {
 			processor.process(object);
 		}
@@ -108,9 +108,8 @@ public class ArrayIndexedCollection extends Collection {
 	public void insert(Object value, int position) {
 		int index = position - 1;
 		int temporary = size;
-		
-		
-		value=Objects.requireNonNull(value, "Null cannot be inserted into the collection");
+
+		value = Objects.requireNonNull(value, "Null cannot be inserted into the collection");
 		validateIndex(index, size);
 		if (size == capacity) {
 			doubleCapacity();
@@ -145,10 +144,4 @@ public class ArrayIndexedCollection extends Collection {
 		elements[index] = null;
 		size--;
 	}
-
-	public static void main(String[] args) {
-		String a = "fefne";
-		System.out.println(a.equals(null));
-	}
-
 }
