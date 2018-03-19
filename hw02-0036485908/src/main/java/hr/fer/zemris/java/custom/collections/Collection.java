@@ -37,9 +37,9 @@ public class Collection {
 			@Override
 			public void process(Object value) {
 				add(value);
-				other.forEach(this);
-			}
+			}	
 		}
+		other.forEach(new LocalProcessor());
 	}
 
 	public void clear() {

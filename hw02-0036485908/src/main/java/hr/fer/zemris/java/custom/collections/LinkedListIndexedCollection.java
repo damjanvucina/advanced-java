@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.custom.collections;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class LinkedListIndexedCollection extends Collection {
@@ -17,10 +18,9 @@ public class LinkedListIndexedCollection extends Collection {
 	public LinkedListIndexedCollection() {
 	}
 
-	public LinkedListIndexedCollection(LinkedListIndexedCollection collection) {
-		size = collection.size;
-		first = collection.first;
-		last = collection.last;
+	public LinkedListIndexedCollection(Collection collection) {
+		// size=collection.size();
+		addAll(collection);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class LinkedListIndexedCollection extends Collection {
 
 	@Override
 	public void add(Object value) {
-		insert(value, size);
+		insert(value, size + 1);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class LinkedListIndexedCollection extends Collection {
 				current = current.previous;
 			}
 		}
-		return current;
+		return current.value;
 	}
 
 	public void validateIndex(int index, int limit) {
@@ -88,7 +88,7 @@ public class LinkedListIndexedCollection extends Collection {
 				last = newNode;
 			}
 
-		} else if (index == size - 1) {// last and not the only one
+		} else if (index == size) {// last and not the only one
 			last.next = newNode;
 			newNode.previous = last;
 			last = newNode;
@@ -133,7 +133,7 @@ public class LinkedListIndexedCollection extends Collection {
 				last = null;
 			}
 
-		} else if (index == size - 1) {// last and not the only one
+		} else if (index == size) {// last and not the only one
 			last.previous.next = null;
 			last = last.previous;
 
@@ -148,7 +148,7 @@ public class LinkedListIndexedCollection extends Collection {
 		}
 		size--;
 	}
-	
+
 	@Override
 	public Object[] toArray() {
 		if (size == 0) {
@@ -160,6 +160,60 @@ public class LinkedListIndexedCollection extends Collection {
 			array[i++] = current.value;
 		}
 		return array;
+	}
+
+	@Override
+	public boolean remove(Object value) {
+		int index = indexOf(value);
+
+		if (index == -1) {
+			return false;
+		} else {
+			remove(index);
+			return true;
+		}
+	}
+
+	@Override
+	public void forEach(Processor processor) {
+		processor = Objects.requireNonNull(processor, "Processor argument cannot be null");
+
+		for (Object object : toArray()) {
+			processor.process(object);
+		}
+	}
+
+	public static void main(String[] args) {
+
+		ArrayIndexedCollection col = new ArrayIndexedCollection(2);
+		col.add(new Integer(20));
+		col.add("New York");
+		col.add("San Francisco"); // here the internal array is reallocated to 4
+		System.out.println(col.contains("New York")); // writes: true
+		col.remove(1); // removes "New York"; shifts "San Francisco" to position 1
+		System.out.println(col.get(1)); // writes: "San Francisco"
+		System.out.println(col.size()); // writes: 2
+		col.add("Los Angeles");
+		LinkedListIndexedCollection col2 = new LinkedListIndexedCollection(col);
+		// This is local class representing a Processor which writes objects to
+		// System.out
+		class P extends Processor {
+			public void process(Object o) {
+				System.out.println(o);
+			}
+		}
+		;
+		System.out.println("col elements:");
+		col.forEach(new P());
+		System.out.println("col elements again:");
+		System.out.println(Arrays.toString(col.toArray()));
+		System.out.println("col2 elements:");
+		col2.forEach(new P());
+		System.out.println("col2 elements again:");
+		System.out.println(Arrays.toString(col2.toArray()));
+		System.out.println(col.contains(col2.get(1))); // true
+		System.out.println(col2.contains(col.get(1))); // true
+		col.remove(new Integer(20)); // removes 20 from collection (at position 0).
 	}
 
 }

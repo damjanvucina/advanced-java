@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class ArrayIndexedCollection extends Collection {
 
-	public static final int DEFAULT_SIZE = 16;
+	public static final int DEFAULT_CAPACITY = 16;
 
 	private int size;
 	private int capacity;
@@ -15,9 +15,16 @@ public class ArrayIndexedCollection extends Collection {
 		if (collection == null) {
 			throw new NullPointerException("Collection provided as argument cannot be null");
 		} else if (initialCapacity < collection.size()) {
+
+			capacity = collection.size();
+			elements = new Object[capacity];
+
 			addAll(collection);
 		} else {
-			// dopuni ovo
+			capacity = initialCapacity;
+			elements = new Object[capacity];
+
+			addAll(collection);
 		}
 	}
 
@@ -36,7 +43,7 @@ public class ArrayIndexedCollection extends Collection {
 	}
 
 	public ArrayIndexedCollection() {
-		this(DEFAULT_SIZE);
+		this(DEFAULT_CAPACITY);
 	}
 
 	@Override
@@ -46,7 +53,7 @@ public class ArrayIndexedCollection extends Collection {
 
 	@Override
 	public void add(Object value) {
-		insert(value, size);
+		insert(value, size + 1);
 	}
 
 	public void doubleCapacity() {
@@ -81,7 +88,9 @@ public class ArrayIndexedCollection extends Collection {
 		processor = Objects.requireNonNull(processor, "Processor argument cannot be null");
 
 		for (Object object : elements) {
-			processor.process(object);
+			if (object != null) {
+				processor.process(object);
+			}
 		}
 	}
 
