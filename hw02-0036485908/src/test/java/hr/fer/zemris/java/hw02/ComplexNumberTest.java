@@ -74,20 +74,30 @@ public class ComplexNumberTest {
 	}
 
 	@Test
-	public void getMagnitudeTest() {
+	public void getMagnitudeRegular() {
 		assertEquals(2.42887, complexNumber1.getMagnitude(), DELTA);
 		assertEquals(3.1618, complexNumber2.getMagnitude(), DELTA);
 		assertEquals(13.3, complexNumber3.getMagnitude(), DELTA);
 		assertEquals(3, complexNumber4.getMagnitude(), DELTA);
+		
+	}
+	
+	@Test
+	public void getMagnitudeZero() {
 		assertEquals(0, complexNumber5.getMagnitude(), DELTA);
 	}
+	
 
 	@Test
-	public void getAngleTest() {
+	public void getAngleRegular() {
 		assertEquals(4.228489, complexNumber1.getAngle(), DELTA);
 		assertEquals(4.8936, complexNumber2.getAngle(), DELTA);
-		assertEquals(0, complexNumber3.getAngle(), DELTA);
 		assertEquals(1.570796, complexNumber4.getAngle(), DELTA);
+	}
+	
+	@Test
+	public void getAngleZero() {
+		assertEquals(0, complexNumber3.getAngle(), DELTA);
 		assertEquals(0, complexNumber5.getAngle(), DELTA);
 	}
 
@@ -104,7 +114,7 @@ public class ComplexNumberTest {
 	}
 
 	@Test
-	public void fromMagnitudeAndAngleTest() {
+	public void fromMagnitudeAndAngleTestRegular() {
 		assertEquals(-1.13, ComplexNumber.fromMagnitudeAndAngle(2.42887, 4.228489).getReal(), DELTA);
 		assertEquals(-2.15, ComplexNumber.fromMagnitudeAndAngle(2.42887, 4.228489).getImaginary(), DELTA);
 
@@ -116,7 +126,10 @@ public class ComplexNumberTest {
 
 		assertEquals(0, ComplexNumber.fromMagnitudeAndAngle(3, 1.570796).getReal(), DELTA);
 		assertEquals(3, ComplexNumber.fromMagnitudeAndAngle(3, 1.570796).getImaginary(), DELTA);
-
+	}
+	
+	@Test
+	public void fromMagnitudeAndAngleTestZero() {
 		assertEquals(0, ComplexNumber.fromMagnitudeAndAngle(0, 0).getReal(), DELTA);
 		assertEquals(0, ComplexNumber.fromMagnitudeAndAngle(0, 0).getImaginary(), DELTA);
 	}
