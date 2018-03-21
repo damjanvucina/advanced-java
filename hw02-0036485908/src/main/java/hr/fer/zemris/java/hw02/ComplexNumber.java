@@ -89,16 +89,15 @@ public class ComplexNumber {
 		}
 
 		ComplexNumber[] roots = new ComplexNumber[n];
-		double magnitudeRooted = pow(getMagnitude(), 1 / n);
+		double magnitudeRooted = pow(getMagnitude(), 1. / n);
 
 		for (int i = 0; i < n; i++) {
 			double argument = (getAngle() + 2 * i * PI) / n;
 			roots[i] = new ComplexNumber(magnitudeRooted * cos(argument), magnitudeRooted * sin(argument));
 		}
-
 		return roots;
 	}
-	
+
 	public static ComplexNumber parse(String s) {
 		if (s == null) {
 			return null;
@@ -153,8 +152,12 @@ public class ComplexNumber {
 		}
 
 		else { // nepostoji imaginarni dio
+			
+			if(!s.contains("+") && !s.contains("-")) {
+				return new ComplexNumber(Double.parseDouble(s), 0);
+			}
 
-			if (s.charAt(s.length() - 2) == '0') {
+			else if (s.charAt(s.length() - 2) == '0') {
 				s = s.substring(0, s.lastIndexOf('0') - 1);
 			}
 
@@ -170,6 +173,7 @@ public class ComplexNumber {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		boolean realComponentExists = false;
 
 		if (Double.compare(real, 0.0) != 0) {
 			if (real == (int) real) {
@@ -177,10 +181,13 @@ public class ComplexNumber {
 			} else {
 				sb.append(real);
 			}
-
+			realComponentExists = true;
 		}
 
 		if (Double.compare(imaginary, 0.0) != 0) {
+			if (realComponentExists && imaginary > 0) {
+				sb.append("+");
+			}
 			if (imaginary == (int) imaginary) {
 				sb.append((int) imaginary);
 			} else {
@@ -195,7 +202,7 @@ public class ComplexNumber {
 			return sb.toString();
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -225,11 +232,12 @@ public class ComplexNumber {
 	}
 
 	public static void main(String[] args) {
-
-		ComplexNumber c = parse("1.311-3.10i");
-		System.out.println("realni dio je " + c.real);
-		System.out.println("kompleksni dio je " + c.imaginary);
-		System.out.println(c.toString());
+		 ComplexNumber c1 = new ComplexNumber(2, 3);
+		 ComplexNumber c2 = ComplexNumber.parse("2.5-3i");
+		 ComplexNumber c3 = c1.add(ComplexNumber.fromMagnitudeAndAngle(2, 1.57))
+		 .div(c2).power(3).root(2)[1];
+		 System.out.println(c3);
+		
 	}
 
 }
