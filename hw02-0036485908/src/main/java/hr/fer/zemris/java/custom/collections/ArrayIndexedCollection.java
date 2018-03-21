@@ -110,7 +110,7 @@ public class ArrayIndexedCollection extends Collection {
 
 	public void validateIndex(int index, int limit) {
 		if (index < 0 || index > limit) {
-			throw new IndexOutOfBoundsException("Index must be between 0 and " + limit + ", was: " + index);
+			throw new IndexOutOfBoundsException("Index is out of range.");
 		}
 	}
 
@@ -153,4 +153,5 @@ public class ArrayIndexedCollection extends Collection {
 		elements[index] = null;
 		size--;
 	}
+	
 }
