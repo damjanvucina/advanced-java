@@ -32,7 +32,7 @@ public class StackDemo {
 			throw new IllegalArgumentException(
 					"Stack implementation error. In this iteration stack size cannot be " + stack.size());
 		}
-		System.out.println("Result is " + stack.pop());
+		System.out.println("Expression evaluates to " + stack.pop());
 	}
 
 	private static int performOperation(int firstArgument, int secondArgument, String element) {

@@ -7,59 +7,172 @@ import static java.lang.Math.pow;
 import static java.lang.Math.atan2;
 import static java.lang.Math.PI;;
 
+/**
+ * The class which represents an unmodifiable complex number and provides and
+ * implements basic methods for operations like adding, subtracting,
+ * multiplying, dividing, calculating roots etc.
+ * 
+ * @author Damjan Vučina
+ * @version 1.0
+ */
 public class ComplexNumber {
 
+	/** The real component of the complex number */
 	private double real;
+
+	/** The imaginary component of the complex number. */
 	private double imaginary;
 
+	/**
+	 * Instantiates a new complex number and initalizes it based on user's input.
+	 *
+	 * @param real
+	 *            The real component of the complex number
+	 * @param imaginary
+	 *            The imaginary component of the complex number.
+	 */
 	public ComplexNumber(double real, double imaginary) {
 		this.real = real;
 		this.imaginary = imaginary;
 	}
 
+	/**
+	 * Gets the real component of the complex number
+	 *
+	 * @return the real component of the complex number
+	 */
 	public double getReal() {
 		return real;
 	}
 
+	/**
+	 * Gets the imaginary component of the complex number
+	 *
+	 * @return the imaginary component of the complex number
+	 */
 	public double getImaginary() {
 		return imaginary;
 	}
 
+	/**
+	 * Method that gets the magnitude of the complex number.
+	 *
+	 * @return the magnitude of the complex number.
+	 */
 	public double getMagnitude() {
 		return sqrt(pow(real, 2) + pow(imaginary, 2));
 	}
 
+	/**
+	 * Gets the angle of the complex number.
+	 *
+	 * @return the angle of the complex number.
+	 */
 	public double getAngle() {
 		double result = atan2(imaginary, real);
 		return (result < 0) ? result + 2 * PI : result;
 
 	}
 
+	/**
+	 * Factory method that instantiates a new complex number and initializes it
+	 * based on user's input of the real component of the complex number.
+	 *
+	 * @param real
+	 *            the real component of the complex number
+	 * @return the instantiated complex number
+	 */
 	public static ComplexNumber fromReal(double real) {
 		return new ComplexNumber(real, 0);
 	}
 
+	/**
+	 * Factory method that instantiates a new complex number and initializes it
+	 * based on user's input of the imaginary component of the complex number.
+	 *
+	 * @param imaginary
+	 *            the imaginary component of the complex number
+	 * @return the instantiated complex number
+	 */
 	public static ComplexNumber fromImaginary(double imaginary) {
 		return new ComplexNumber(0, imaginary);
 	}
 
+	/**
+	 * Factory method that instantiates a new complex number and initializes it
+	 * based on user's input of the magnitude and angle of the complex number.
+	 *
+	 * @param magnitude
+	 *            the magnitude of the complex number
+	 * @param angle
+	 *            the angle of the complex number
+	 * @return the instantiated complex number
+	 */
 	public static ComplexNumber fromMagnitudeAndAngle(double magnitude, double angle) {
 		return new ComplexNumber(magnitude * cos(angle), magnitude * sin(angle));
 	}
 
+	/**
+	 * Method that is used for adding two complex numbers
+	 *
+	 * @param c
+	 *            the complex number provided as the argument
+	 * @return the complex number which is the result of the operation
+	 * @throws IllegalArgumentException
+	 *             if the complex number provided in the argument is null
+	 */
 	public ComplexNumber add(ComplexNumber c) {
+		if (c == null) {
+			throw new IllegalArgumentException("Complex number provided in the argument cannot be null");
+		}
 		return new ComplexNumber(real + c.real, imaginary + c.imaginary);
 	}
 
+	/**
+	 * Method that is used for subtracting two complex numbers
+	 *
+	 * @param c
+	 *            the complex number provided as the argument
+	 * @return the complex number which is the result of the operation
+	 * @throws IllegalArgumentException
+	 *             if the complex number provided in the argument is null
+	 */
 	public ComplexNumber sub(ComplexNumber c) {
+		if (c == null) {
+			throw new IllegalArgumentException("Complex number provided in the argument cannot be null");
+		}
 		return new ComplexNumber(real - c.real, imaginary - c.imaginary);
 	}
 
+	/**
+	 * Method that is used for multiplying two complex numbers
+	 *
+	 * @param c
+	 *            the complex number provided as the argument
+	 * @return the complex number which is the result of the operation
+	 * @throws IllegalArgumentException
+	 *             if the complex number provided in the argument is null
+	 */
 	public ComplexNumber mul(ComplexNumber c) {
+		if (c == null) {
+			throw new IllegalArgumentException("Complex number provided in the argument cannot be null");
+		}
 		return new ComplexNumber(real * c.real - imaginary * c.imaginary, imaginary * c.real + real * c.imaginary);
 	}
 
+	/**
+	 * Method that is used for dividing two complex numbers
+	 *
+	 * @param c
+	 *            the complex number provided as the argument
+	 * @return the complex number which is the result of the operation
+	 * @throws IllegalArgumentException
+	 *             if the complex number provided in the argument is null
+	 */
 	public ComplexNumber div(ComplexNumber c) {
+		if (c == null) {
+			throw new IllegalArgumentException("Complex number provided in the argument cannot be null");
+		}
 		double denominator = pow(c.real, 2) + pow(c.imaginary, 2);
 
 		if (denominator == 0) {
@@ -72,6 +185,16 @@ public class ComplexNumber {
 		return new ComplexNumber(firstNumerator / denominator, secondNumerator / denominator);
 	}
 
+	/**
+	 * Method that is used for calculating the power of the complex number. Power
+	 * must not be negative.
+	 *
+	 * @param n
+	 *            the power of the complex number that is to be calculated
+	 * @return the calculated complex number
+	 * @throws IllegalArgumentException
+	 *             if the exponent in power calculation is negative
+	 */
 	public ComplexNumber power(int n) {
 		if (n < 0) {
 			throw new IllegalArgumentException("Exponent in power calculation cannot be negative, was: " + n);
@@ -83,6 +206,15 @@ public class ComplexNumber {
 		return new ComplexNumber(magnitudePowered * cos(argument), magnitudePowered * sin(argument));
 	}
 
+	/**
+	 * Method that is used for calculating roots of the complex number. Root must be
+	 * positive. must not be negative.
+	 *
+	 * @param n
+	 *            the number of roots of the complex number that are to be
+	 *            calculated
+	 * @return the calculated roots of the complex number[]
+	 */
 	public ComplexNumber[] root(int n) {
 		if (n <= 0) {
 			throw new IllegalArgumentException("Exponent in root caculation must be positive, was: " + n);
@@ -98,6 +230,15 @@ public class ComplexNumber {
 		return roots;
 	}
 
+	/**
+	 * Parses the complex number as a string input and returns its ComplexNumber
+	 * representation.
+	 *
+	 * @param s
+	 *            string representation of the complex number
+	 * 
+	 * @return the ComplexNumber representation of the complex number
+	 */
 	public static ComplexNumber parse(String s) {
 		if (s == null) {
 			return null;
@@ -152,8 +293,8 @@ public class ComplexNumber {
 		}
 
 		else { // nepostoji imaginarni dio
-			
-			if(!s.contains("+") && !s.contains("-")) {
+
+			if (!s.contains("+") && !s.contains("-")) {
 				return new ComplexNumber(Double.parseDouble(s), 0);
 			}
 
@@ -170,6 +311,9 @@ public class ComplexNumber {
 		return null;
 	}
 
+	/**
+	 * Formatted complex number in format real_component + imaginary_component
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -215,6 +359,9 @@ public class ComplexNumber {
 		return result;
 	}
 
+	/**
+	 * Method that checks if two complex numbers are equal.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -231,12 +378,17 @@ public class ComplexNumber {
 		return true;
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
-		 ComplexNumber c1 = new ComplexNumber(2, 3);
-		 ComplexNumber c2 = ComplexNumber.parse("2.5-3i");
-		 ComplexNumber c3 = c1.add(ComplexNumber.fromMagnitudeAndAngle(2, 1.57))
-		 .div(c2).power(3).root(2)[1];
-		 System.out.println(c3);
+		ComplexNumber c1 = new ComplexNumber(2, 3);
+		ComplexNumber c2 = ComplexNumber.parse("2.5-3i");
+		ComplexNumber c3 = c1.add(ComplexNumber.fromMagnitudeAndAngle(2, 1.57)).div(c2).power(3).root(2)[1];
+		System.out.println(c3);
 		
 	}
 

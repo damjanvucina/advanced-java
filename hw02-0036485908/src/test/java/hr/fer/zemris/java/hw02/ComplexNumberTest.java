@@ -387,5 +387,10 @@ public class ComplexNumberTest {
 	public void parseTest34() {
 		assertEquals(new ComplexNumber(0.11, 0), ComplexNumber.parse("0.11"));
 	}
+	
+	@Test
+	public void parseTest35() {
+		assertEquals(new ComplexNumber(3, 0), ComplexNumber.parse("3"));
+	}
 
 }

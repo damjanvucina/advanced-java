@@ -41,6 +41,7 @@ public class Collection {
 	 *
 	 * @param value
 	 *            object which is added to the collection
+	 * 
 	 */
 	public void add(Object value) {
 	}
@@ -102,10 +103,12 @@ public class Collection {
 	}
 
 	/**
-	 * Adds all of the elements from the collection provided as the argument to this collection. The collection provided as the argument remains unchanged
+	 * Adds all of the elements from the collection provided as the argument to this
+	 * collection. The collection provided as the argument remains unchanged
 	 *
-	 * @param collection whose elements are about to be added to this collection
-	 *            
+	 * @param other
+	 *            collection whose elements are about to be added to this collection
+	 * 
 	 */
 	public void addAll(Collection other) {
 
@@ -119,7 +122,8 @@ public class Collection {
 	}
 
 	/**
-	 * Clear.
+	 * Clears the collection by removing all elements from it. Notice: The method is
+	 * not implemented in this class.
 	 */
 	public void clear() {
 	}
