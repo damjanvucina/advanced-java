@@ -3,7 +3,7 @@ package hr.fer.zemris.java.hw03.prob1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Ignore;
+//import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -223,14 +223,12 @@ public class Prob1Test {
 	// --------------------- Second part of tests; uncomment when everything above works ------------------------
 	// ----------------------------------------------------------------------------------------------------------
 
-/*	
-	@Ignore
+
 	@Test(expected=IllegalArgumentException.class)
 	public void testNullState() {
 		new Lexer("").setState(null);
 	}
 	
-	@Ignore
 	@Test
 	public void testNotNullInExtended() {
 		Lexer lexer = new Lexer("");
@@ -239,7 +237,6 @@ public class Prob1Test {
 		assertNotNull("Token was expected but null was returned.", lexer.nextToken());
 	}
 
-	@Ignore
 	@Test
 	public void testEmptyInExtended() {
 		Lexer lexer = new Lexer("");
@@ -248,7 +245,6 @@ public class Prob1Test {
 		assertEquals("Empty input must generate only EOF token.", TokenType.EOF, lexer.nextToken().getType());
 	}
 
-	@Ignore
 	@Test
 	public void testGetReturnsLastNextInExtended() {
 		// Calling getToken once or several times after calling nextToken must return each time what nextToken returned...
@@ -260,7 +256,6 @@ public class Prob1Test {
 		assertEquals("getToken returned different token than nextToken.", token, lexer.getToken());
 	}
 
-	@Ignore
 	@Test(expected=LexerException.class)
 	public void testRadAfterEOFInExtended() {
 		Lexer lexer = new Lexer("");
@@ -272,7 +267,6 @@ public class Prob1Test {
 		lexer.nextToken();
 	}
 	
-	@Ignore
 	@Test
 	public void testNoActualContentInExtended() {
 		// When input is only of spaces, tabs, newlines, etc...
@@ -282,7 +276,6 @@ public class Prob1Test {
 		assertEquals("Input had no content. Lexer should generated only EOF token.", TokenType.EOF, lexer.nextToken().getType());
 	}
 	
-	@Ignore
 	@Test
 	public void testMultipartInput() {
 		// Test input which has parts which are tokenized by different rules...
@@ -310,5 +303,5 @@ public class Prob1Test {
 			assertEquals(msg, expected.getType(), actual.getType());
 			assertEquals(msg, expected.getValue(), actual.getValue());
 	}
-*/
+
 }
