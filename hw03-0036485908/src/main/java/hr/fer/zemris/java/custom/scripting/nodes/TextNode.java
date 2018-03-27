@@ -5,7 +5,7 @@ public class TextNode extends Node {
 	private String text;
 	
 	public TextNode(String text) {
-		super();
+		//super();
 		this.text = text;
 	}
 	

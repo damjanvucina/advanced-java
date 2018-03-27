@@ -6,6 +6,11 @@ public class EchoNode extends Node {
 	
 	private Element[] elements;
 
+	public EchoNode(Element[] elements) {
+		super();
+		this.elements = elements;
+	}
+
 	public Element[] getElements() {
 		return elements;
 	}	

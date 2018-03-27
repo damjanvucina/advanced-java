@@ -4,6 +4,11 @@ public class ElementFunction extends Element {
 
 	private String name;
 
+	public ElementFunction(String name) {
+		super();
+		this.name = name;
+	}
+
 	private String getName() {
 		return name;
 	}

@@ -4,6 +4,11 @@ public class ElementOperator extends Element {
 
 	private String symbol;
 
+	public ElementOperator(String symbol) {
+		super();
+		this.symbol = symbol;
+	}
+
 	private String getSymbol() {
 		return symbol;
 	}

@@ -72,8 +72,9 @@ public class SmartScriptLexer {
 			currentIndex += 3;
 			return new SmartScriptToken(SmartScriptTokenType.TAG, "FOR");
 
-		} else if (isOtherTag()) {
-			return processVariableName(SmartScriptTokenType.TAG);
+		} else if (isEndTag()) {
+			currentIndex += 3;
+			return new SmartScriptToken(SmartScriptTokenType.TAG, "END");
 
 		} else if (isLetter()) {
 			return processVariableName(SmartScriptTokenType.VARIABLE);
@@ -109,8 +110,8 @@ public class SmartScriptLexer {
 		throw new SmartScriptLexerException("Invalid syntax");
 	}
 
-	private boolean isOtherTag() {
-		return token != null && token.getType() == SmartScriptTokenType.TAG_START && isLetter();
+	private boolean isEndTag() {
+		return String.valueOf(data).substring(currentIndex, currentIndex + 3).toUpperCase().equals("END");
 	}
 
 	private boolean isForTag() {
@@ -200,7 +201,7 @@ public class SmartScriptLexer {
 		return new SmartScriptToken(variable, sb.toString());
 	}
 
-	private boolean isValidVariableName() {
+	public boolean isValidVariableName() {
 		return (Character.isLetter(data[currentIndex]) || Character.isDigit(data[currentIndex])
 				|| data[currentIndex] == '_');
 	}
@@ -224,7 +225,7 @@ public class SmartScriptLexer {
 			}
 		}
 
-		if (data[currentIndex] == '{') {// don't consume it yet, tagControl method will
+		if (currentIndex < length && data[currentIndex] == '{') {// don't consume it yet, tagControl method will
 			setState(SmartScriptLexerState.TAG);
 		}
 		return new SmartScriptToken(SmartScriptTokenType.TEXT, sb.toString());

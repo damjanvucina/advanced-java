@@ -4,6 +4,11 @@ public class ElementConstantInteger extends Element {
 
 	private int value;
 	
+	public ElementConstantInteger(int value) {
+		super();
+		this.value = value;
+	}
+
 	private int getValue() {
 		return value;
 	}
