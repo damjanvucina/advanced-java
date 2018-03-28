@@ -1,6 +1,7 @@
 package hr.fer.zemris.java.custom.scripting.parser;
 
 import hr.fer.zemris.java.custom.collections.ArrayIndexedCollection;
+import hr.fer.zemris.java.custom.collections.EmptyStackException;
 import hr.fer.zemris.java.custom.collections.ObjectStack;
 import hr.fer.zemris.java.custom.scripting.elems.Element;
 import hr.fer.zemris.java.custom.scripting.elems.ElementConstantDouble;
@@ -32,7 +33,15 @@ public class SmartScriptParser {
 
 		stack.push(documentNode);
 
-		parse();
+		try {
+			parse();
+		} catch (EmptyStackException exc) {
+			throw new SmartScriptParserException(exc.getCause());
+		}
+
+		if (stack.size() != 1) {
+			throw new SmartScriptParserException("Invalid number of closing END tags, was: " + stack.size());
+		}
 	}
 
 	public DocumentNode getDocumentNode() {
@@ -40,35 +49,62 @@ public class SmartScriptParser {
 	}
 
 	public void parse() {
-		SmartScriptToken token = lexer.nextToken();
+		SmartScriptToken token = null;
+
+		token = fetchNextToken();
 
 		while (token.getType() != SmartScriptTokenType.EOF) {
-			switch (token.getType()) {
+			if (token.getType() == SmartScriptTokenType.TEXT) {
 
-			case TEXT:
-				if (token.getValue().equals("")) {
-					token = lexer.nextToken();
-					continue;
+				if (!token.getValue().equals("")) {
+					parseText(token);
 				}
 
-				parseText(token);
-				token = lexer.nextToken();
-				break;
-
-			case TAG_START:
+			} else if (token.getType() == SmartScriptTokenType.TAG_START) {
 				parseTag();
-				token = lexer.nextToken();
-				break;
-			default:
-				break;
 			}
 
+			token = fetchNextToken();
 		}
+
+		// while (token.getType() != SmartScriptTokenType.EOF) {
+		// switch (token.getType()) {
+		//
+		// case TEXT:
+		// if (token.getValue().equals("")) {
+		// token = lexer.nextToken();
+		// continue;
+		// }
+		//
+		// parseText(token);
+		// token = lexer.nextToken();
+		// break;
+		//
+		// case TAG_START:
+		// parseTag();
+		// token = lexer.nextToken();
+		// break;
+		// default:
+		// break;
+		// }
+		//
+		// }
 
 	}
 
+	private SmartScriptToken fetchNextToken() {
+		try {
+			return lexer.nextToken();
+		} catch (SmartScriptLexerException exc) {
+			throw new SmartScriptParserException(exc.getCause());
+		}
+	}
+
 	private void parseTag() {
-		SmartScriptToken token = lexer.nextToken();// acquire new token after TAG_START
+
+		SmartScriptToken token = null;
+
+		token = fetchNextToken();// acquire new token after TAG_START
 
 		switch (token.getValue().toString()) {
 
@@ -99,7 +135,7 @@ public class SmartScriptParser {
 	private void parseEnd() {
 		stack.pop();
 
-		lexer.nextToken();
+		fetchNextToken();
 		confirmClosingTag("END");
 	}
 
@@ -107,10 +143,10 @@ public class SmartScriptParser {
 		Element[] echoTokens;
 		ArrayIndexedCollection collection = new ArrayIndexedCollection();
 
-		SmartScriptToken currentToken = lexer.nextToken();
+		SmartScriptToken currentToken = fetchNextToken();
 		while (currentToken.getType() != SmartScriptTokenType.TAG_END) {
 			collection.add(currentToken);
-			currentToken = lexer.nextToken();
+			currentToken = fetchNextToken();
 		}
 
 		int collectionSize = collection.size();
@@ -143,13 +179,13 @@ public class SmartScriptParser {
 		Element endExpression = null;
 		Element stepExpression = null;
 
-		SmartScriptToken currentToken = lexer.nextToken();
+		SmartScriptToken currentToken = fetchNextToken();
 
 		while (currentToken.getType() != SmartScriptTokenType.TAG_END) {
 			forTokens.add(currentToken);
-			currentToken = lexer.nextToken();
+			currentToken = fetchNextToken();
 		}
-		
+
 		int forTokensSize = forTokens.size();
 		if (forTokensSize < 3 || forTokensSize > 4) {
 			throw new SmartScriptParserException(
@@ -177,7 +213,7 @@ public class SmartScriptParser {
 
 				case 3:
 					stepExpression = identifyTokenType(currentToken);
-					verifyExpressionTokenType(startExpression);
+					verifyExpressionTokenType(stepExpression);
 					break;
 
 				default:

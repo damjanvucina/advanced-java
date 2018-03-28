@@ -21,6 +21,7 @@ public class SmartScriptTester {
 				"{$FOR i 0 10 2 $}\r\n" + 
 				"sin({$=i$}^2) = {$= i i * @sin \"0.000\" @decfmt $}\r\n" + 
 				"{$END$}";
+		
 		SmartScriptParser parser = null;
 
 		try {

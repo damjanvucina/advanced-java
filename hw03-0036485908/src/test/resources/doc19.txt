@@ -1,0 +1,2 @@
+This is a pretty lousy text because it
+contains an unsupported escape sequence \[.

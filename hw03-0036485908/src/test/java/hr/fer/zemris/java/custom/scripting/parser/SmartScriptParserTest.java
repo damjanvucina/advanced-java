@@ -4,13 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import hr.fer.zemris.java.custom.scripting.lexer.SmartScriptLexerException;
 
 public class SmartScriptParserTest {
 
@@ -25,15 +21,17 @@ public class SmartScriptParserTest {
 	String doc7;
  	String doc8;
  	String doc9;
-//	String doc10;
-//	String doc11;
-//	String doc12;
-//	String doc13;
-//	String doc14;
-//	String doc15;
-//	String doc16;
-//	String doc17;
-	
+	String doc10;
+ 	String doc11;
+ 	String doc12;
+ 	String doc13;
+ 	String doc14;
+ 	String doc15;
+ 	String doc16;
+ 	String doc17;
+ 	String doc18;
+ 	String doc19;
+
 	@Before
 	public void initializeDocuments() {
 		doc1 = loader("doc1.txt");
@@ -45,12 +43,16 @@ public class SmartScriptParserTest {
 		doc7 = loader("doc7.txt");
  		doc8 = loader("doc8.txt");
  		doc9 = loader("doc9.txt");
-//		doc10 = loader("doc10.txt");
-//		doc11 = loader("doc11.txt");
-//		doc12 = loader("doc12.txt");
-//		doc13 = loader("doc13.txt");
-//		doc14 = loader("doc14.txt");
-
+		doc10 = loader("doc10.txt");
+ 		doc11 = loader("doc11.txt");
+ 		doc12 = loader("doc12.txt");
+ 		doc13 = loader("doc13.txt");
+ 		doc14 = loader("doc14.txt");
+ 		doc15 = loader("doc15.txt");
+ 		doc16 = loader("doc16.txt");
+ 		doc17 = loader("doc17.txt");
+ 		doc18 = loader("doc18.txt");
+ 		doc19 = loader("doc19.txt");
 	}
 
 	@Test
@@ -91,13 +93,63 @@ public class SmartScriptParserTest {
 	}
 	
 	@Test(expected=SmartScriptParserException.class)
-	public void nonElementVariableFirstInForTag() {
+	public void invalidTokenTypeElementVariableInForLoop() {
 		parseTwiceandAssert(doc7);
 	}
 	
-	@Test(expected=SmartScriptLexerException.class)
+	@Test(expected=SmartScriptParserException.class)
 	public void invalidFuncitonNameTest() {
 		parseTwiceandAssert(doc8);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void backslashReplacingTest() {
+		parseTwiceandAssert(doc10);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void missingClosingEndTag() {
+		parseTwiceandAssert(doc11);
+	}
+	
+	@Test
+	public void disregardSpacesInEndTagTest() {
+		parseTwiceandAssert(doc12);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void invalidTokenTypeStartExpressionInForLoop() {
+		parseTwiceandAssert(doc13);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void invalidTokenTypeEndExpressionInForLoop() {
+		parseTwiceandAssert(doc14);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void invalidTokenTypeStepExpressionInForLoop() {
+		parseTwiceandAssert(doc15);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void invalidTagName() {
+		parseTwiceandAssert(doc16);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void endTagsOnlyEncapsulateEmptyStackExcTest() {
+		parseTwiceandAssert(doc17);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void invalidOperatorInEchoTest() {
+		parseTwiceandAssert(doc18);
+	}
+	
+	@Test(expected=SmartScriptParserException.class)
+	public void invalidEscapeSequenceInTextNode() {
+		parseTwiceandAssert(doc19);
 	}
 	
 	private void parseTwiceandAssert(String document) {
@@ -106,7 +158,7 @@ public class SmartScriptParserTest {
 
 		parser = new SmartScriptParser(firstIteration);
 		String secondIteration = parser.getDocumentNode().toString();
-
+				
 		Assert.assertEquals(firstIteration, secondIteration);
 	}
 
