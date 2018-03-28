@@ -2,13 +2,11 @@ package hr.fer.zemris.java.hw03.prob1;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-//import org.junit.Ignore;
 import org.junit.Test;
 
 
 public class Prob1Test {
-	
+
 	@Test
 	public void testNotNull() {
 		Lexer lexer = new Lexer("");
@@ -16,7 +14,7 @@ public class Prob1Test {
 		assertNotNull("Token was expected but null was returned.", lexer.nextToken());
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=NullPointerException.class)//updated in QAA
 	public void testNullInput() {
 		// must throw!
 		new Lexer(null);
@@ -38,7 +36,7 @@ public class Prob1Test {
 		assertEquals("getToken returned different token than nextToken.", token, lexer.getToken());
 		assertEquals("getToken returned different token than nextToken.", token, lexer.getToken());
 	}
-	
+
 	@Test(expected=LexerException.class)
 	public void testRadAfterEOF() {
 		Lexer lexer = new Lexer("");
@@ -150,7 +148,6 @@ public class Prob1Test {
 		// will throw!
 		lexer.nextToken();
 	}
-	
 
 	@Test
 	public void testWordWithManyEscapesAndNumbers() {
@@ -223,8 +220,8 @@ public class Prob1Test {
 	// --------------------- Second part of tests; uncomment when everything above works ------------------------
 	// ----------------------------------------------------------------------------------------------------------
 
-
-	@Test(expected=IllegalArgumentException.class)
+	
+	@Test(expected=NullPointerException.class)//updated in QAA
 	public void testNullState() {
 		new Lexer("").setState(null);
 	}

@@ -1,7 +1,13 @@
 package hr.fer.zemris.java.hw03.prob1;
 
 public class LexerException extends RuntimeException {
-
+	/**
+	 * The class that represents the exception that is thrown whenever the lexer
+	 * comes across any irregularity that is not in conformance to the defined rules
+	 * of character grouping.
+	 * 
+	 * @author Damjan Vučina
+	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -12,8 +18,7 @@ public class LexerException extends RuntimeException {
 	}
 
 	/**
-	 * Constructs an LexerException with the specified detail
-	 * message.
+	 * Constructs an LexerException with the specified detail message.
 	 *
 	 * @param s
 	 *            the detail message.

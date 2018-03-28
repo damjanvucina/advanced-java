@@ -1,6 +1,12 @@
 package hr.fer.zemris.java.custom.scripting.parser;
 
-public class SmartScriptParserException extends RuntimeException{
+/**
+ * The class that represents the exception which is thrown whenever the parser
+ * comes across the irregularity in tokens use or their grouping.
+ * 
+ * @author Damjan Vučina
+ */
+public class SmartScriptParserException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

@@ -20,12 +20,31 @@ import hr.fer.zemris.java.custom.scripting.nodes.ForLoopNode;
 import hr.fer.zemris.java.custom.scripting.nodes.Node;
 import hr.fer.zemris.java.custom.scripting.nodes.TextNode;
 
+/**
+ * * The class that represents an object that instantiates a lexer, provides it
+ * with text input and invokes his methods for the purpose of acquiring new
+ * tokens from text and creating a tree from those elements according to the
+ * predefined set of rules.
+ * 
+ * @author Damjan Vučina
+ */
 public class SmartScriptParser {
 
+	/** The lexer that is used for extracting tokens from the text. */
 	SmartScriptLexer lexer;
+
+	/** The stack used for ordering elements. */
 	ObjectStack stack;
+
+	/** Tree representation of the document */
 	DocumentNode documentNode;
 
+	/**
+	 * Instantiates a new smart script parser.
+	 *
+	 * @param document
+	 *            the document provided for processing
+	 */
 	public SmartScriptParser(String document) {
 		lexer = new SmartScriptLexer(document);
 		stack = new ObjectStack();
@@ -44,9 +63,24 @@ public class SmartScriptParser {
 		}
 	}
 
+	/**
+	 * Gets the document node.
+	 *
+	 * @return the document node
+	 */
 	public DocumentNode getDocumentNode() {
 		return documentNode;
 	}
+
+	/**
+	 * Parses the document by delegating its work do the methods of class lexer.
+	 * Then parses those elements and invokes other methods for the purpose of
+	 * creation a tree of the elements of the document. Catches exceptions thrown
+	 * from the lexer and encapsulates them to a specific parser exception.
+	 * 
+	 * @throws SmartScriptParserException
+	 *             if an irregularity with token grouping is stumbled upon
+	 */
 
 	public void parse() {
 		SmartScriptToken token = null;
@@ -66,32 +100,14 @@ public class SmartScriptParser {
 
 			token = fetchNextToken();
 		}
-
-		// while (token.getType() != SmartScriptTokenType.EOF) {
-		// switch (token.getType()) {
-		//
-		// case TEXT:
-		// if (token.getValue().equals("")) {
-		// token = lexer.nextToken();
-		// continue;
-		// }
-		//
-		// parseText(token);
-		// token = lexer.nextToken();
-		// break;
-		//
-		// case TAG_START:
-		// parseTag();
-		// token = lexer.nextToken();
-		// break;
-		// default:
-		// break;
-		// }
-		//
-		// }
-
 	}
 
+	/**
+	 * Helper method that gets the next token.
+	 *
+	 * @return the smart script token * @throws SmartScriptParserException if an
+	 *         irregularity with token grouping is stumbled upon
+	 */
 	private SmartScriptToken fetchNextToken() {
 		try {
 			return lexer.nextToken();
@@ -100,6 +116,9 @@ public class SmartScriptParser {
 		}
 	}
 
+	/**
+	 * Parses the tag that is stumbled upon by lexer.
+	 */
 	private void parseTag() {
 
 		SmartScriptToken token = null;
@@ -132,6 +151,9 @@ public class SmartScriptParser {
 		}
 	}
 
+	/**
+	 * Parses the end tag that is stumbled upon by lexer.
+	 */
 	private void parseEnd() {
 		stack.pop();
 
@@ -139,6 +161,9 @@ public class SmartScriptParser {
 		confirmClosingTag("END");
 	}
 
+	/**
+	 * Parses the echo tag that is stumbled upon by lexer.
+	 */
 	private void parseEcho() {
 		Element[] echoTokens;
 		ArrayIndexedCollection collection = new ArrayIndexedCollection();
@@ -164,6 +189,13 @@ public class SmartScriptParser {
 		confirmClosingTag("ECHO");
 	}
 
+	/**
+	 * Confirms the existence of a closing tag after processing all the elements of
+	 * the given tag.
+	 *
+	 * @param tag
+	 *            the tag that is being processed
+	 */
 	private void confirmClosingTag(String tag) {
 		if (lexer.getToken().getType() != SmartScriptTokenType.TAG_END) {
 			throw new SmartScriptLexerException(tag + " tag was not properly closed.");
@@ -171,6 +203,12 @@ public class SmartScriptParser {
 
 	}
 
+	/**
+	 * Parses the for tag that is stumbled upon by lexer.
+	 * 
+	 * @throws SmartScriptParserException
+	 *             if invalid number of arguments within FOR tag occurs.
+	 */
 	private void parseFor() {
 		ArrayIndexedCollection forTokens = new ArrayIndexedCollection(4);
 
@@ -232,12 +270,24 @@ public class SmartScriptParser {
 		}
 	}
 
+	/**
+	 * Verifies token types of the expressions in the FOR tag.
+	 *
+	 * @param expression
+	 *            the expression
+	 */
 	private void verifyExpressionTokenType(Element expression) {
 		if (expression instanceof ElementFunction || expression instanceof ElementOperator) {
 			throw new SmartScriptParserException("Expression in FOR tag is an instance of unsupported class");
 		}
 	}
 
+	/**
+	 * Verifies token type of the elementVariable in the FOR tag.
+	 *
+	 * @param variable
+	 *            the variable
+	 */
 	private void verifyVariableTokenType(Element variable) {
 		if (!(variable instanceof ElementVariable)) {
 			throw new SmartScriptParserException(
@@ -245,6 +295,14 @@ public class SmartScriptParser {
 		}
 	}
 
+	/**
+	 * Identifies the token type of the token that is to be sent for further
+	 * processing.
+	 *
+	 * @param currentToken
+	 *            the current token
+	 * @return encapsulation of such token in a class derived from class Element
+	 */
 	private Element identifyTokenType(SmartScriptToken currentToken) {
 
 		switch (currentToken.getType()) {
@@ -271,6 +329,12 @@ public class SmartScriptParser {
 		}
 	}
 
+	/**
+	 * Parses the text of the document.
+	 *
+	 * @param token
+	 *            the current token
+	 */
 	private void parseText(SmartScriptToken token) {
 		TextNode textNode = new TextNode(token.getValue().toString());
 		Node parent = (Node) stack.pop();
