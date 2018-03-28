@@ -15,6 +15,6 @@ public class ElementFunction extends Element {
 
 	@Override
 	public String asText() {
-		return String.valueOf(getName());
+		return getName();
 	}
 }

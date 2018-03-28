@@ -44,8 +44,13 @@ public class SmartScriptParser {
 
 		while (token.getType() != SmartScriptTokenType.EOF) {
 			switch (token.getType()) {
-			
+
 			case TEXT:
+				if (token.getValue().equals("")) {
+					token = lexer.nextToken();
+					continue;
+				}
+
 				parseText(token);
 				token = lexer.nextToken();
 				break;
@@ -116,8 +121,9 @@ public class SmartScriptParser {
 		}
 
 		EchoNode echoNode = new EchoNode(echoTokens);
-		Node parent = (Node) stack.peek();
+		Node parent = (Node) stack.pop();
 		parent.addChildNode(echoNode);
+		stack.push(parent);
 
 		confirmClosingTag("ECHO");
 	}
@@ -143,30 +149,35 @@ public class SmartScriptParser {
 			forTokens.add(currentToken);
 			currentToken = lexer.nextToken();
 		}
-
-		if (forTokens.size() > 4) {
+		
+		int forTokensSize = forTokens.size();
+		if (forTokensSize < 3 || forTokensSize > 4) {
 			throw new SmartScriptParserException(
 					"Invalid number of arguments within FOR tag, must be either 3 or 4, was: " + forTokens.size());
 		} else {
 
-			for (int i = 0, size = forTokens.size(); i < size; i++) {
+			for (int i = 0; i < forTokensSize; i++) {
 				currentToken = (SmartScriptToken) forTokens.get(i);
 
 				switch (i) {
 				case 0:
 					variable = (ElementVariable) identifyTokenType(currentToken);
+					verifyVariableTokenType(variable);
 					break;
 
 				case 1:
 					startExpression = identifyTokenType(currentToken);
+					verifyExpressionTokenType(startExpression);
 					break;
 
 				case 2:
 					endExpression = identifyTokenType(currentToken);
+					verifyExpressionTokenType(endExpression);
 					break;
 
 				case 3:
 					stepExpression = identifyTokenType(currentToken);
+					verifyExpressionTokenType(startExpression);
 					break;
 
 				default:
@@ -176,12 +187,25 @@ public class SmartScriptParser {
 
 			ForLoopNode forLoopNode = new ForLoopNode(variable, startExpression, endExpression, stepExpression);
 
-			Node parent = (Node) stack.peek();
+			Node parent = (Node) stack.pop();
 			parent.addChildNode(forLoopNode);
-
+			stack.push(parent);
 			stack.push(forLoopNode);
 
 			confirmClosingTag("FOR");
+		}
+	}
+
+	private void verifyExpressionTokenType(Element expression) {
+		if (expression instanceof ElementFunction || expression instanceof ElementOperator) {
+			throw new SmartScriptParserException("Expression in FOR tag is an instance of unsupported class");
+		}
+	}
+
+	private void verifyVariableTokenType(Element variable) {
+		if (!(variable instanceof ElementVariable)) {
+			throw new SmartScriptParserException(
+					"First element of FOR tag must be an instance of ElementVariable class");
 		}
 	}
 
@@ -213,8 +237,9 @@ public class SmartScriptParser {
 
 	private void parseText(SmartScriptToken token) {
 		TextNode textNode = new TextNode(token.getValue().toString());
-		Node parent = (Node) stack.peek();
+		Node parent = (Node) stack.pop();
 		parent.addChildNode(textNode);
+		stack.push(parent);
 	}
 
 }

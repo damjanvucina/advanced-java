@@ -23,8 +23,6 @@ public class SmartScriptLexer {
 			throw new SmartScriptLexerException("Lexer has used up all the tokens. No more tokens left.");
 		}
 
-		skipBlanks();
-
 		if (currentIndex >= length) {
 			token = new SmartScriptToken(SmartScriptTokenType.EOF, null);
 			return token;
@@ -60,13 +58,7 @@ public class SmartScriptLexer {
 
 		if (data[currentIndex] == '=') {
 			currentIndex++;
-
-			if (data[currentIndex] == ' ') {
-				currentIndex++;
-				return new SmartScriptToken(SmartScriptTokenType.TAG, "=");
-			} else {
-				throw new SmartScriptLexerException("Echo tag (= ) must have a blank space after it.");
-			}
+			return new SmartScriptToken(SmartScriptTokenType.TAG, "=");
 
 		} else if (isForTag()) {
 			currentIndex += 3;
@@ -111,10 +103,18 @@ public class SmartScriptLexer {
 	}
 
 	private boolean isEndTag() {
+		if (currentIndex + 3 >= length) {
+			return false;
+		}
+
 		return String.valueOf(data).substring(currentIndex, currentIndex + 3).toUpperCase().equals("END");
 	}
 
 	private boolean isForTag() {
+		if (currentIndex + 3 >= length) {
+			return false;
+		}
+
 		return String.valueOf(data).substring(currentIndex, currentIndex + 3).toUpperCase().equals("FOR");
 	}
 
@@ -123,9 +123,17 @@ public class SmartScriptLexer {
 
 		while (currentIndex < length && data[currentIndex] != '"') {
 			if (data[currentIndex] == '\\') {
-				currentIndex++;
-				if (isValidEscapeSequence()) {
+
+				char nextToken = data[currentIndex + 1];
+
+				if (isRegularEscapeSequence(nextToken)) {
 					sb.append(data[currentIndex++]);
+					sb.append(data[currentIndex++]);
+
+				} else if (isQuoteOrSlashEscapeSequence(nextToken)) {
+					currentIndex++;
+					sb.append(data[currentIndex++]);
+
 				} else {
 					throw new SmartScriptLexerException("Invalid escape sequence");
 				}
@@ -133,7 +141,7 @@ public class SmartScriptLexer {
 			sb.append(data[currentIndex++]);
 		}
 
-		if (currentIndex == '"') {
+		if (data[currentIndex] == '\"') {
 			currentIndex++;
 			return new SmartScriptToken(SmartScriptTokenType.STRING, sb.toString());
 		} else {
@@ -142,9 +150,12 @@ public class SmartScriptLexer {
 
 	}
 
-	private boolean isValidEscapeSequence() {
-		return (data[currentIndex] == '\\' || data[currentIndex] == '"' || data[currentIndex] == 'r'
-				|| data[currentIndex] == 'n' || data[currentIndex] == 't');
+	private boolean isQuoteOrSlashEscapeSequence(char nextToken) {
+		return (nextToken == '"' || nextToken == '\\');
+	}
+
+	private boolean isRegularEscapeSequence(char nextToken) {
+		return (nextToken == 'r' || nextToken == 'n' || nextToken == 't');
 	}
 
 	private boolean isString() {
@@ -156,7 +167,7 @@ public class SmartScriptLexer {
 	}
 
 	private boolean isFunction() {
-		return (data[currentIndex] == '@');
+		return (data[currentIndex] == '@' && Character.isLetter(data[currentIndex+1]));
 	}
 
 	private SmartScriptToken processNumber() {
@@ -168,14 +179,13 @@ public class SmartScriptLexer {
 		}
 
 		if (data[currentIndex] == '.') {
-			currentIndex++;
+			sb.append(data[currentIndex++]);
 
 			while (Character.isDigit(data[currentIndex])) {
 				sb.append(data[currentIndex++]);
 			}
 			return new SmartScriptToken(SmartScriptTokenType.DOUBLE, sb.toString());
 		}
-
 		return new SmartScriptToken(SmartScriptTokenType.INTEGER, sb.toString());
 	}
 
