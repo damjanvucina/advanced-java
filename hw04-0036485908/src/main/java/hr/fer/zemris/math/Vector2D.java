@@ -23,8 +23,16 @@ public class Vector2D {
 		return x;
 	}
 
+	public void setX(double x) {
+		this.x = x;
+	}
+
 	public double getY() {
 		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
 	}
 
 	public void translate(Vector2D offset) {
@@ -51,7 +59,7 @@ public class Vector2D {
 
 	public Vector2D rotated(double angle) {
 		angle = toRadians(angle);
-		
+
 		return new Vector2D(cos(angle) * x - sin(angle) * y, sin(angle) * x + cos(angle) * y);
 	}
 
