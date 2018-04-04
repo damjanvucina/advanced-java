@@ -93,67 +93,11 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 						continue;
 					}
 
-					identifyCommand((String) command, context, painter);
+					// identifyCommand((String) command, context, painter);
+					//performCommand((Command) command, context, painter);
+					((Command)command).execute(context, painter);
 				}
 			}
-
-			private void identifyCommand(String command, Context context, Painter painter) {
-				if (command.startsWith("draw")) {
-					double factor = extractFactor(normalize(command, "draw".length()));
-					performCommand(new DrawCommand(factor), context, painter);
-
-				} else if (command.startsWith("skip")) {
-					double factor = extractFactor(normalize(command, "skip".length()));
-					performCommand(new SkipCommand(factor), context, painter);
-
-				} else if (command.startsWith("scale")) {
-					double factor = extractFactor(normalize(command, "scale".length()));
-					performCommand(new ScaleCommand(factor), context, painter);
-
-				} else if (command.startsWith("rotate")) {
-					double factor = extractFactor(normalize(command, "rotate".length()));
-					performCommand(new RotateCommand(factor), context, painter);
-
-				} else if (command.startsWith("push")) {
-					performCommand(new PushCommand(), context, painter);
-
-				} else if (command.startsWith("pop")) {
-					performCommand(new PopCommand(), context, painter);
-
-				} else if (command.startsWith("color")) {
-					Color color = extractColor(normalize(command, "color".length()));
-					performCommand(new ColorCommand(color), context, painter);
-
-				} else {
-					throw new IllegalArgumentException("Unsupported command request. Command was: " + command);
-				}
-			}
-
-			private Color extractColor(String color) {
-				try {
-					// return Color.decode("#" + color);
-					return Color.getColor(color);
-				} catch (NumberFormatException e) {
-					System.out.println("Invalid hexadecimal representation of the requested color.");
-				}
-
-				return null;
-			}
-
-			private double extractFactor(String factor) {
-				try {
-					return Double.parseDouble(factor);
-				} catch (NumberFormatException | NullPointerException e) {
-					System.out.println("Invalid command argument format.");
-				}
-
-				return 0;
-			}
-
-			private void performCommand(Command command, Context context, Painter painter) {
-				command.execute(context, painter);
-			}
-
 		};
 	}
 
@@ -218,41 +162,9 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 		return this;
 	}
 
-	// private double performCalculation(String[] arguments) {
-	// if (arguments.length == 1) {
-	// return Double.parseDouble(arguments[0]);
-	//
-	// }
-	//
-	// if (arguments.length == 3) {
-	// switch (arguments[1]) {
-	//
-	// case "+":
-	// return Double.parseDouble(arguments[0]) + Double.parseDouble(arguments[2]);
-	//
-	// case "-":
-	// return Double.parseDouble(arguments[0]) - Double.parseDouble(arguments[2]);
-	//
-	// case "*":
-	// return Double.parseDouble(arguments[0]) * Double.parseDouble(arguments[2]);
-	//
-	// case "/":
-	// return Double.parseDouble(arguments[0]) / Double.parseDouble(arguments[2]);
-	//
-	// default:
-	// throw new IllegalArgumentException("Unknown calculation operation
-	// requested.");
-	// }
-	//
-	// } else {
-	// throw new IllegalArgumentException("Unknown calculation operation
-	// requested.");
-	// }
-	// }
-
 	private double performCalculation(String arguments) {
 		int indexOfOperator = findIndexOfOperator(arguments);
-		
+
 		String firstArgument = arguments.substring(0, indexOfOperator);
 		String operator = arguments.substring(indexOfOperator, indexOfOperator + 1);
 		String secondArgument = arguments.substring(indexOfOperator + 1);
@@ -302,8 +214,61 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 
 	@Override
 	public LSystemBuilder registerCommand(char symbol, String action) {
-		commands.put(symbol, action);
+		Command command = identifyCommand(action);
+		commands.put(symbol, command);
 		return this;
+	}
+
+	private Command identifyCommand(String command) {
+		if (command.startsWith("draw")) {
+			double factor = extractFactor(normalize(command, "draw".length()));
+			return new DrawCommand(factor);
+
+		} else if (command.startsWith("skip")) {
+			double factor = extractFactor(normalize(command, "skip".length()));
+			return new SkipCommand(factor);
+
+		} else if (command.startsWith("scale")) {
+			double factor = extractFactor(normalize(command, "scale".length()));
+			return new ScaleCommand(factor);
+
+		} else if (command.startsWith("rotate")) {
+			double factor = extractFactor(normalize(command, "rotate".length()));
+			return new RotateCommand(factor);
+
+		} else if (command.startsWith("push")) {
+			return (new PushCommand());
+
+		} else if (command.startsWith("pop")) {
+			return new PopCommand();
+
+		} else if (command.startsWith("color")) {
+			Color color = extractColor(normalize(command, "color".length()));
+			return new ColorCommand(color);
+
+		} else {
+			throw new IllegalArgumentException("Unsupported command request. Command was: " + command);
+		}
+	}
+
+	private Color extractColor(String color) {
+		try {
+			 return Color.decode("#" + color);
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid hexadecimal representation of the requested color.");
+		}
+
+		return null;
+	}
+
+	private double extractFactor(String factor) {
+		try {
+			return Double.parseDouble(factor);
+		} catch (NumberFormatException | NullPointerException e) {
+			System.out.println("Invalid command argument format.");
+		}
+
+		return 0;
 	}
 
 	@Override

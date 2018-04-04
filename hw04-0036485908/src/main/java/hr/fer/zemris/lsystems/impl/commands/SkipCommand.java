@@ -22,6 +22,7 @@ public class SkipCommand implements Command{
 		
 		DrawCommand drawCommand = new DrawCommand(step);
 		drawCommand.execute(ctx, painter);
+			
 	}
 	
 	
