@@ -78,7 +78,7 @@ public class DictionaryTest {
 	@Test
 	public void getRegularTest() {
 		dictionary = fillDictionary();
-		Assert.assertEquals(String.valueOf(1) + " " + String.valueOf("First"), dictionary.get(1).toString());
+		Assert.assertEquals(String.valueOf("First"), dictionary.get(1).toString());
 	}
 	
 	@Test

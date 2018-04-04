@@ -3,6 +3,8 @@ package hr.fer.zemris.lsystems.impl;
 import java.awt.Color;
 
 import hr.fer.zemris.math.Vector2D;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.pow;
 
 public class TurtleState {
 
@@ -13,9 +15,14 @@ public class TurtleState {
 
 	public TurtleState(Vector2D currentPosition, Vector2D direction, Color currentColor, double step) {
 		this.currentPosition = currentPosition;
-		this.direction = direction;
+		this.direction = setUnitVector(direction);
 		this.currentColor = currentColor;
 		this.step = step;
+	}
+
+	private Vector2D setUnitVector(Vector2D direction) {
+		double magnitude = sqrt(pow(direction.getX(), 2) + pow(direction.getY(), 2));
+		return new Vector2D(direction.getX()/magnitude, direction.getY()/magnitude);
 	}
 
 	public Vector2D getCurrentPosition() {

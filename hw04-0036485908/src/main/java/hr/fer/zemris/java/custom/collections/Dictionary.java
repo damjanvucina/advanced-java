@@ -48,7 +48,7 @@ public class Dictionary {
 				return false;
 			return true;
 		}
-		
+
 		public String toString() {
 			return String.valueOf(key) + " " + String.valueOf(value);
 		}
@@ -84,6 +84,6 @@ public class Dictionary {
 	public Object get(Object key) {
 		int index = elements.indexOf(new Entry(key, null));
 
-		return (index != -1) ? elements.get(index) : null;
+		return (index != -1) ? ((Entry) elements.get(index)).value : null;
 	}
 }

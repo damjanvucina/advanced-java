@@ -17,14 +17,13 @@ public class DrawCommand implements Command {
 	@Override
 	public void execute(Context ctx, Painter painter) {
 		TurtleState currentState = ctx.getCurrentState();
-		currentState.setStep(step);
 
 		Vector2D oldPosition = currentState.getCurrentPosition();
 		Vector2D direction = currentState.getDirection();
-		Vector2D newPosition = oldPosition.translated(direction.scaled(step));
+		Vector2D newPosition = oldPosition.translated(direction.scaled(step * currentState.getStep()));
 
 		painter.drawLine(oldPosition.getX(), oldPosition.getY(), newPosition.getX(), newPosition.getY(),
-				currentState.getCurrentColor(), (float) currentState.getStep());
+				currentState.getCurrentColor(), 1);
 
 		currentState.setCurrentPosition(newPosition);
 	}

@@ -14,7 +14,7 @@ public class ScaleCommand implements Command {
 
 	@Override
 	public void execute(Context ctx, Painter painter) {
-		ctx.getCurrentState().setStep(factor);
+		ctx.getCurrentState().setStep(ctx.getCurrentState().getStep()*factor);
 	}
 	
 	

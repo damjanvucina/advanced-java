@@ -1,4 +1,4 @@
-package hr.fer.zemris.lsystems.impl.demo;
+package demo;
 
 import hr.fer.zemris.lsystems.gui.LSystemViewer;
 import hr.fer.zemris.lsystems.impl.LSystemBuilderImpl;
