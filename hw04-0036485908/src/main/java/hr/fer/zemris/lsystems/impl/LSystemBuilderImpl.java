@@ -22,7 +22,7 @@ import hr.fer.zemris.lsystems.impl.commands.SkipCommand;
 import hr.fer.zemris.math.Vector2D;
 
 public class LSystemBuilderImpl implements LSystemBuilder {
-	
+
 	Dictionary commands;
 	Dictionary productions;
 
@@ -57,7 +57,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 					String finalString = processed;
 
 					for (int i = 0; i < level; i++) {
-						processed=finalString;
+						processed = finalString;
 						StringBuilder stringBuilder = new StringBuilder();
 						for (int j = 0, length = processed.length(); j < length; j++) {
 							Object production = productions.get(processed.charAt(j));
@@ -66,21 +66,16 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 								stringBuilder.append(processed.charAt(j));
 								continue;
 							}
-							
+
 							stringBuilder.append(production);
-							
-//							production =(String) production;
-//							
-//							finalString = finalString.substring(0, j) + production + finalString.substring(j+1);
-							
 						}
-						
+
 						finalString = stringBuilder.toString();
 					}
 					return finalString;
 				}
 			}
-			
+
 			@Override
 			public void draw(int level, Painter painter) {
 				Context context = new Context();
@@ -92,13 +87,13 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 				String processed = generate(level);
 
 				for (char c : processed.toCharArray()) {
-					String command = commands.get(c).toString();
+					Object command = commands.get(c);
 
 					if (command == null) {
 						continue;
 					}
 
-					identifyCommand(command, context, painter);
+					identifyCommand((String) command, context, painter);
 				}
 			}
 
@@ -136,7 +131,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 
 			private Color extractColor(String color) {
 				try {
-					//return Color.decode("#" + color);
+					// return Color.decode("#" + color);
 					return Color.getColor(color);
 				} catch (NumberFormatException e) {
 					System.out.println("Invalid hexadecimal representation of the requested color.");
@@ -166,49 +161,51 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 	public LSystemBuilder configureFromText(String[] lines) {
 
 		for (String line : lines) {
-			line = line.toLowerCase();
-			
-			if (line.startsWith("origin")) {
+
+			// instant line = line.toLowerCase() conversion would mess up productions since
+			// they ARE case sensitive
+			if (line.toLowerCase().startsWith("origin")) {
 				process(normalize(line, "origin".length()), (parameters) -> {
 					String[] arguments = parameters.split(" ");
 					return setOrigin(Double.parseDouble(arguments[0]), Double.parseDouble(arguments[1]));
 				});
 
-			} else if (line.startsWith("angle")) {
+			} else if (line.toLowerCase().startsWith("angle")) {
 				process(normalize(line, "angle".length()), (parameters) -> {
 					String[] arguments = parameters.split(" ");
 					return setAngle(Double.parseDouble(arguments[0]));
 				});
 
-			} else if (line.startsWith("unitlengthdegreescaler")) {
+			} else if (line.toLowerCase().startsWith("unitlengthdegreescaler")) {
 				process(normalize(line, "unitLengthDegreeScaler".length()), (parameters) -> {
-					String[] arguments = parameters.split(" ");
+					String arguments = parameters.replace(" ", "");
 					double factor = performCalculation(arguments);
 					return setUnitLengthDegreeScaler(factor);
 				});
 
-			} else if (line.startsWith("unitlength")) {
+			} else if (line.toLowerCase().startsWith("unitlength")) {
 				process(normalize(line, "unitLength".length()), (parameters) -> {
 					String[] arguments = parameters.split(" ");
 					return setUnitLength(Double.parseDouble(arguments[0]));
 				});
 
-			} else if (line.startsWith("command")) {
+			} else if (line.toLowerCase().startsWith("command")) {
 				process(normalize(line, "command".length()), (parameters) -> {
 					String[] arguments = parameters.split(" ");
 					return registerCommand(arguments[0].charAt(0), parameters.substring(arguments[0].length()).trim());
 				});
 
-			} else if (line.startsWith("axiom")) {
+			} else if (line.toLowerCase().startsWith("axiom")) {
 				process(normalize(line, "axiom".length()), (parameters) -> {
 					String[] arguments = parameters.split(" ");
 					return setAxiom(arguments[0]);
 				});
 
-			} else if (line.startsWith("production")) {
+			} else if (line.toLowerCase().startsWith("production")) {
 				process(normalize(line, "production".length()), (parameters) -> {
 					String[] arguments = parameters.split(" ");
-					return registerProduction(arguments[0].charAt(0), parameters.substring(arguments[0].length()).trim());
+					return registerProduction(arguments[0].charAt(0),
+							parameters.substring(arguments[0].length()).trim());
 				});
 
 			} else if (line.equals("")) {
@@ -221,32 +218,72 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 		return this;
 	}
 
-	private double performCalculation(String[] arguments) {
-		if(arguments.length==1) {
-			return Double.parseDouble(arguments[0]);
-			
-		} else if (arguments.length==3) {
-			switch (arguments[1]) {
-			
-			case "+":
-				return Double.parseDouble(arguments[0]) + Double.parseDouble(arguments[2]);
-				
-			case "-":
-				return Double.parseDouble(arguments[0]) - Double.parseDouble(arguments[2]);
-				
-			case "*":
-				return Double.parseDouble(arguments[0]) * Double.parseDouble(arguments[2]);
-				
-			case "/":
-				return Double.parseDouble(arguments[0]) / Double.parseDouble(arguments[2]);
+	// private double performCalculation(String[] arguments) {
+	// if (arguments.length == 1) {
+	// return Double.parseDouble(arguments[0]);
+	//
+	// }
+	//
+	// if (arguments.length == 3) {
+	// switch (arguments[1]) {
+	//
+	// case "+":
+	// return Double.parseDouble(arguments[0]) + Double.parseDouble(arguments[2]);
+	//
+	// case "-":
+	// return Double.parseDouble(arguments[0]) - Double.parseDouble(arguments[2]);
+	//
+	// case "*":
+	// return Double.parseDouble(arguments[0]) * Double.parseDouble(arguments[2]);
+	//
+	// case "/":
+	// return Double.parseDouble(arguments[0]) / Double.parseDouble(arguments[2]);
+	//
+	// default:
+	// throw new IllegalArgumentException("Unknown calculation operation
+	// requested.");
+	// }
+	//
+	// } else {
+	// throw new IllegalArgumentException("Unknown calculation operation
+	// requested.");
+	// }
+	// }
 
-			default:
-				throw new IllegalArgumentException("Unknown calculation operation requested.");
-			}
-			
-		} else {
+	private double performCalculation(String arguments) {
+		int indexOfOperator = findIndexOfOperator(arguments);
+		
+		String firstArgument = arguments.substring(0, indexOfOperator);
+		String operator = arguments.substring(indexOfOperator, indexOfOperator + 1);
+		String secondArgument = arguments.substring(indexOfOperator + 1);
+
+		switch (operator) {
+		case "+":
+			return Double.parseDouble(firstArgument) + Double.parseDouble(secondArgument);
+
+		case "-":
+			return Double.parseDouble(firstArgument) - Double.parseDouble(secondArgument);
+
+		case "*":
+			return Double.parseDouble(firstArgument) * Double.parseDouble(secondArgument);
+
+		case "/":
+			return Double.parseDouble(firstArgument) / Double.parseDouble(secondArgument);
+
+		default:
 			throw new IllegalArgumentException("Unknown calculation operation requested.");
 		}
+
+	}
+
+	private int findIndexOfOperator(String arguments) {
+		for (int i = 0, length = arguments.length(); i < length; i++) {
+			if (arguments.charAt(i) == '+' || arguments.charAt(i) == '-' || arguments.charAt(i) == '*'
+					|| arguments.charAt(i) == '/') {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	private LSystemBuilder process(String line, Function<String, LSystemBuilder> action) {
