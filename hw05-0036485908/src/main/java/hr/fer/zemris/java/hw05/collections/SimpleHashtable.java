@@ -201,6 +201,10 @@ public class SimpleHashtable<K, V> {
 
 		return sb.toString();
 	}
+	
+	public int getTableLength(){
+		return table.length;
+	}
 
 	public static class TableEntry<K, V> {
 		private K key;
