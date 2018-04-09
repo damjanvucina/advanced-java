@@ -4,15 +4,20 @@ import static java.lang.Math.abs;
 import static java.lang.Math.log10;
 
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class SimpleHashtable<K, V> {
+public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntry<K, V>> {
 	public static final double LOAD_FACTOR = 0.75;
+	public static final int STARTING_SLOT = -1;
 	public static final int DEFAULT_CAPACITY = 16;
 	public static final double LOG10_2 = log10(2);
 
 	private TableEntry<K, V>[] table;
 	private int size;
+	private int modificationCount;
 
 	public SimpleHashtable() {
 		this(DEFAULT_CAPACITY);
@@ -54,6 +59,7 @@ public class SimpleHashtable<K, V> {
 		if (current == null) {
 			table[index] = new TableEntry<K, V>(key, value);
 			size++;
+			modificationCount++;
 
 		} else if (current.getKey().equals(key)) {
 			current.setValue(value);
@@ -62,6 +68,7 @@ public class SimpleHashtable<K, V> {
 			TableEntry<K, V> entry = new TableEntry<K, V>(key, value);
 			current.next = entry;
 			size++;
+			modificationCount++;
 		}
 
 		verifyCapacity();
@@ -70,24 +77,24 @@ public class SimpleHashtable<K, V> {
 	@SuppressWarnings("unchecked")
 	private void verifyCapacity() {
 		if (size >= table.length * LOAD_FACTOR) {
-			
+
 			int previousCapacity = table.length;
 			TableEntry<K, V>[] copy = new TableEntry[previousCapacity];
 			copy = Arrays.copyOf(table, previousCapacity);
-			
+
 			clear();
 			doubleCapacity(previousCapacity);
 			refillTable(copy);
 		}
 	}
-	
+
 	private void refillTable(TableEntry<K, V>[] copy) {
-		for(int i = 0, length = copy.length; i < length; i++) {
+		for (int i = 0, length = copy.length; i < length; i++) {
 			TableEntry<K, V> current = copy[i];
-			
-			while(current != null) {
+
+			while (current != null) {
 				put(current.key, current.value);
-				current=current.next;
+				current = current.next;
 			}
 		}
 	}
@@ -96,7 +103,8 @@ public class SimpleHashtable<K, V> {
 		for (int i = 0, length = table.length; i < length; i++) {
 			table[i] = null;
 		}
-		size=0;
+		size = 0;
+		modificationCount++;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -171,13 +179,14 @@ public class SimpleHashtable<K, V> {
 		if (current != null && current.key.equals(key)) {
 			if (previous != null) {
 				previous.next = current.next;
-				current.next = null;
+				// current.next = null;
 
 			} else {
 				table[index] = null;
 			}
 
 			size--;
+			modificationCount++;
 		}
 	}
 
@@ -201,9 +210,71 @@ public class SimpleHashtable<K, V> {
 
 		return sb.toString();
 	}
-	
-	public int getTableLength(){
+
+	public int getTableLength() {
 		return table.length;
+	}
+
+	@Override
+	public Iterator<TableEntry<K, V>> iterator() {
+		return new IteratorImpl();
+	}
+
+	private class IteratorImpl implements Iterator<SimpleHashtable.TableEntry<K, V>> {
+		private int processedElements = 0;
+		private int currentSlot = STARTING_SLOT;
+		private TableEntry<K, V> current;
+		private int modificationCountCopy=modificationCount;
+
+		@Override
+		public boolean hasNext() {
+			if (modificationCountCopy != modificationCount) {
+				concurrentModificationOccured();
+			}
+			return processedElements < size();
+		}
+
+		@Override
+		public SimpleHashtable.TableEntry<K, V> next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException("No more elements are available in this Hashtable.");
+			}
+
+			if (current == null || (current != null && current.next == null)) {
+				while (current == null || (current != null && current.next == null)) {
+					current = table[++currentSlot];
+				}
+
+			} else {
+				current = current.next;
+			}
+
+			processedElements++;
+			return current;
+		}
+
+		@Override
+		public void remove() {
+			if (modificationCountCopy != modificationCount) {
+				concurrentModificationOccured();
+			}
+
+			if (current == null) {// dodaj bacanje exceptiona za uzastopne pozive removea
+				throw new IllegalStateException(
+						"The remove() method can only be invoked after next() method,  only once per call to next().");
+			}
+
+			SimpleHashtable.this.remove(current.getKey());
+			
+			modificationCount++;
+			modificationCountCopy++;
+		}
+
+		private void concurrentModificationOccured() {
+			throw new ConcurrentModificationException(
+					"Hashtable has been updated by an object other than this iterator.");
+		}
+
 	}
 
 	public static class TableEntry<K, V> {
