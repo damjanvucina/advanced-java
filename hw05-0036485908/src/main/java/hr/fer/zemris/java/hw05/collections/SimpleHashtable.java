@@ -177,12 +177,12 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		}
 
 		if (current != null && current.key.equals(key)) {
-			if (previous != null) {
+			if (previous == null) {// from the beginning
+				table[index] = current.next;
+			} else if (current.next == null) {// from the end
+				previous.next=null;
+			} else { // from the middle
 				previous.next = current.next;
-				// current.next = null;
-
-			} else {
-				table[index] = null;
 			}
 
 			size--;
@@ -223,15 +223,16 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 	private class IteratorImpl implements Iterator<SimpleHashtable.TableEntry<K, V>> {
 		private int processedElements = 0;
 		private int currentSlot = STARTING_SLOT;
+		private int tableSize = size;
 		private TableEntry<K, V> current;
-		private int modificationCountCopy=modificationCount;
+		private int modificationCountCopy = modificationCount;
 
 		@Override
 		public boolean hasNext() {
 			if (modificationCountCopy != modificationCount) {
 				concurrentModificationOccured();
 			}
-			return processedElements < size();
+			return processedElements < tableSize;
 		}
 
 		@Override
@@ -240,13 +241,18 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 				throw new NoSuchElementException("No more elements are available in this Hashtable.");
 			}
 
-			if (current == null || (current != null && current.next == null)) {
-				while (current == null || (current != null && current.next == null)) {
+			if (current != null) {
+				if (current.next == null) {
 					current = table[++currentSlot];
+
+				} else {
+					current = current.next;
 				}
 
 			} else {
-				current = current.next;
+				while (current == null) {
+					current = table[++currentSlot];
+				}
 			}
 
 			processedElements++;
@@ -259,14 +265,13 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 				concurrentModificationOccured();
 			}
 
-			if (current == null) {// dodaj bacanje exceptiona za uzastopne pozive removea
+			if (current == null || !containsKey(current.key)) {// dodaj bacanje exceptiona za uzastopne pozive removea
 				throw new IllegalStateException(
 						"The remove() method can only be invoked after next() method,  only once per call to next().");
 			}
 
 			SimpleHashtable.this.remove(current.getKey());
-			
-			modificationCount++;
+
 			modificationCountCopy++;
 		}
 
