@@ -1,11 +1,13 @@
 package hr.fer.zemris.java.hw05.collections;
 
-import static java.lang.Math.log10;
 import static java.lang.Math.abs;
+import static java.lang.Math.log10;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class SimpleHashtable<K, V> {
+	public static final double LOAD_FACTOR = 0.75;
 	public static final int DEFAULT_CAPACITY = 16;
 	public static final double LOG10_2 = log10(2);
 
@@ -24,7 +26,7 @@ public class SimpleHashtable<K, V> {
 		}
 
 		capacity = normalizeTableCapacity(capacity);
-		table = (TableEntry<K, V>[]) new Object[capacity];
+		table = new TableEntry[capacity];
 	}
 
 	private int normalizeTableCapacity(int capacity) {
@@ -50,14 +52,56 @@ public class SimpleHashtable<K, V> {
 		TableEntry<K, V> current = extractFromSlot(table[index], key);
 
 		if (current == null) {
-			current = new TableEntry<K, V>(key, value);
+			table[index] = new TableEntry<K, V>(key, value);
+			size++;
+
 		} else if (current.getKey().equals(key)) {
 			current.setValue(value);
+
 		} else {
-			current.next = new TableEntry<K, V>(key, value);
+			TableEntry<K, V> entry = new TableEntry<K, V>(key, value);
+			current.next = entry;
+			size++;
 		}
 
-		size++;
+		verifyCapacity();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void verifyCapacity() {
+		if (size >= table.length * LOAD_FACTOR) {
+			
+			int previousCapacity = table.length;
+			TableEntry<K, V>[] copy = new TableEntry[previousCapacity];
+			copy = Arrays.copyOf(table, previousCapacity);
+			
+			clear();
+			doubleCapacity(previousCapacity);
+			refillTable(copy);
+		}
+	}
+	
+	private void refillTable(TableEntry<K, V>[] copy) {
+		for(int i = 0, length = copy.length; i < length; i++) {
+			TableEntry<K, V> current = copy[i];
+			
+			while(current != null) {
+				put(current.key, current.value);
+				current=current.next;
+			}
+		}
+	}
+
+	public void clear() {
+		for (int i = 0, length = table.length; i < length; i++) {
+			table[i] = null;
+		}
+		size=0;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void doubleCapacity(int previousCapacity) {
+		table = new TableEntry[previousCapacity * 2];
 	}
 
 	private int calculateIndex(Object key) {
@@ -96,11 +140,12 @@ public class SimpleHashtable<K, V> {
 		return get(key) != null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean containsValue(Object value) {
 		for (TableEntry<K, V> current : table) {
 			while (current != null) {
 
-				if (current.getValue().equals(value)) {
+				if (current.getValue() == (V) value || (current != null && current.getValue().equals((V) value))) {
 					return true;
 				}
 				current = current.next;
@@ -123,9 +168,15 @@ public class SimpleHashtable<K, V> {
 			current = current.next;
 		}
 
-		if (current != null && current.key.equals(key) && previous!=null) {
-			previous.next=current.next;
-			current.next=null;
+		if (current != null && current.key.equals(key)) {
+			if (previous != null) {
+				previous.next = current.next;
+				current.next = null;
+
+			} else {
+				table[index] = null;
+			}
+
 			size--;
 		}
 	}
