@@ -65,7 +65,7 @@ public class StudentDatabase{
 		}
 	}
 
-	private void illegalStudentDatabaseState(String message) {
+	public static void illegalStudentDatabaseState(String message) {
 		throw new StudentDatabaseException(message);
 	}
 	
