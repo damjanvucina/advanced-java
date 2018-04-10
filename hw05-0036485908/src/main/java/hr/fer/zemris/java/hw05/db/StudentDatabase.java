@@ -14,14 +14,21 @@ public class StudentDatabase{
 	public StudentDatabase(List<String> lines) {
 		this.lines = lines;
 		
+		studentRecords = new LinkedList<>();
+		index = new SimpleHashtable<>(lines.size());
+		
 		createRecordsAndIndexes();
+	}
+
+	public List<StudentRecord> getStudentRecords() {
+		return studentRecords;
 	}
 
 	private void createRecordsAndIndexes() {
 		String[] elements = null;
 
 		for (String row : lines) {
-			elements = row.split(" ");
+			elements = row.split("\t");
 
 			validateDatabaseElements(elements);
 
@@ -42,12 +49,12 @@ public class StudentDatabase{
 		}
 
 		if (!(elements[1] instanceof String)) {
-			illegalStudentDatabaseState("Invalid database.txt file, first name must be an instance of String, was: "
+			illegalStudentDatabaseState("Invalid database.txt file, last name must be an instance of String, was: "
 					+ elements[1].getClass());
 		}
 
 		if (!(elements[2] instanceof String)) {
-			illegalStudentDatabaseState("Invalid database.txt file, last name must be an instance of String, was: "
+			illegalStudentDatabaseState("Invalid database.txt file, first name must be an instance of String, was: "
 					+ elements[2].getClass());
 		}
 

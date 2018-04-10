@@ -7,10 +7,10 @@ public class StudentRecord {
 	private String lastName;
 	private int finalGrade;
 
-	public StudentRecord(String jmbag, String firstName, String lastName, int finalGrade) {
+	public StudentRecord(String jmbag, String lastName, String firstName, int finalGrade) {
 		this.jmbag = jmbag;
-		this.firstName = firstName;
 		this.lastName = lastName;
+		this.firstName = firstName;
 		this.finalGrade = finalGrade;
 	}
 
@@ -71,4 +71,9 @@ public class StudentRecord {
 		return true;
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(jmbag).append(" ").append(lastName).append(" ").append(firstName).append(" ").append(finalGrade);
+		return sb.toString();
+	}
 }
