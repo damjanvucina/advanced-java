@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class FieldValueGettersTest {
 	
-	IFieldValueGetter getter;
+	IFieldValueGetter strategy;
 	StudentRecord testRecord;
 	
 	@Before
@@ -16,38 +16,38 @@ public class FieldValueGettersTest {
 	
 	@Test
 	public void testFirstNameTrue() {
-		getter = FieldValueGetters.FIRST_NAME;
-		Assert.assertEquals("Testko", getter.get(testRecord));
+		strategy = FieldValueGetters.FIRST_NAME;
+		Assert.assertEquals("Testko", strategy.get(testRecord));
 	}
 	
 	@Test
 	public void testFirstNameFalse() {
-		getter = FieldValueGetters.FIRST_NAME;
-		Assert.assertNotEquals("Not Testko", getter.get(testRecord));
+		strategy = FieldValueGetters.FIRST_NAME;
+		Assert.assertNotEquals("Not Testko", strategy.get(testRecord));
 	}
 	
 	@Test
 	public void testLastNameTrue() {
-		getter = FieldValueGetters.LAST_NAME;
-		Assert.assertEquals("Testic", getter.get(testRecord));
+		strategy = FieldValueGetters.LAST_NAME;
+		Assert.assertEquals("Testic", strategy.get(testRecord));
 	}
 	
 	@Test
 	public void testLastNameFalse() {
-		getter = FieldValueGetters.LAST_NAME;
-		Assert.assertNotEquals("Not Testic", getter.get(testRecord));
+		strategy = FieldValueGetters.LAST_NAME;
+		Assert.assertNotEquals("Not Testic", strategy.get(testRecord));
 	}
 	
 	@Test
 	public void testJmbagTrue() {
-		getter = FieldValueGetters.JMBAG;
-		Assert.assertEquals("0123456789", getter.get(testRecord));
+		strategy = FieldValueGetters.JMBAG;
+		Assert.assertEquals("0123456789", strategy.get(testRecord));
 	}
 	
 	@Test
 	public void testJmbagFalse() {
-		getter = FieldValueGetters.JMBAG;
-		Assert.assertNotEquals("0000000000", getter.get(testRecord));
+		strategy = FieldValueGetters.JMBAG;
+		Assert.assertNotEquals("0000000000", strategy.get(testRecord));
 	}
 
 }
