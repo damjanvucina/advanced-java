@@ -10,6 +10,7 @@ public class QueryParserTest {
 	@Test
 	public void templateTestDirect() {
 		 queryParser = new QueryParser(" jmbag =\"0123456789\" ");
+		 queryParser.parse();
 		 
 		 Assert.assertTrue(queryParser.isDirectQuery());
 		 Assert.assertEquals("0123456789", queryParser.getQueriedJMBAG());
@@ -19,6 +20,7 @@ public class QueryParserTest {
 	@Test
 	public void templateTestNonDirect() {
 		 QueryParser queryParser = new QueryParser("jmbag=\"0123456789\" and lastName>\"J\"");
+		 queryParser.parse();
 		 
 		 Assert.assertFalse(queryParser.isDirectQuery());
 		 Assert.assertEquals(2, queryParser.getQuery().size());

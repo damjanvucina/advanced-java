@@ -46,6 +46,20 @@ public class StudentRecord {
 		this.finalGrade = finalGrade;
 	}
 
+	public String getAttribute(IFieldValueGetter fieldGetter) {
+		if (fieldGetter.equals(FieldValueGetters.FIRST_NAME)) {
+			return firstName;
+
+		} else if (fieldGetter.equals(FieldValueGetters.LAST_NAME)) {
+			return lastName;
+
+		} else if (fieldGetter.equals(FieldValueGetters.JMBAG)) {
+			return jmbag;
+		}
+
+		return null;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

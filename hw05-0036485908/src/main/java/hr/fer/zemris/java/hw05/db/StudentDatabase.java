@@ -5,7 +5,7 @@ import java.util.List;
 
 import hr.fer.zemris.java.hw05.collections.SimpleHashtable;
 
-public class StudentDatabase{
+public class StudentDatabase {
 
 	private List<String> lines;
 	private List<StudentRecord> studentRecords;
@@ -13,10 +13,10 @@ public class StudentDatabase{
 
 	public StudentDatabase(List<String> lines) {
 		this.lines = lines;
-		
+
 		studentRecords = new LinkedList<>();
 		index = new SimpleHashtable<>(lines.size());
-		
+
 		createRecordsAndIndexes();
 	}
 
@@ -33,7 +33,8 @@ public class StudentDatabase{
 			validateDatabaseElements(elements);
 
 			studentRecords.add(new StudentRecord(elements[0], elements[1], elements[2], Integer.parseInt(elements[3])));
-			index.put(elements[0], new StudentRecord(elements[0], elements[1], elements[2], Integer.parseInt(elements[3])));
+			index.put(elements[0],
+					new StudentRecord(elements[0], elements[1], elements[2], Integer.parseInt(elements[3])));
 		}
 	}
 
@@ -68,22 +69,21 @@ public class StudentDatabase{
 	public static void illegalStudentDatabaseState(String message) {
 		throw new StudentDatabaseException(message);
 	}
-	
+
 	public StudentRecord forJMBAG(String jmbag) {
 		return index.get(jmbag);
 	}
-	
-	public List<StudentRecord> filter(IFilter filter){
+
+	public List<StudentRecord> filter(IFilter filter) {
 		List<StudentRecord> temporary = new LinkedList<>();
-		
-		for(StudentRecord record : studentRecords) {
+
+		for (StudentRecord record : studentRecords) {
 			if (filter.accepts(record)) {
 				temporary.add(record);
 			}
 		}
-		
+
 		return temporary;
 	}
-
 
 }
