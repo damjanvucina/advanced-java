@@ -1,9 +1,5 @@
 package hr.fer.zemris.java.hw05.db;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,13 +9,21 @@ public class QueryParser {
 
 	String query;
 	List<ConditionalExpression> expressions;
-	
+
 	public QueryParser() {
 		expressions = new LinkedList<>();
 	}
 
 	public QueryParser(String query) {
 		this();
+		this.query = query;
+	}
+
+	public List<ConditionalExpression> getQuery() {
+		return expressions;
+	}
+
+	public void setQuery(String query) {
 		this.query = query;
 	}
 
@@ -43,14 +47,6 @@ public class QueryParser {
 
 		return queryCopy.substring("jmbag=\"".length(), queryCopy.length() - 1);
 
-	}
-
-	public List<ConditionalExpression> getQuery() {
-		return expressions;
-	}
-
-	public void setQuery(String query) {
-		this.query = query;
 	}
 
 	public void parse() {
@@ -85,14 +81,10 @@ public class QueryParser {
 
 	private String validateStringLiteral(String stringLiteral, String attribute) {
 		if (attribute.equals("firstName") || attribute.equals("lastName")) {
-			//if (stringLiteral.matches(VALID_NAME)) {
-				return stringLiteral;
-			//}
+			return stringLiteral;
 
 		} else if (attribute.equals("jmbag")) {
-			//if (stringLiteral.matches(VALID_JMBAG)) {
-				return stringLiteral;
-			//}
+			return stringLiteral;
 		}
 
 		throw new IllegalArgumentException("Invalid stringLiteral, was: " + stringLiteral);
@@ -141,38 +133,4 @@ public class QueryParser {
 			throw new IllegalArgumentException("Unsupported operator occured, was: " + comparisonOperator);
 		}
 	}
-	
-	public static void main(String[] args) {
-		StudentDatabase database = null;
-		List<StudentRecord> output;
-		try {
-			database = new StudentDatabase(Files.readAllLines(Paths.get("./prva.txt"), StandardCharsets.UTF_8));
-		} catch (IOException e) {
-			System.out.println("Cannot open file.");
-		}
-		QueryParser parser = new QueryParser("lastName LIKE \"B*\"");
-		parser.parse();
-		output = database.filter(new QueryFilter(parser.expressions));
-		System.out.println(output.size());
-		for (StudentRecord record : output) {
-			System.out.println(record.toString());
-		}
-		System.out.println("Records selected: " + output.size());
-	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

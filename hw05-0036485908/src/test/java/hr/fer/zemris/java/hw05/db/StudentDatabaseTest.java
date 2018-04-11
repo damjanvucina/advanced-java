@@ -21,7 +21,7 @@ public class StudentDatabaseTest {
 	@Before
 	public void setUp() {
 		try {
-			text = new String(Files.readAllBytes(Paths.get("./src/main/resources/database.txt")),
+			text = new String(Files.readAllBytes(Paths.get("./prva.txt")),
 					StandardCharsets.UTF_8);
 
 		} catch (IOException e) {
