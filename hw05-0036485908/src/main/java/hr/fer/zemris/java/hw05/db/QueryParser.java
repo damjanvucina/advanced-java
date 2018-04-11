@@ -10,7 +10,6 @@ import java.util.List;
 public class QueryParser {
 	private static final String VALID_JMBAG = "\\d{10}";
 	private static final String QUERY_SPLITTER = "(?i:AND)";
-	private static final String VALID_NAME = "[A-Za-z]+";
 
 	String query;
 	List<ConditionalExpression> expressions;
