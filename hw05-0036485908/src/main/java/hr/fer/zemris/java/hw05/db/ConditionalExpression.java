@@ -1,11 +1,45 @@
 package hr.fer.zemris.java.hw05.db;
 
+/**
+ * The class that represents a conditional expression, i.e. a condition that a
+ * specific element of this database can but does not have to fulfill.
+ * 
+ * @author Damjan Vučina
+ */
 public class ConditionalExpression {
 
+	/**
+	 * The field getter, i.e. the getter for the attribute identificator of an
+	 * element this database.
+	 */
 	IFieldValueGetter fieldGetter;
+
+	/**
+	 * The string literal, i.e. the getter for the value of an attribute of an
+	 * element of this database.
+	 */
 	String stringLiteral;
+
+	/**
+	 * The comparison operator, i.e. the operator that is identifier of an operation
+	 * performed, e.g. greater than, equals etc.
+	 */
 	IComparisonOperator comparisonOperator;
 
+	/**
+	 * Instantiates a new conditional expression, i.e. a condition that a specific
+	 * element of this database can but does not have to fulfill.
+	 *
+	 * @param fieldGetter
+	 *            The field getter, i.e. the getter for the attribute identificator
+	 *            of an element of this database.
+	 * @param stringLiteral
+	 *            The string literal, i.e. the getter for the value of an attribute of an element 
+	 *            of this database.
+	 * @param comparisonOperator
+	 *            The comparison operator, i.e. the operator that is identifier of an
+	 *            operation performed, e.g. greater than, equals etc.
+	 */
 	public ConditionalExpression(IFieldValueGetter fieldGetter, String stringLiteral,
 			IComparisonOperator comparisonOperator) {
 
@@ -14,18 +48,42 @@ public class ConditionalExpression {
 		this.comparisonOperator = comparisonOperator;
 	}
 
+	/**
+	 * Gets the field getter, i.e. attribute identificator  of an element of this database.
+	 *
+	 * @return the field getter, i.e. the getter for the attribute identificator  of an element of
+	 *         this database.
+	 */
 	public IFieldValueGetter getFieldGetter() {
 		return fieldGetter;
 	}
 
+	/**
+	 * Gets the string literal, i.e. value of an attribute of an element of this database.
+	 *
+	 * @return the string literal, i.e. value of an attribute of an element of this database.
+	 */
 	public String getStringLiteral() {
 		return stringLiteral;
 	}
 
+	/**
+	 * Gets the comparison operator, i.e. the operator that is identifier of an
+	 * operation performed, e.g. greater than, equals etc.
+	 *
+	 * @return the comparison operator, i.e. the operator that is identifier of an
+	 *         operation performed, e.g. greater than, equals etc.
+	 */
 	public IComparisonOperator getComparisonOperator() {
 		return comparisonOperator;
 	}
 
+	/**
+	 * Checks if two instances of ConditionalExpression class are equal by
+	 * calculating their hash. Two instances of TableEntry class are considered
+	 * equal if they have identical key fieldGetter, stringLiteral and
+	 * comparisonOperator attributes.
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -36,6 +94,11 @@ public class ConditionalExpression {
 		return result;
 	}
 
+	/**
+	 * Checks if two instances of ConditionalExpression class are equal. Two
+	 * instances of TableEntry class are considered equal if they have identical key
+	 * fieldGetter, stringLiteral and comparisonOperator attributes.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

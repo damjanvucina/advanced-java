@@ -2,7 +2,23 @@ package hr.fer.zemris.java.hw05.collections;
 
 import java.util.Iterator;
 
+/**
+ * The class that contains some code snippets from this homework assignment
+ * papers. They are left here for possible further testing, but are also
+ * available in PrimjerTest class in a slightly different manner. Some of the
+ * code snippets are commented out since they throw exceptions or would mess up
+ * other snippets.
+ * 
+ * @author Damjan Vučina
+ */
 public class Primjer {
+
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments of the main method. Notice: they are not used here.
+	 */
 	public static void main(String[] args) {
 		// create collection:
 		SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(2);

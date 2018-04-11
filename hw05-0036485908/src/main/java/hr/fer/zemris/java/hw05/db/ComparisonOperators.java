@@ -1,13 +1,32 @@
 package hr.fer.zemris.java.hw05.db;
 
+/**
+ * The class that implements operations that can be performed over values of the elements of
+ * this database.
+ * 
+ * @author Damjan Vučina
+ */
 public class ComparisonOperators {
 
+	/** The Constant LESS. */
 	public static final IComparisonOperator LESS;
+
+	/** The Constant LESS_OR_EQUALS. */
 	public static final IComparisonOperator LESS_OR_EQUALS;
+
+	/** The Constant GREATER. */
 	public static final IComparisonOperator GREATER;
+
+	/** The Constant GREATER_OR_EQUALS. */
 	public static final IComparisonOperator GREATER_OR_EQUALS;
+
+	/** The Constant EQUALS. */
 	public static final IComparisonOperator EQUALS;
+
+	/** The Constant NOT_EQUALS. */
 	public static final IComparisonOperator NOT_EQUALS;
+
+	/** The Constant LIKE. */
 	public static final IComparisonOperator LIKE;
 
 	static {
