@@ -10,6 +10,8 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public class StudentDB {
+	
+	public static final String QUERY = "query";
 	public static final String START = "start";
 	public static final String EXIT = "exit";
 	public static final String GOODBYE_MESSAGE = "Goodbye!";
@@ -49,12 +51,19 @@ public class StudentDB {
 			output.clear();
 			parser.expressions.clear();
 
-			System.out.print("> query ");
+			System.out.print("> ");
 
 			query = sc.nextLine().trim();
 
 			if (query.equals("exit")) {
 				break;
+			}
+			
+			if(!query.startsWith(QUERY)) {
+				System.out.println("Valid commands are exit and query" + "\n");
+				continue;
+			} else {
+				query = query.substring(QUERY.length());
 			}
 
 			parser.setQuery(query.trim());
