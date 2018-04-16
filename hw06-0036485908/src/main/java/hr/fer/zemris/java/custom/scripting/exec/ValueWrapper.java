@@ -1,10 +1,8 @@
 package hr.fer.zemris.java.custom.scripting.exec;
 
-public class ValueWrapper {
+import java.util.function.BiFunction;
 
-	public static final String NULL = "null";
-	public static final String DOUBLE = "Double";
-	public static final String INTEGER = "Integer";
+public class ValueWrapper {
 
 	private Object value;
 
@@ -21,32 +19,48 @@ public class ValueWrapper {
 	}
 
 	public void add(Object incValue) {
-		String argumentType = identifyArgumentType(incValue);
-		String valueType = identifyArgumentType(value);
-
-		if (value instanceof Double && incValue instanceof Double) {
-			value = (Double) value + (Double) incValue;
-
-		} else if (value instanceof Double) {
-			value = (incValue == null) ? (Double) value + Integer.valueOf(0) : (Double) value + (Double) incValue;
-
-		} else if (incValue instanceof Double) {
-			value = (value == null) ? Integer.valueOf(0) + (Double) incValue : (Double) value + (Double) incValue;
-		
-		} else {
-
-		}
+		value = performOperation(value, incValue, (v1, v2) -> v1 + v2, (v1, v2) -> v1 + v2);
 	}
 
-	private String identifyArgumentType(Object argument) {
+	public void subtract(Object decValue) {
+		value = performOperation(value, decValue, (v1, v2) -> v1 - v2, (v1, v2) -> v1 - v2);
+	}
+
+	public void multiply(Object mulValue) {
+		value = performOperation(value, mulValue, (v1, v2) -> v1 * v2, (v1, v2) -> v1 * v2);
+	}
+
+	public void divide(Object divValue) {
+		value = performOperation(value, divValue, (v1, v2) -> v1 / v2, (v1, v2) -> v1 / v2);
+	}
+
+	//@formatter:off
+	public static Object performOperation(Object value, Object argument,
+										  BiFunction<Double, Double, Object> doubleAction,
+										  BiFunction<Integer, Integer, Object> integerAction) {
+		
+		Object firstFactor = identifyOperandType(value);
+		Object secondFactor = identifyOperandType(argument);
+
+		if (firstFactor instanceof Double || secondFactor instanceof Double) {
+			return doubleAction.apply(((Number) firstFactor).doubleValue(), ((Number) secondFactor).doubleValue());
+		}
+	
+		else {
+			return integerAction.apply((Integer) firstFactor, (Integer) secondFactor);
+		}
+	}
+	//@formatter:on
+
+	private static Object identifyOperandType(Object argument) {
 		if (argument == null) {
-			return NULL;
+			return Integer.valueOf(0);
 
 		} else if (argument instanceof Integer) {
-			return INTEGER;
+			return (Integer) argument;
 
 		} else if (argument instanceof Double) {
-			return DOUBLE;
+			return (Double) argument;
 
 		} else if (argument instanceof String) {
 			return checkIfParsable((String) argument);
@@ -55,39 +69,66 @@ public class ValueWrapper {
 		throw new ObjectMultistackException("Unsupported argument type, was: " + argument.getClass());
 	}
 
-	private String checkIfParsable(String argument) {
+	private static Object checkIfParsable(String argument) {
 		try {
-			Double.parseDouble(argument);
-			return DOUBLE;
+			return Integer.parseInt(argument);
 
 		} catch (NumberFormatException e) {
 		}
 
 		try {
-			Integer.parseInt(argument);
-			return INTEGER;
-
+			return Double.parseDouble(argument);
+			
 		} catch (NumberFormatException e) {
 		}
 
-		throw new ObjectMultistackException(
-				"Argument type is neither parsable to Double nor to Integer, was: " + argument.getClass());
-	}
-
-	public void subtract(Object decValue) {
-
-	}
-
-	public void multiply(Object mulValue) {
-
-	}
-
-	public void divide(Object divValue) {
-
+		throw new ObjectMultistackException("Argument type is neither parsable to Double nor to Integer");
 	}
 
 	public int numCompare(Object withValue) {
-		return -1;
+		Object firstFactor = identifyOperandType(value);
+		Object secondFactor = identifyOperandType(withValue);
+
+		return Double.compare((Double) firstFactor, (Double) secondFactor);
 	}
 
+	public String toString() {
+		return String.valueOf(value);
+	}
+
+	public static void main(String[] args) {
+		 ValueWrapper v1 = new ValueWrapper(null);
+		 ValueWrapper v2 = new ValueWrapper(null);
+		 v1.add(v2.getValue());
+		 
+		 System.out.println("v1 now stores Integer(0); v2 still stores null");
+		 System.out.println("v1 = " + v1);
+		 System.out.println("v2 = " + v2);
+
+		ValueWrapper v3 = new ValueWrapper("1.2E1");
+		ValueWrapper v4 = new ValueWrapper(Integer.valueOf(1));
+		v3.add(v4.getValue()); // .
+
+		System.out.println("v3 now stores Double(13); v4 still stores Integer(1)");
+		System.out.println("v3 = " + v3);
+		System.out.println("v4 = " + v4);
+		
+		 ValueWrapper v5 = new ValueWrapper("12");
+		 ValueWrapper v6 = new ValueWrapper(Integer.valueOf(1));
+		 v5.add(v6.getValue()); 
+		
+		 System.out.println("v5 now stores Integer(13); v6 still stores Integer(1)");
+		 System.out.println("v5 = " + v5);
+		 System.out.println("v6 = " + v6);
+		
+		 try {
+		 ValueWrapper v7 = new ValueWrapper("Ankica");
+		 ValueWrapper v8 = new ValueWrapper(Integer.valueOf(1));
+		 v7.add(v8.getValue()); // throws RuntimeException
+		
+		 } catch (ObjectMultistackException e) {
+		 System.out.println(e.getMessage());
+		 }
+
+	}
 }
