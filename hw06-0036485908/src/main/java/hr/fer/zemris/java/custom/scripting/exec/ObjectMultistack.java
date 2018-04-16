@@ -16,6 +16,11 @@ public class ObjectMultistack {
 		name = Objects.requireNonNull(name,
 				"Name attribute is a key in this ObjectMultistack and as such cannot be set to null.");
 
+		if (!(name instanceof String)) {
+			throw new ObjectMultistackException(
+					"Name attribute must be an instance of class String, was: " + name.getClass().getSimpleName());
+		}
+
 		MultistackEntry newEntry = new MultistackEntry(valueWrapper);
 		MultistackEntry oldEntry = map.get(name);
 
@@ -58,23 +63,9 @@ public class ObjectMultistack {
 		MultistackEntry next;
 
 		public MultistackEntry(ValueWrapper value) {
+			value = Objects.requireNonNull(value, "Value of MultistackEntry cannot be set to null.");
+
 			this.value = value;
-		}
-
-		public ValueWrapper getValue() {
-			return value;
-		}
-
-		public MultistackEntry getNext() {
-			return next;
-		}
-
-		public void setValue(ValueWrapper value) {
-			this.value = value;
-		}
-
-		public void setNext(MultistackEntry next) {
-			this.next = next;
 		}
 	}
 }
