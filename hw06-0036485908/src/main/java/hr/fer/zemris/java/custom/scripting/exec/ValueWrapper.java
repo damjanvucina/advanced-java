@@ -3,7 +3,7 @@ package hr.fer.zemris.java.custom.scripting.exec;
 import java.util.function.BiFunction;
 
 public class ValueWrapper {
-
+	
 	private Object value;
 
 	public ValueWrapper(Object value) {
@@ -29,7 +29,6 @@ public class ValueWrapper {
 	public void multiply(Object mulValue) {
 		value = performOperation(value, mulValue, (v1, v2) -> v1 * v2, (v1, v2) -> v1 * v2);
 	}
-
 	public void divide(Object divValue) {
 		checkForDivisionByZero(divValue);
 		value = performOperation(value, divValue, (v1, v2) -> v1 / v2, (v1, v2) -> v1 / v2);

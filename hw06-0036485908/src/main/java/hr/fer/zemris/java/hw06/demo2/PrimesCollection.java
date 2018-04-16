@@ -9,7 +9,21 @@ public class PrimesCollection implements Iterable<Integer> {
 	private int numOfPrimes;
 
 	public PrimesCollection(int numOfPrimes) {
+		if (numOfPrimes < 1) {
+			throw new IllegalArgumentException("Collection cannot have less than one number, was: " + numOfPrimes);
+		}
 		this.numOfPrimes = numOfPrimes;
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder(numOfPrimes);
+		
+		for(Integer prime : this) {
+			sb.append(prime).append(" ");
+		}
+		
+		sb.delete(sb.lastIndexOf(" "), sb.length());
+		return sb.toString();
 	}
 
 	@Override
@@ -56,4 +70,10 @@ public class PrimesCollection implements Iterable<Integer> {
 
 	}
 
+	public static void main(String[] args) {
+		PrimesCollection primesCollection = new PrimesCollection(-3);
+		for (Integer prime : primesCollection) {
+			System.out.println("Got prime: " + prime);
+		}
+	}
 }
