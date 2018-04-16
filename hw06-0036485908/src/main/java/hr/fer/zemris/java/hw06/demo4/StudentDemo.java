@@ -92,7 +92,7 @@ public class StudentDemo {
 		Map<Integer, Integer> mapaPoOcjenama2 = records.stream()
 													   .collect(Collectors.toMap(StudentRecord::getGrade,
 															   					 s -> 1,
-															   					 (s, a) -> s + 1));
+															   					 (s, a) -> s + a));
 		return mapaPoOcjenama2;
 	}
 	

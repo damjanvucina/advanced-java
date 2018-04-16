@@ -12,7 +12,8 @@ public class StudentRecord{
 
 	//@formatter:off
 	public StudentRecord(String jmbag, String lastName, String firstName, 
-			double midtermPoints, double finalExamPoints, double laboratoryPoints, int grade) {
+						double midtermPoints, double finalExamPoints, 
+						double laboratoryPoints, int grade) {
 		
 		this.jmbag = jmbag;
 		this.lastName = lastName;
