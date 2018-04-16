@@ -31,7 +31,20 @@ public class ValueWrapper {
 	}
 
 	public void divide(Object divValue) {
+		checkForDivisionByZero(divValue);
 		value = performOperation(value, divValue, (v1, v2) -> v1 / v2, (v1, v2) -> v1 / v2);
+	}
+
+	private void checkForDivisionByZero(Object value) {
+		if (value == null) {
+			throw new ObjectMultistackException("Cannot divide by zero.");
+		}
+
+		if (value instanceof Number) {
+			if (((Number) value).intValue() == 0) {
+				throw new ObjectMultistackException("Cannot divide by zero.");
+			}
+		}
 	}
 
 	//@formatter:off
@@ -78,7 +91,7 @@ public class ValueWrapper {
 
 		try {
 			return Double.parseDouble(argument);
-			
+
 		} catch (NumberFormatException e) {
 		}
 
@@ -89,7 +102,7 @@ public class ValueWrapper {
 		Object firstFactor = identifyOperandType(value);
 		Object secondFactor = identifyOperandType(withValue);
 
-		return Double.compare((Double) firstFactor, (Double) secondFactor);
+		return Double.compare(((Number) firstFactor).doubleValue(), ((Number) secondFactor).doubleValue());
 	}
 
 	public String toString() {
@@ -97,38 +110,41 @@ public class ValueWrapper {
 	}
 
 	public static void main(String[] args) {
-		 ValueWrapper v1 = new ValueWrapper(null);
-		 ValueWrapper v2 = new ValueWrapper(null);
-		 v1.add(v2.getValue());
-		 
-		 System.out.println("v1 now stores Integer(0); v2 still stores null");
-		 System.out.println("v1 = " + v1);
-		 System.out.println("v2 = " + v2);
+		ValueWrapper v1 = new ValueWrapper(null);
+		ValueWrapper v2 = new ValueWrapper(null);
+		v1.add(v2.getValue());
+
+		System.out.println("v1 now stores Integer(0); v2 still stores null");
+		System.out.println("v1 = " + v1.getValue() + ", class: " + v1.getValue().getClass().getSimpleName());
+		System.out.println("v2 = " + v2);
+		System.out.println();
 
 		ValueWrapper v3 = new ValueWrapper("1.2E1");
 		ValueWrapper v4 = new ValueWrapper(Integer.valueOf(1));
-		v3.add(v4.getValue()); // .
+		v3.add(v4.getValue());
 
 		System.out.println("v3 now stores Double(13); v4 still stores Integer(1)");
-		System.out.println("v3 = " + v3);
-		System.out.println("v4 = " + v4);
-		
-		 ValueWrapper v5 = new ValueWrapper("12");
-		 ValueWrapper v6 = new ValueWrapper(Integer.valueOf(1));
-		 v5.add(v6.getValue()); 
-		
-		 System.out.println("v5 now stores Integer(13); v6 still stores Integer(1)");
-		 System.out.println("v5 = " + v5);
-		 System.out.println("v6 = " + v6);
-		
-		 try {
-		 ValueWrapper v7 = new ValueWrapper("Ankica");
-		 ValueWrapper v8 = new ValueWrapper(Integer.valueOf(1));
-		 v7.add(v8.getValue()); // throws RuntimeException
-		
-		 } catch (ObjectMultistackException e) {
-		 System.out.println(e.getMessage());
-		 }
+		System.out.println("v3 = " + v3.getValue() + ", class: " + v3.getValue().getClass().getSimpleName());
+		System.out.println("v4 = " + v4.getValue() + ", class: " + v4.getValue().getClass().getSimpleName());
+		System.out.println();
+
+		ValueWrapper v5 = new ValueWrapper("12");
+		ValueWrapper v6 = new ValueWrapper(Integer.valueOf(1));
+		v5.add(v6.getValue());
+
+		System.out.println("v5 now stores Integer(13); v6 still stores Integer(1)");
+		System.out.println("v5 = " + v5.getValue() + ", class: " + v5.getValue().getClass().getSimpleName());
+		System.out.println("v6 = " + v6.getValue() + ", class: " + v6.getValue().getClass().getSimpleName());
+		System.out.println();
+
+		try {
+			ValueWrapper v7 = new ValueWrapper("Ankica");
+			ValueWrapper v8 = new ValueWrapper(Integer.valueOf(1));
+			v7.add(v8.getValue()); // throws RuntimeException
+
+		} catch (ObjectMultistackException e) {
+			System.out.println(e.getMessage());
+		}
 
 	}
 }
