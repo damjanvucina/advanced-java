@@ -3,8 +3,17 @@ package hr.fer.zemris.java.custom.scripting.demo;
 import hr.fer.zemris.java.custom.scripting.exec.ObjectMultistack;
 import hr.fer.zemris.java.custom.scripting.exec.ValueWrapper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ObjectMultistackDemo.
+ */
 public class ObjectMultistackDemo {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		ObjectMultistack multistack = new ObjectMultistack();
 		

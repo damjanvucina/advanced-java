@@ -2,49 +2,132 @@ package hr.fer.zemris.java.custom.scripting.exec;
 
 import java.util.function.BiFunction;
 
+/**
+ * The Class ValueWrapper that all values to be stored to ObjectMultistack class
+ * are encapsulated into. Values i.e. instances of ValueWrapper class are prior
+ * to storing encapsulated in an instance of MultistackEntry class. This policy
+ * enables ObjectMultistack class to provide user with standard methods for
+ * working with stacks and perform operations such as push, peek or pop in O(1)
+ * complexity. This class provides user with methods for performing arithmetic
+ * operation over instances of ValueWrapper class. Supported mathematical
+ * operations are addition, subtraction, multiplication and division. This class
+ * also provides user with method for checking whether two Objects are
+ * numerically equal.
+ * 
+ * @author Damjan Vučina
+ */
 public class ValueWrapper {
 
+	/** The Constant INTEGER_ADDITION used for adding integer values. */
 	public static final BiFunction<Integer, Integer, Object> INTEGER_ADDITION = (v1, v2) -> v1 + v2;
-	public static final BiFunction<Integer, Integer, Object> INTEGER_SUBTRACTION = (v1, v2) -> v1 - v2;
-	public static final BiFunction<Integer, Integer, Object> INTEGER_MULTIPLICATION = (v1, v2) -> v1 * v2;
-	public static final BiFunction<Integer, Integer, Object> INTEGER_DIVISION = (v1, v2) -> v1 / v2;
-	
-	public static final BiFunction<Double, Double, Object> DOUBLE_ADDITION = (v1, v2) -> v1 + v2;
-	public static final BiFunction<Double, Double, Object> DOUBLE_SUBTRACTION = (v1, v2) -> v1 - v2;
-	public static final BiFunction<Double, Double, Object> DOUBLE_MULTIPLICATION = (v1, v2) -> v1 * v2;
-	public static final BiFunction<Double, Double, Object> DOUBLE_DIVISION = (v1, v2) -> v1 / v2;	
 
+	/** The Constant INTEGER_SUBTRACTION used for subtracting integer values.. */
+	public static final BiFunction<Integer, Integer, Object> INTEGER_SUBTRACTION = (v1, v2) -> v1 - v2;
+
+	/** The Constant INTEGER_MULTIPLICATION used for multiplying integer values.. */
+	public static final BiFunction<Integer, Integer, Object> INTEGER_MULTIPLICATION = (v1, v2) -> v1 * v2;
+
+	/** The Constant INTEGER_DIVISION used for dividing integer values.. */
+	public static final BiFunction<Integer, Integer, Object> INTEGER_DIVISION = (v1, v2) -> v1 / v2;
+
+	/** The Constant DOUBLE_ADDITION used for adding double values.. */
+	public static final BiFunction<Double, Double, Object> DOUBLE_ADDITION = (v1, v2) -> v1 + v2;
+
+	/** The Constant DOUBLE_SUBTRACTION used for subtracting double values.. */
+	public static final BiFunction<Double, Double, Object> DOUBLE_SUBTRACTION = (v1, v2) -> v1 - v2;
+
+	/** The Constant DOUBLE_MULTIPLICATION used for multiplying double values.. */
+	public static final BiFunction<Double, Double, Object> DOUBLE_MULTIPLICATION = (v1, v2) -> v1 * v2;
+
+	/** The Constant DOUBLE_DIVISION used for dividing double values.. */
+	public static final BiFunction<Double, Double, Object> DOUBLE_DIVISION = (v1, v2) -> v1 / v2;
+
+	/** The value of the element. */
 	private Object value;
 
+	/**
+	 * Instantiates a new value wrapper.
+	 *
+	 * @param value
+	 *            the value of the element
+	 */
 	public ValueWrapper(Object value) {
 		this.value = value;
 	}
 
+	/**
+	 * Gets the value of the stored ValueWrapper class.
+	 *
+	 * @return the value of the stored ValueWrapper class.
+	 */
 	public Object getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the value of the stored ValueWrapper class..
+	 *
+	 * @param value
+	 *            the new value of the stored ValueWrapper class.
+	 */
 	public void setValue(Object value) {
 		this.value = value;
 	}
 
+	/**
+	 * Performs addition over stored ValueWrapper class and provided object argument
+	 * and stores the result back to the value.
+	 *
+	 * @param incValue
+	 *            the value to be added to the value of the stored ValueWrapper
+	 */
 	public void add(Object incValue) {
 		value = performOperation(value, incValue, DOUBLE_ADDITION, INTEGER_ADDITION);
 	}
 
+	/**
+	 * Performs subtraction over stored ValueWrapper class and provided object
+	 * argument and stores the result back to the value.
+	 *
+	 * @param decValue
+	 *            the value to be subtracted from the value of the stored
+	 *            ValueWrapper
+	 */
 	public void subtract(Object decValue) {
 		value = performOperation(value, decValue, DOUBLE_SUBTRACTION, INTEGER_SUBTRACTION);
 	}
 
+	/**
+	 * Performs multiplication over stored ValueWrapper class and provided object
+	 * argument and stores the result back to the value.
+	 *
+	 * @param mulValue
+	 *            the value to be multiplied by the value of the stored ValueWrapper
+	 */
 	public void multiply(Object mulValue) {
 		value = performOperation(value, mulValue, DOUBLE_MULTIPLICATION, INTEGER_MULTIPLICATION);
 	}
 
+	/**
+	 * Performs division over stored ValueWrapper class and provided object argument
+	 * and stores the result back to the value.
+	 *
+	 * @param divValue
+	 *            the value stored ValueWrapper is to be divided by.
+	 */
 	public void divide(Object divValue) {
 		checkForDivisionByZero(divValue);
 		value = performOperation(value, divValue, DOUBLE_DIVISION, INTEGER_DIVISION);
 	}
 
+	/**
+	 * Checks if division by zero occured.
+	 *
+	 * @param value
+	 *            the value to be checked
+	 * @throws ObjectMultiStackException
+	 *             if division by zero occured.
+	 */
 	private void checkForDivisionByZero(Object value) {
 		if (value == null) {
 			throw new ObjectMultistackException("Cannot divide by zero.");
@@ -57,6 +140,26 @@ public class ValueWrapper {
 		}
 	}
 
+	/**
+	 * Performs the specified arithmetic operation over elements provided via
+	 * arguments.
+	 *
+	 * @param value
+	 *            the value of the ValueWrapper
+	 * @param argument
+	 *            the value of the argument
+	 * @param doubleAction
+	 *            the Function used for performing arithmetic operations over
+	 *            doubles
+	 * @param integerAction
+	 *            the Function used for performing arithmetic operations over
+	 *            integers
+	 * @return the object representation of the result of the arithmetic operation
+	 * @throws ObjectMultistackException
+	 *             if type of the argument is nut supported. Supported types are
+	 *             null, Integer, Double and String representation of both Double
+	 *             and Integer
+	 */
 	//@formatter:off
 	public static Object performOperation(Object value, Object argument,
 										  BiFunction<Double, Double, Object> doubleAction,
@@ -75,6 +178,18 @@ public class ValueWrapper {
 	}
 	//@formatter:on
 
+	/**
+	 * Identify operand type.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @return the object
+	 * @throws ObjectMultistackException
+	 *             if type of the argument is nut supported or if argument type is
+	 *             String but neither parsable to Double nor to Integer. Supported
+	 *             types are null, Integer, Double and String representation of both
+	 *             Double and Integer.
+	 */
 	private static Object identifyOperandType(Object argument) {
 		if (argument == null) {
 			return Integer.valueOf(0);
@@ -92,6 +207,15 @@ public class ValueWrapper {
 		throw new ObjectMultistackException("Unsupported argument type, was: " + argument.getClass());
 	}
 
+	/**
+	 * Check if parsable.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @return the object
+	 * @throws ObjectMultistackException
+	 *             if Argument type is neither parsable to Double nor to Integer
+	 */
 	private static Object checkIfParsable(String argument) {
 		try {
 			return Integer.parseInt(argument);
@@ -108,6 +232,14 @@ public class ValueWrapper {
 		throw new ObjectMultistackException("Argument type is neither parsable to Double nor to Integer");
 	}
 
+	/**
+	 * Method for checking whether two Objects are numerically equal..
+	 *
+	 * @param withValue
+	 *            second operand
+	 * @return a number < 0 if this value is lesser, a number > 0 if this number is
+	 *         bigger and 0 if this value is equal to the one provided via argument
+	 */
 	public int numCompare(Object withValue) {
 		Object firstFactor = identifyOperandType(value);
 		Object secondFactor = identifyOperandType(withValue);
@@ -115,10 +247,18 @@ public class ValueWrapper {
 		return Double.compare(((Number) firstFactor).doubleValue(), ((Number) secondFactor).doubleValue());
 	}
 
+	/**
+	 * Return a String representation of this ValueWrapper
+	 */
 	public String toString() {
 		return String.valueOf(value);
 	}
 
+	/**
+	 * Checks if two instances of ValueWrapper class are equal by calculating their
+	 * hash. Two instances of ValueWrapper class are considered equal if they have
+	 * identical value attributes.
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -127,6 +267,11 @@ public class ValueWrapper {
 		return result;
 	}
 
+	/**
+	 * Checks if two instances of ValueWrapper class are equal. Two instances of
+	 * ValueWrapper class are considered equal if they have identical key
+	 * attributes.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -144,6 +289,12 @@ public class ValueWrapper {
 		return true;
 	}
 
+	/**
+	 * The main method invoked when the program is run.
+	 *
+	 * @param args
+	 *            the arguments. Notice: not used here
+	 */
 	public static void main(String[] args) {
 		ValueWrapper v1 = new ValueWrapper(null);
 		ValueWrapper v2 = new ValueWrapper(null);
