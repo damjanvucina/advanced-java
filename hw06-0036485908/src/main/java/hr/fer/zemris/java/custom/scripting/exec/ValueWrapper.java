@@ -3,7 +3,17 @@ package hr.fer.zemris.java.custom.scripting.exec;
 import java.util.function.BiFunction;
 
 public class ValueWrapper {
+
+	public static final BiFunction<Integer, Integer, Object> INTEGER_ADDITION = (v1, v2) -> v1 + v2;
+	public static final BiFunction<Integer, Integer, Object> INTEGER_SUBTRACTION = (v1, v2) -> v1 - v2;
+	public static final BiFunction<Integer, Integer, Object> INTEGER_MULTIPLICATION = (v1, v2) -> v1 * v2;
+	public static final BiFunction<Integer, Integer, Object> INTEGER_DIVISION = (v1, v2) -> v1 / v2;
 	
+	public static final BiFunction<Double, Double, Object> DOUBLE_ADDITION = (v1, v2) -> v1 + v2;
+	public static final BiFunction<Double, Double, Object> DOUBLE_SUBTRACTION = (v1, v2) -> v1 - v2;
+	public static final BiFunction<Double, Double, Object> DOUBLE_MULTIPLICATION = (v1, v2) -> v1 * v2;
+	public static final BiFunction<Double, Double, Object> DOUBLE_DIVISION = (v1, v2) -> v1 / v2;	
+
 	private Object value;
 
 	public ValueWrapper(Object value) {
@@ -19,19 +29,20 @@ public class ValueWrapper {
 	}
 
 	public void add(Object incValue) {
-		value = performOperation(value, incValue, (v1, v2) -> v1 + v2, (v1, v2) -> v1 + v2);
+		value = performOperation(value, incValue, DOUBLE_ADDITION, INTEGER_ADDITION);
 	}
 
 	public void subtract(Object decValue) {
-		value = performOperation(value, decValue, (v1, v2) -> v1 - v2, (v1, v2) -> v1 - v2);
+		value = performOperation(value, decValue, DOUBLE_SUBTRACTION, INTEGER_SUBTRACTION);
 	}
 
 	public void multiply(Object mulValue) {
-		value = performOperation(value, mulValue, (v1, v2) -> v1 * v2, (v1, v2) -> v1 * v2);
+		value = performOperation(value, mulValue, DOUBLE_MULTIPLICATION, INTEGER_MULTIPLICATION);
 	}
+
 	public void divide(Object divValue) {
 		checkForDivisionByZero(divValue);
-		value = performOperation(value, divValue, (v1, v2) -> v1 / v2, (v1, v2) -> v1 / v2);
+		value = performOperation(value, divValue, DOUBLE_DIVISION, INTEGER_DIVISION);
 	}
 
 	private void checkForDivisionByZero(Object value) {
@@ -132,7 +143,7 @@ public class ValueWrapper {
 			return false;
 		return true;
 	}
-	
+
 	public static void main(String[] args) {
 		ValueWrapper v1 = new ValueWrapper(null);
 		ValueWrapper v2 = new ValueWrapper(null);
