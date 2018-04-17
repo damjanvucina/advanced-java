@@ -24,7 +24,7 @@ public class DoubleValue implements IntegerStorageObserver {
 	 * value of number stored in IntegerStorage class to the console before it
 	 * automatically deregisters itself.
 	 */
-	int cyclesRemaining;
+	private int cyclesRemaining;
 
 	/**
 	 * Instantiates a new DoubleValue Concrete observer. For further information
