@@ -4,16 +4,14 @@ import java.util.Arrays;
 
 public class Util {
 
-	public static final int HEX_RADIX = 16;
+	public static final String HEX_DIGITS = "[0-9A-Fa-f]+";
 
 	public static byte[] hextobyte(String keyText) {
-		if (keyText.length() != 32) {
-			throw new IllegalArgumentException(
-					"Input string must contain exactly 32 hex characters, was: " + keyText.length());
-
-		}
-		if (hasInvalidCharacters(keyText)) {
+		if (!keyText.matches(HEX_DIGITS) && keyText.length() > 0) {
 			throw new IllegalArgumentException("Input string contains non-hex character");
+		}
+		if(keyText.length() % 2 == 1) {
+			throw new IllegalArgumentException("Input string must contain even number of digits.");
 		}
 
 		int length = keyText.length();
@@ -36,19 +34,9 @@ public class Util {
 
 		return sb.toString();
 	}
-
-	private static boolean hasInvalidCharacters(String keyText) {
-		try {
-			Integer.parseInt(keyText, HEX_RADIX);
-			return false;
-			
-		} catch (NumberFormatException e) {
-			return true;
-		}
-	}
-
+		
 	public static void main(String[] args) {
-		System.out.println(Arrays.toString(hextobyte("01aE22")));
-		System.out.println(bytetohex(new byte[] { 1, -82, 34 }));
+		System.out.println(bytetohex(new byte[] {-46, 21, 11, 33}));
+		System.out.println(Arrays.toString(hextobyte("1111")));
 	}
 }
