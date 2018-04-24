@@ -1,24 +1,14 @@
 package hr.fer.zemris.java.hw06.crypto;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.KeyStore.TrustedCertificateEntry;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Arrays;
 import java.util.Scanner;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -29,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Crypto {
 	public static final int CHECKSHA_ARGUMENTS_LENGTH = 2;
 	public static final int CRYPTING_ARGUMENTS_LENGTH = 3;
+	public static final int BUFFER_SIZE = 4096;
 	public static final String DIGESTING_ALGORITHM = "SHA-256";
 	public static final boolean ENCRYPTION = true;
 	public static final boolean DECRYPTION = false;
@@ -38,79 +29,91 @@ public class Crypto {
 			throw new IllegalArgumentException("Number of input arguments must be either 2 or 3, was: " + args.length);
 		}
 
-		Scanner sc = new Scanner(System.in);
 		switch (args[0]) {
 		case "checksha":
-			processChecksha(args[1], sc);
+			processChecksha(args[1]);
 			break;
 
 		case "encrypt":
-			processCrypting(args[2], args[3], sc, ENCRYPTION);
+			processCrypting(args[1], args[2], ENCRYPTION);
 			break;
 
 		case "decrypt":
-
+			processCrypting(args[1], args[2], DECRYPTION);
 			break;
 
 		default:
-			break;
+			throw new IllegalArgumentException(
+					"Supported commands are checksha, encrypt and decrypt. Entered command: " + args[0]);
 		}
 
-		sc.close();
 	}
 
-	private static void processCrypting(String inputFileName, String outputFileName, Scanner sc, boolean encrypt) {
+	private static void processCrypting(String inputFileName, String outputFileName, boolean encrypt) {
+		Scanner sc = new Scanner(System.in);
 		String keyText = null;
 		String ivText = null;
 
 		System.out.println("Please provide password as hex-encoded text (16 bytes, i.e. 32 hex-digits):");
+		System.out.print("> ");
 		if (sc.hasNextLine()) {
 			keyText = sc.nextLine().trim();
 		}
 
 		System.out.println("Please provide initialization vector as hex-encoded text (32 hex-digits):");
+		System.out.print("> ");
 		if (sc.hasNextLine()) {
 			ivText = sc.nextLine().trim();
 		}
+		
+		Cipher cipher = initializeCipher(keyText, ivText, encrypt);
 
+		try (FileInputStream inputStream = new FileInputStream(inputFileName);
+			 FileOutputStream outputStream = new FileOutputStream(outputFileName)) {
+			byte[] buff = new byte[BUFFER_SIZE];
+			
+			while (true) {
+				int r = inputStream.read(buff);
+				if (r < 1)
+					break;
+				outputStream.write(cipher.update(buff, 0, r));
+			}
+			outputStream.write(cipher.doFinal());
+			
+		} catch (IOException | SecurityException | IllegalBlockSizeException | BadPaddingException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.print(encrypt == true ? "Encryption" : "Decryption");
+		System.out.println(" completed. Generated file " + outputFileName + " based on file " + inputFileName);
+		sc.close();
+	}
+
+	private static Cipher initializeCipher(String keyText, String ivText, boolean encrypt) {
 		SecretKeySpec keySpec = new SecretKeySpec(Util.hextobyte(keyText), "AES");
 		AlgorithmParameterSpec paramSpec = new IvParameterSpec(Util.hextobyte(ivText));
 
-		Cipher cipher;
+		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 			System.out.println("Error creating cipher");
-			return;
 		}
 
 		try {
 			cipher.init(encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, keySpec, paramSpec);
 		} catch (InvalidKeyException | InvalidAlgorithmParameterException e) {
 			System.out.println("Error initializing cipher");
-			return;
 		}
-
-		try (FileInputStream inputStream = new FileInputStream(inputFileName);
-				FileOutputStream outputStream = new FileOutputStream(outputFileName)) {
-			byte[] buff = new byte[4096];
-			while (true) {
-				int r = inputStream.read(buff);
-				if (r < 1)
-					break;
-				outputStream.write(cipher.update(buff, 0, r), 0, r);
-			}
-			outputStream.write(cipher.doFinal());
-		} catch (IOException | SecurityException  | IllegalBlockSizeException | BadPaddingException e) {
-			e.printStackTrace();
-		} 
-		System.out.print(encrypt == true ? "Encryption" : "Decryption");
-		System.out.println(" completed. Generated file " + outputFileName + " based on " + inputFileName);
+		
+		return cipher;
 	}
 
-	private static void processChecksha(String fileName, Scanner sc) {
+	private static void processChecksha(String fileName) {
+		Scanner sc = new Scanner(System.in);
 		byte[] userDigest = null;
 		System.out.println("Please provide expected sha-256 digest for " + fileName);
+		System.out.print("> ");
 		if (sc.hasNextLine()) {
 			userDigest = Util.hextobyte(sc.nextLine().trim());
 		}
@@ -120,7 +123,6 @@ public class Crypto {
 			messageDigest = MessageDigest.getInstance(DIGESTING_ALGORITHM);
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("Invalid digesting algorithm.");
-			return;
 		}
 
 		// Path path = Paths.get(fileName);
@@ -138,7 +140,7 @@ public class Crypto {
 		// }
 
 		try (FileInputStream fStream = new FileInputStream(fileName)) {
-			byte[] buff = new byte[4096];
+			byte[] buff = new byte[BUFFER_SIZE];
 			while (true) {
 				int r = fStream.read(buff);
 				if (r < 1)
@@ -156,6 +158,8 @@ public class Crypto {
 			System.out.println("Digesting completed. Digest of " + fileName + " does not match the expected digest.");
 			System.out.println("Digest was: " + Util.bytetohex(actualDigest));
 		}
+		
+		sc.close();
 	}
 
 }
