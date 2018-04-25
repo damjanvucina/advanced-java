@@ -4,62 +4,73 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
+import static hr.fer.zemris.java.hw06.shell.MyShell.*;
 
 public class SymbolCommand extends Command {
 
 	public SymbolCommand() {
-		super("symbol", Arrays.asList("Command used for editing editable symbols.",
-									  "Editable symbols are PROMPT, MORELINES and MULTILINE."));
+		super("symbol", Arrays.asList("Command used for viewing and editing symbols.",
+				"Editable symbols are PROMPT, MORELINES and MULTILINE."));
 	}
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = arguments.split(" ");
-		if(input.length < 1 || input.length > 2) {
+		if (input.length < 1 || input.length > 2) {
 			env.writeln("Command " + getCommandName() + " takes one or two arguments.");
 			return ShellStatus.CONTINUE;
 		}
 		
-		if(input[1].length() > 1) {
-			env.writeln("Symbol must be a single character, was: " + input[1]);
-		}
-				
-		Character character = input[1].charAt(0);
 		switch (input[0]) {
-		case "PROMPT":
-			
-			if(input.length == 1) {
-				env.write(String.valueOf(env.getPromptSymbol()));
+		case PROMPT:
+
+			if (input.length == 1) {
+				printSymbol(PROMPT, env.getPromptSymbol(), env);
 			} else {
-				env.setPromptSymbol(character);
+				Character oldCharacter = env.getPromptSymbol();
+				Character newCharacter = input[1].charAt(0);
+				env.setPromptSymbol(newCharacter);
+				printUpdatedSymbol(PROMPT, oldCharacter, newCharacter, env);
 			}
 			break;
-			
-		case "MORELINES":
-			
-			if(input.length == 1) {
-				env.write(String.valueOf(env.getMorelinesSymbol()));
+
+		case MORELINES:
+
+			if (input.length == 1) {
+				printSymbol(MORELINES, env.getMorelinesSymbol(), env);
 			} else {
-				env.setMorelinesSymbol(character);
+				Character oldCharacter = env.getMorelinesSymbol();
+				Character newCharacter = input[1].charAt(0);
+				env.setMorelinesSymbol(newCharacter);
+				printUpdatedSymbol(MORELINES, oldCharacter, newCharacter, env);
 			}
 			break;
-			
-		case "MULTILINE":
-			
-			if(input.length == 1) {
-				env.write(String.valueOf(env.getMultilineSymbol()));
+
+		case MULTILINE:
+
+			if (input.length == 1) {
+				printSymbol(MULTILINE, env.getMultilineSymbol(), env);
 			} else {
-				env.setMultilineSymbol(character);
+				Character oldCharacter = env.getMultilineSymbol();
+				Character newCharacter = input[1].charAt(0);
+				env.setMultilineSymbol(newCharacter);
+				printUpdatedSymbol(MORELINES, oldCharacter, newCharacter, env);
 			}
 			break;
 
 		default:
 			env.writeln("Invalid symbol, was: " + input[0]);
 		}
-		
+
 		return ShellStatus.CONTINUE;
-		
 	}
 
+	private void printUpdatedSymbol(String symbol, Character oldCharacter, Character newCharacter, Environment env) {
+		env.writeln("Symbol for " +  symbol + " changed from '" + oldCharacter + "' to '" + newCharacter + "'");
+	}
+
+	private void printSymbol(String symbol, Character character, Environment env) {
+		env.writeln("Symbol for " + symbol + " is '" + character + "'");
+	}
 
 }

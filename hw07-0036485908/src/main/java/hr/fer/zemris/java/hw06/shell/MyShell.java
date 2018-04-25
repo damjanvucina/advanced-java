@@ -1,8 +1,11 @@
 package hr.fer.zemris.java.hw06.shell;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import hr.fer.zemris.java.hw06.shell.commands.CatCommand;
 import hr.fer.zemris.java.hw06.shell.commands.CharsetsCommand;
@@ -21,29 +24,102 @@ public class MyShell implements Environment {
 	public static final String MORELINES = "MORELINES";
 	public static final String MULTILINE = "MULTILINE";
 	public static final String WHITESPACE = " ";
+	public static final String CAT_COMMAND = "cat";
+	public static final String CHARSETS_COMMAND = "charsets";
+	public static final String COPY_COMMAND = "copy";
+	public static final String EXIT_SHELL_COMMAND = "exit";
+	public static final String HEXDUMP_COMMAND = "hexdump";
+	public static final String LS_COMMAND = "ls";
+	public static final String MKDIR_COMMAND = "mkdir";
+	public static final String TREE_COMMAND = "tree";
+	public static final String SYMBOL_COMMAND = "symbol";
 	
-	public static SortedMap<String, ShellCommand> commands;
-	public static Map<String, Character> symbols;
+	public static TreeMap<String, ShellCommand> commands = new TreeMap<>();
+	public static Map<String, Character> symbols = new HashMap<>();
 	public static Scanner sc;
 	public static ShellStatus status;
+	public static MyShell dispatcher;;
 	
 	public static void main(String[] args) {
-		initializeMyShell();
+		setUpMyShell();
 		printGreetingMessage();
 		
 		String line;
 		while(status == CONTINUE) {
 			System.out.print(symbols.get(PROMPT) + WHITESPACE);
+			
 			line = acquireNewLine();
-			System.out.println(line);
+			processCommand(line.split(WHITESPACE));
 		}
 	}
 	
+	private static void processCommand(String[] input) {
+		ShellCommand command;
+		
+		switch (input[0]) {
+		case SYMBOL_COMMAND:
+			command = commands.get(SYMBOL_COMMAND);
+			break;
+			
+		case CAT_COMMAND:
+			command = commands.get(CAT_COMMAND);
+			break;
+			
+		case CHARSETS_COMMAND:
+			command = commands.get(CHARSETS_COMMAND);
+			break;
+			
+		case COPY_COMMAND:
+			command = commands.get(COPY_COMMAND);
+			break;
+			
+		case EXIT_SHELL_COMMAND:
+			command = commands.get(EXIT_SHELL_COMMAND);
+			break;
+			
+		case HEXDUMP_COMMAND:
+			command = commands.get(HEXDUMP_COMMAND);
+			break;
+			
+		case LS_COMMAND:
+			command = commands.get(LS_COMMAND);
+			break;
+			
+		case MKDIR_COMMAND:
+			command = commands.get(MKDIR_COMMAND);
+			break;
+			
+		case TREE_COMMAND:
+			command = commands.get(TREE_COMMAND);
+			break;
+
+		default:
+			System.out.println("Invalid command, was: " + input[0]);
+			return;
+		}
+		
+			status = command.executeCommand(dispatcher, extractArguments(input));
+	}
+
+	private static String extractArguments(String[] input) {
+		String[] arguments = Arrays.copyOfRange(input, 1, input.length);
+		
+		StringBuilder sb = new StringBuilder();
+		for(String arg : arguments) {
+			sb.append(arg);
+			sb.append(WHITESPACE);
+		}
+		
+		return sb.toString();
+	}
+
 	private static String acquireNewLine() {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(sc.nextLine().trim());
 		while(sb.toString().endsWith(String.valueOf(symbols.get(MORELINES)))) {
+			System.out.print(symbols.get(MULTILINE) + WHITESPACE);
+			sb.deleteCharAt(sb.length()-1);
 			sb.append(sc.nextLine().trim());
 		}
 		
@@ -54,22 +130,24 @@ public class MyShell implements Environment {
 		System.out.println("Welcome to MyShell v 1.0");
 	}
 
-	private static void initializeMyShell() {
-		commands.put("cat", new CatCommand());
-		commands.put("charsets", new CharsetsCommand());
-		commands.put("copy", new CopyCommand());
-		commands.put("exit", new ExitShellCommand());
-		commands.put("hexdump", new HexdumpCommand());
-		commands.put("ls", new LsCommand());
-		commands.put("mkdir", new MkdirCommand());
-		commands.put("tree", new TreeCommand());
-		commands.put("symbol", new SymbolCommand());
+	private static void setUpMyShell() {
+		commands.put(CAT_COMMAND, new CatCommand());
+		commands.put(CHARSETS_COMMAND, new CharsetsCommand());
+		commands.put(COPY_COMMAND, new CopyCommand());
+		commands.put(EXIT_SHELL_COMMAND, new ExitShellCommand());
+		commands.put(HEXDUMP_COMMAND, new HexdumpCommand());
+		commands.put(LS_COMMAND, new LsCommand());
+		commands.put(MKDIR_COMMAND, new MkdirCommand());
+		commands.put(TREE_COMMAND, new TreeCommand());
+		commands.put(SYMBOL_COMMAND, new SymbolCommand());
 		
-		symbols.put("PROMPT", '>');
-		symbols.put("MORELINES", '\\');
-		symbols.put("MULTILINE", '|');
+		symbols.put(PROMPT, '>');
+		symbols.put(MORELINES, '\\');
+		symbols.put(MULTILINE, '|');
 		
 		sc = new Scanner(System.in);
+		
+		dispatcher = new MyShell();
 		
 		status = CONTINUE;
 	}
