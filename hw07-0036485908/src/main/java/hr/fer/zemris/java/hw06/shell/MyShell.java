@@ -33,62 +33,62 @@ public class MyShell implements Environment {
 	public static final String MKDIR_COMMAND = "mkdir";
 	public static final String TREE_COMMAND = "tree";
 	public static final String SYMBOL_COMMAND = "symbol";
-	
+
 	public static TreeMap<String, ShellCommand> commands = new TreeMap<>();
 	public static Map<String, Character> symbols = new HashMap<>();
 	public static Scanner sc;
 	public static ShellStatus status;
 	public static MyShell dispatcher;;
-	
+
 	public static void main(String[] args) {
 		setUpMyShell();
 		printGreetingMessage();
-		
+
 		String line;
-		while(status == CONTINUE) {
+		while (status == CONTINUE) {
 			System.out.print(symbols.get(PROMPT) + WHITESPACE);
-			
+
 			line = acquireNewLine();
 			processCommand(line.split(WHITESPACE));
 		}
 	}
-	
+
 	private static void processCommand(String[] input) {
 		ShellCommand command;
-		
+
 		switch (input[0]) {
 		case SYMBOL_COMMAND:
 			command = commands.get(SYMBOL_COMMAND);
 			break;
-			
+
 		case CAT_COMMAND:
 			command = commands.get(CAT_COMMAND);
 			break;
-			
+
 		case CHARSETS_COMMAND:
 			command = commands.get(CHARSETS_COMMAND);
 			break;
-			
+
 		case COPY_COMMAND:
 			command = commands.get(COPY_COMMAND);
 			break;
-			
+
 		case EXIT_SHELL_COMMAND:
 			command = commands.get(EXIT_SHELL_COMMAND);
 			break;
-			
+
 		case HEXDUMP_COMMAND:
 			command = commands.get(HEXDUMP_COMMAND);
 			break;
-			
+
 		case LS_COMMAND:
 			command = commands.get(LS_COMMAND);
 			break;
-			
+
 		case MKDIR_COMMAND:
 			command = commands.get(MKDIR_COMMAND);
 			break;
-			
+
 		case TREE_COMMAND:
 			command = commands.get(TREE_COMMAND);
 			break;
@@ -97,32 +97,32 @@ public class MyShell implements Environment {
 			System.out.println("Invalid command, was: " + input[0]);
 			return;
 		}
-		
-			status = command.executeCommand(dispatcher, extractArguments(input));
+
+		status = command.executeCommand(dispatcher, extractArguments(input));
 	}
 
 	private static String extractArguments(String[] input) {
 		String[] arguments = Arrays.copyOfRange(input, 1, input.length);
-		
+
 		StringBuilder sb = new StringBuilder();
-		for(String arg : arguments) {
+		for (String arg : arguments) {
 			sb.append(arg);
 			sb.append(WHITESPACE);
 		}
-		
+
 		return sb.toString();
 	}
 
 	private static String acquireNewLine() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append(sc.nextLine().trim());
-		while(sb.toString().endsWith(String.valueOf(symbols.get(MORELINES)))) {
+		while (sb.toString().endsWith(String.valueOf(symbols.get(MORELINES)))) {
 			System.out.print(symbols.get(MULTILINE) + WHITESPACE);
-			sb.deleteCharAt(sb.length()-1);
+			sb.deleteCharAt(sb.length() - 1);
 			sb.append(sc.nextLine().trim());
 		}
-		
+
 		return sb.toString();
 	}
 
@@ -140,24 +140,24 @@ public class MyShell implements Environment {
 		commands.put(MKDIR_COMMAND, new MkdirCommand());
 		commands.put(TREE_COMMAND, new TreeCommand());
 		commands.put(SYMBOL_COMMAND, new SymbolCommand());
-		
+
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');
 		symbols.put(MULTILINE, '|');
-		
+
 		sc = new Scanner(System.in);
-		
+
 		dispatcher = new MyShell();
-		
+
 		status = CONTINUE;
 	}
 
 	@Override
 	public String readLine() throws ShellIOException {
-		if(sc.hasNextLine()) {
+		if (sc.hasNextLine()) {
 			return sc.nextLine().trim();
 		}
-		
+
 		return null;
 	}
 
@@ -205,5 +205,5 @@ public class MyShell implements Environment {
 	public void setMorelinesSymbol(Character symbol) {
 		symbols.put(MORELINES, symbol);
 	}
-	
+
 }

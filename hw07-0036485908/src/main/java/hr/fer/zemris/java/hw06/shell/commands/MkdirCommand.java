@@ -25,6 +25,7 @@ public class MkdirCommand extends Command {
 		}
 		
 		Path path = Paths.get(input[0]);
+		
 		if(Files.exists(path)) {
 			env.writeln("File with that name already exists.");
 			return ShellStatus.CONTINUE;
@@ -35,6 +36,7 @@ public class MkdirCommand extends Command {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		return ShellStatus.CONTINUE;
 	}
 
