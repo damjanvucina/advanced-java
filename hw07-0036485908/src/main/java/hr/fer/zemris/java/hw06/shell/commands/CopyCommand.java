@@ -24,7 +24,7 @@ public class CopyCommand extends Command {
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		String[] input = arguments.split(" ");
+		String[] input = splitArguments(arguments);
 		if(input.length != 2) {
 			env.writeln("Command " + getCommandName() + " takes two arguments, arguments provided: " + input.length);
 			return ShellStatus.CONTINUE;

@@ -20,7 +20,7 @@ public class TreeCommand extends Command {
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		String[] input = arguments.split(" ");
+		String[] input = splitArguments(arguments);
 		if(input.length != 1) {
 			env.writeln("Command " + getCommandName() + " takes a single argument, arguments provided: " + input.length);
 			return ShellStatus.CONTINUE;

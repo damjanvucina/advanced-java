@@ -22,29 +22,30 @@ public class CatCommand extends Command {
 
 	}
 	//@formatter:on
-	
+
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		String[] input = arguments.split(" ");
-		if(input.length < 1 || input.length > 2) {
+		String[] input = splitArguments(arguments);
+		System.out.println(Arrays.toString(input));
+		if (input.length < 1 || input.length > 2) {
 			env.writeln("Command " + getCommandName() + " takes one or two arguments.");
 			return ShellStatus.CONTINUE;
 		}
-		
+
 		Path path = Paths.get(input[0]);
-		if(!Files.exists(path) || Files.isDirectory(path)) {
+		if (!Files.exists(path) || Files.isDirectory(path)) {
 			env.writeln("First argument must be an existing file.");
 			return ShellStatus.CONTINUE;
 		}
-		
-		Charset charset = (input.length==2) ? Charset.forName(input[1]) : Charset.defaultCharset();
-		
+
+		Charset charset = (input.length == 2) ? Charset.forName(input[1].trim()) : Charset.defaultCharset();
+
 		try {
 			Files.newBufferedReader(path, charset).lines().forEach(line -> env.writeln(line));
 		} catch (IOException e) {
 			throw new ShellIOException("IOException occured while writing file content.");
 		}
-		
+
 		return ShellStatus.CONTINUE;
 	}
 
