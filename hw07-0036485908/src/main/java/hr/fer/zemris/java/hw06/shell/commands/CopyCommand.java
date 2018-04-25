@@ -1,10 +1,13 @@
 package hr.fer.zemris.java.hw06.shell.commands;
 
 import static hr.fer.zemris.java.hw06.shell.ShellStatus.*;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +26,11 @@ public class CopyCommand extends Command {
 				"Source file must be a regular file", "Destination file can be a directory"));
 	}
 	
+	public static void main(String[] args) {
+		Paths.get("C:\\Users\\D4MJ4N\\Desktop\\studenti a.txt");
+		System.out.println("a");
+	}
+
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
@@ -31,8 +39,11 @@ public class CopyCommand extends Command {
 			return ShellStatus.CONTINUE;
 		}
 		
+		System.out.println(Arrays.asList(input));
 		Path sourceFile = Paths.get(input[0]);
 		Path destinationFile = Paths.get(input[1]);
+
+		destinationFile = checkIfDirectory(sourceFile, destinationFile);
 
 		if (Files.isDirectory(sourceFile)) {
 			env.writeln("Source file cannot be a directory");
@@ -41,12 +52,23 @@ public class CopyCommand extends Command {
 
 		ShellStatus status = checkIfDestinationFileExists(env, destinationFile);
 		if (status == TERMINATE) {
+			env.writeln("Copying file " + sourceFile.getFileName() + " aborted");
 			return CONTINUE;
 		}
 
 		performCopying(sourceFile, destinationFile);
+		env.writeln("File " + sourceFile.getFileName() + " has been successfully copied to "
+				+ destinationFile.getFileName());
 
 		return ShellStatus.CONTINUE;
+	}
+
+	private Path checkIfDirectory(Path sourceFile, Path destinationFile) {
+		if (destinationFile.toFile().isDirectory()) {
+			return destinationFile.resolve(sourceFile.getFileName());
+		}
+
+		return destinationFile;
 	}
 
 	private ShellStatus checkIfDestinationFileExists(Environment env, Path destinationFile) {
@@ -54,17 +76,25 @@ public class CopyCommand extends Command {
 			env.writeln("File " + destinationFile.getFileName() + " already exist.");
 			printOverwritingMessage(env);
 
+			String response = env.readLine();
+			while (!response.equalsIgnoreCase(DO_OVERWRITE) && !response.equalsIgnoreCase(DONT_OVERWRITE)) {
+
+				env.writeln("Invalid input.");
+				printOverwritingMessage(env);
+				response = env.readLine();
+			}
+
+			if (response.equals(DONT_OVERWRITE)) {
+				return TERMINATE;
+
+			} else {
+				return CONTINUE;
+			}
 		}
 
-		String response = env.readLine();
-		while (!response.equalsIgnoreCase(DO_OVERWRITE) && !response.equalsIgnoreCase(DONT_OVERWRITE)) {
-
-			env.writeln("Invalid input.");
-			printOverwritingMessage(env);
-		}
-
-		return response == DO_OVERWRITE ? CONTINUE : TERMINATE;
+		return CONTINUE;
 	}
+	// copy C:\Users\D4MJ4N\Desktop\a.txt C:\Users\D4MJ4N\Desktop\a
 
 	private void printOverwritingMessage(Environment env) {
 		env.write("If you would like to overwrite it, enter \"" + DO_OVERWRITE + "\", otherwise enter \""
@@ -73,12 +103,12 @@ public class CopyCommand extends Command {
 
 	//@formatter:off
 	private void performCopying(Path sourceFile, Path destinationFile) {
+		
 		try (FileInputStream inputStream = new FileInputStream(sourceFile.toFile());
 			 FileOutputStream outputStream = new FileOutputStream(destinationFile.toFile())) {
 
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int n;
-			System.out.println("a");
 			while ((n = inputStream.read(buffer)) > 0) {
 				outputStream.write(buffer, 0, n);
 			}
