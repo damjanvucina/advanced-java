@@ -1,6 +1,5 @@
 package hr.fer.zemris.java.hw06.crypto;
 
-import java.util.Arrays;
 
 public class Util {
 
@@ -33,10 +32,5 @@ public class Util {
 		}
 
 		return sb.toString();
-	}
-		
-	public static void main(String[] args) {
-		System.out.println(bytetohex(new byte[] {-46, 21, 11, 33}));
-		System.out.println(Arrays.toString(hextobyte("1111")));
 	}
 }
