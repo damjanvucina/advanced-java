@@ -39,10 +39,11 @@ public class TreeCommand extends Command {
 	private void printDirectoryTree(File directory, int padding) {
 		for(File file : directory.listFiles()) {
 			printPadding(padding);
+			System.out.print(file.isFile() ? "FILE: " : "DIR: ");
 			System.out.println(file.getName());
 			
 			if(file.isDirectory()) {
-				printDirectoryTree(directory, padding + PADDING_MARGIN);
+				printDirectoryTree(file, padding + PADDING_MARGIN);
 			}
 			
 		}
