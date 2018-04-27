@@ -2,12 +2,10 @@ package hr.fer.zemris.java.hw06.shell.commands;
 
 import static hr.fer.zemris.java.hw06.shell.ShellStatus.*;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,11 +24,6 @@ public class CopyCommand extends Command {
 				"Source file must be a regular file", "Destination file can be a directory"));
 	}
 	
-	public static void main(String[] args) {
-		Paths.get("C:\\Users\\D4MJ4N\\Desktop\\studenti a.txt");
-		System.out.println("a");
-	}
-
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
@@ -39,7 +32,6 @@ public class CopyCommand extends Command {
 			return ShellStatus.CONTINUE;
 		}
 		
-		System.out.println(Arrays.asList(input));
 		Path sourceFile = Paths.get(input[0]);
 		Path destinationFile = Paths.get(input[1]);
 

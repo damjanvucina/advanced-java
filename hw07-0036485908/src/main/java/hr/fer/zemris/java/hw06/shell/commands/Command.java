@@ -42,11 +42,15 @@ public abstract class Command implements ShellCommand {
 				if (splitterState == NONPATH) {
 					if (c == '\"') {
 						splitterState = PATH;
-						
-					} else if (c == ' ' && sb.length() != 0) {
-						result.add(sb.toString());
-						sb.setLength(0);
-						
+
+					} else if (c == ' ') {
+						if (sb.length() != 0) {
+							result.add(sb.toString());
+							sb.setLength(0);
+						} else {
+							continue;
+						}
+
 					} else {
 						sb.append(c);
 					}
@@ -62,7 +66,7 @@ public abstract class Command implements ShellCommand {
 					}
 				}
 			}
-			
+
 			return result.stream().toArray(String[]::new);
 		}
 	}
