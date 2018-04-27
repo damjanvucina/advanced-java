@@ -116,7 +116,6 @@ public class HexdumpCommand extends Command {
 		env.write(sb.toString());
 	}
 
-	// hexdump C:\Users\D4MJ4N\Desktop\a.txt
 	private void printBlockOffset(Environment env, int blockOffset) {
 		env.write(formatOffsetOutput(blockOffset) + ":");
 	}

@@ -26,7 +26,6 @@ public class CatCommand extends Command {
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
-		System.out.println(Arrays.toString(input));
 		if (input.length < 1 || input.length > 2) {
 			env.writeln("Command " + getCommandName() + " takes one or two arguments.");
 			return ShellStatus.CONTINUE;

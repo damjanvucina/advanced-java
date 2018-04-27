@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import hr.fer.zemris.java.hw06.shell.commands.CatCommand;
@@ -18,9 +17,9 @@ import hr.fer.zemris.java.hw06.shell.commands.MkdirCommand;
 import hr.fer.zemris.java.hw06.shell.commands.SymbolCommand;
 import hr.fer.zemris.java.hw06.shell.commands.TreeCommand;
 
-import static hr.fer.zemris.java.hw06.shell.ShellStatus.*;
+import static hr.fer.zemris.java.hw06.shell.ShellStatus.CONTINUE;
 
-public class MyShell implements Environment {
+public class MyShell {
 	public static final String PROMPT = "PROMPT";
 	public static final String MORELINES = "MORELINES";
 	public static final String MULTILINE = "MULTILINE";
@@ -40,7 +39,24 @@ public class MyShell implements Environment {
 	private static Map<String, Character> symbols = new HashMap<>();
 	private static Scanner sc;
 	private static ShellStatus status;
-	private static MyShell dispatcher;;
+
+	private static Dispatcher dispatcher;
+
+	public static TreeMap<String, ShellCommand> getCommands() {
+		return commands;
+	}
+
+	public static Map<String, Character> getSymbols() {
+		return symbols;
+	}
+
+	public static void setCommands(TreeMap<String, ShellCommand> commands) {
+		MyShell.commands = commands;
+	}
+
+	public static void setSymbols(Map<String, Character> symbols) {
+		MyShell.symbols = symbols;
+	}
 
 	public static void main(String[] args) {
 		setUpMyShell();
@@ -154,63 +170,8 @@ public class MyShell implements Environment {
 
 		sc = new Scanner(System.in);
 
-		dispatcher = new MyShell();
+		dispatcher = new Dispatcher(sc);
 
 		status = CONTINUE;
 	}
-
-	@Override
-	public String readLine() throws ShellIOException {
-		if (sc.hasNextLine()) {
-			return sc.nextLine().trim();
-		}
-
-		return null;
-	}
-
-	@Override
-	public void write(String text) throws ShellIOException {
-		System.out.print(text);
-	}
-
-	@Override
-	public void writeln(String text) throws ShellIOException {
-		System.out.println(text);
-	}
-
-	@Override
-	public SortedMap<String, ShellCommand> commands() {
-		return commands;
-	}
-
-	@Override
-	public Character getMultilineSymbol() {
-		return symbols.get(MULTILINE);
-	}
-
-	@Override
-	public void setMultilineSymbol(Character symbol) {
-		symbols.put(MULTILINE, symbol);
-	}
-
-	@Override
-	public Character getPromptSymbol() {
-		return symbols.get(PROMPT);
-	}
-
-	@Override
-	public void setPromptSymbol(Character symbol) {
-		symbols.put(PROMPT, symbol);
-	}
-
-	@Override
-	public Character getMorelinesSymbol() {
-		return symbols.get(MORELINES);
-	}
-
-	@Override
-	public void setMorelinesSymbol(Character symbol) {
-		symbols.put(MORELINES, symbol);
-	}
-
 }
