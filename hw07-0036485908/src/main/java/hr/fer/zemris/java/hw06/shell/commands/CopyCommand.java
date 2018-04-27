@@ -86,7 +86,7 @@ public class CopyCommand extends Command {
 
 		return CONTINUE;
 	}
-	// copy C:\Users\D4MJ4N\Desktop\a.txt C:\Users\D4MJ4N\Desktop\a
+	
 
 	private void printOverwritingMessage(Environment env) {
 		env.write("If you would like to overwrite it, enter \"" + DO_OVERWRITE + "\", otherwise enter \""
