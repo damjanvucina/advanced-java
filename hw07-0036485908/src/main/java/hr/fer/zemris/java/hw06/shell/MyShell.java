@@ -11,6 +11,7 @@ import hr.fer.zemris.java.hw06.shell.commands.CatCommand;
 import hr.fer.zemris.java.hw06.shell.commands.CharsetsCommand;
 import hr.fer.zemris.java.hw06.shell.commands.CopyCommand;
 import hr.fer.zemris.java.hw06.shell.commands.ExitShellCommand;
+import hr.fer.zemris.java.hw06.shell.commands.HelpCommand;
 import hr.fer.zemris.java.hw06.shell.commands.HexdumpCommand;
 import hr.fer.zemris.java.hw06.shell.commands.LsCommand;
 import hr.fer.zemris.java.hw06.shell.commands.MkdirCommand;
@@ -33,12 +34,13 @@ public class MyShell implements Environment {
 	public static final String MKDIR_COMMAND = "mkdir";
 	public static final String TREE_COMMAND = "tree";
 	public static final String SYMBOL_COMMAND = "symbol";
+	public static final String HELP_COMMAND = "help";
 
-	public static TreeMap<String, ShellCommand> commands = new TreeMap<>();
-	public static Map<String, Character> symbols = new HashMap<>();
-	public static Scanner sc;
-	public static ShellStatus status;
-	public static MyShell dispatcher;;
+	private static TreeMap<String, ShellCommand> commands = new TreeMap<>();
+	private static Map<String, Character> symbols = new HashMap<>();
+	private static Scanner sc;
+	private static ShellStatus status;
+	private static MyShell dispatcher;;
 
 	public static void main(String[] args) {
 		setUpMyShell();
@@ -93,11 +95,14 @@ public class MyShell implements Environment {
 			command = commands.get(TREE_COMMAND);
 			break;
 
+		case HELP_COMMAND:
+			command = commands.get(HELP_COMMAND);
+			break;
+
 		default:
 			System.out.println("Invalid command, was: " + input[0]);
 			return;
 		}
-
 		status = command.executeCommand(dispatcher, extractArguments(input));
 	}
 
@@ -111,6 +116,7 @@ public class MyShell implements Environment {
 		}
 
 		return sb.toString();
+
 	}
 
 	private static String acquireNewLine() {
@@ -140,6 +146,7 @@ public class MyShell implements Environment {
 		commands.put(MKDIR_COMMAND, new MkdirCommand());
 		commands.put(TREE_COMMAND, new TreeCommand());
 		commands.put(SYMBOL_COMMAND, new SymbolCommand());
+		commands.put(HELP_COMMAND, new HelpCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');
