@@ -33,6 +33,7 @@ public class MkdirCommand extends Command {
 		
 		try {
 			Files.createDirectory(path);
+			env.writeln("File " + path + " created successfully");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

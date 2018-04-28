@@ -6,6 +6,7 @@ import java.util.List;
 
 import hr.fer.zemris.java.hw06.shell.ArgumentSplitterState;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
+
 import static hr.fer.zemris.java.hw06.shell.MyShell.WHITESPACE;
 import static hr.fer.zemris.java.hw06.shell.ArgumentSplitterState.*;
 
@@ -70,5 +71,4 @@ public abstract class Command implements ShellCommand {
 			return result.stream().toArray(String[]::new);
 		}
 	}
-
 }

@@ -31,23 +31,36 @@ public class CopyCommand extends Command {
 			env.writeln("Command " + getCommandName() + " takes two arguments, arguments provided: " + input.length);
 			return ShellStatus.CONTINUE;
 		}
-		
 		Path sourceFile = Paths.get(input[0]);
 		Path destinationFile = Paths.get(input[1]);
-
+		
+		if(!Files.exists(sourceFile)) {
+			env.writeln("File " + sourceFile + " does not exist.");
+			return CONTINUE;
+		}
 		destinationFile = checkIfDirectory(sourceFile, destinationFile);
 
 		if (Files.isDirectory(sourceFile)) {
 			env.writeln("Source file cannot be a directory");
-			return ShellStatus.CONTINUE;
+			return CONTINUE;
 		}
-
+		
+		if (Files.isDirectory(destinationFile) && Files.notExists(destinationFile)) {
+			env.writeln("Destination directory does not exist");
+			return CONTINUE;
+		}
+		
+		if(!destinationFile.toString().contains(".") && Files.notExists(destinationFile)) {
+			env.writeln("Destination directory " + destinationFile +" does not exist");
+			return CONTINUE;
+		}
+			
 		ShellStatus status = checkIfDestinationFileExists(env, destinationFile);
 		if (status == TERMINATE) {
 			env.writeln("Copying file " + sourceFile.getFileName() + " aborted");
 			return CONTINUE;
 		}
-
+		//
 		performCopying(sourceFile, destinationFile);
 		env.writeln("File " + sourceFile.getFileName() + " has been successfully copied to "
 				+ destinationFile.getFileName());

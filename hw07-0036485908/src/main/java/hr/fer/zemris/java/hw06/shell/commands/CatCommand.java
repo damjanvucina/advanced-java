@@ -26,11 +26,12 @@ public class CatCommand extends Command {
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
+		
 		if (input.length < 1 || input.length > 2) {
 			env.writeln("Command " + getCommandName() + " takes one or two arguments.");
 			return ShellStatus.CONTINUE;
 		}
-
+		
 		Path path = Paths.get(input[0]);
 		if (!Files.exists(path) || Files.isDirectory(path)) {
 			env.writeln("First argument must be an existing file.");

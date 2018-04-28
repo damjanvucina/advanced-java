@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import static hr.fer.zemris.java.hw06.shell.ShellStatus.CONTINUE;
 
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
@@ -23,17 +24,26 @@ public class TreeCommand extends Command {
 		String[] input = splitArguments(arguments);
 		if(input.length != 1) {
 			env.writeln("Command " + getCommandName() + " takes a single argument, arguments provided: " + input.length);
-			return ShellStatus.CONTINUE;
+			return CONTINUE;
 		}
 		
 		Path path = Paths.get(input[0]);
 		if(!Files.exists(path)) {
 			env.writeln("Provided file does not exist");
-			return ShellStatus.CONTINUE;
+			return CONTINUE;
+		}
+		File directory = path.toFile();
+		if(directory.isFile()) {
+			env.writeln("Command " + getCommandName() + " takes a directory as an argument, not a file");
+			return CONTINUE;
+		}
+		if(directory.length() == 0) {
+			env.writeln("Provided directory is empty");
+			return CONTINUE;
 		}
 		
-		printDirectoryTree(path.toFile(), START_PADDING);
-		return ShellStatus.CONTINUE;
+		printDirectoryTree(directory, START_PADDING);
+		return CONTINUE;
 	}
 
 	private void printDirectoryTree(File directory, int padding) {
