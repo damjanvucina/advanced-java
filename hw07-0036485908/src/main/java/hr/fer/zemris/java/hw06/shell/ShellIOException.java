@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.hw06.shell;
 
+// TODO: Auto-generated Javadoc
 /**
  * The class that represents the exception which is thrown whenever the format
  * of the MyShell input text is not in compliance with the specified format.

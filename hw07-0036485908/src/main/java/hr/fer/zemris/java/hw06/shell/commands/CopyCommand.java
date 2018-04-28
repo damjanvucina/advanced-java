@@ -14,16 +14,32 @@ import java.util.Arrays;
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CopyCommand.
+ */
 public class CopyCommand extends Command {
+	
+	/** The Constant BUFFER_SIZE. */
 	public static final int BUFFER_SIZE = 4096;
+	
+	/** The Constant DO_OVERWRITE. */
 	public static final String DO_OVERWRITE = "yes";
+	
+	/** The Constant DONT_OVERWRITE. */
 	public static final String DONT_OVERWRITE = "no";
 
+	/**
+	 * Instantiates a new copy command.
+	 */
 	public CopyCommand() {
 		super("copy", Arrays.asList("Copies first file to the second file", "Command expects two arguments",
 				"Source file must be a regular file", "Destination file can be a directory"));
 	}
 	
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
@@ -68,6 +84,13 @@ public class CopyCommand extends Command {
 		return ShellStatus.CONTINUE;
 	}
 
+	/**
+	 * Check if directory.
+	 *
+	 * @param sourceFile the source file
+	 * @param destinationFile the destination file
+	 * @return the path
+	 */
 	private Path checkIfDirectory(Path sourceFile, Path destinationFile) {
 		if (destinationFile.toFile().isDirectory()) {
 			return destinationFile.resolve(sourceFile.getFileName());
@@ -76,6 +99,13 @@ public class CopyCommand extends Command {
 		return destinationFile;
 	}
 
+	/**
+	 * Check if destination file exists.
+	 *
+	 * @param env the env
+	 * @param destinationFile the destination file
+	 * @return the shell status
+	 */
 	private ShellStatus checkIfDestinationFileExists(Environment env, Path destinationFile) {
 		if (Files.exists(destinationFile) && destinationFile.toFile().length() != 0) {
 			env.writeln("File " + destinationFile.getFileName() + " already exist.");
@@ -101,11 +131,22 @@ public class CopyCommand extends Command {
 	}
 	
 
+	/**
+	 * Prints the overwriting message.
+	 *
+	 * @param env the env
+	 */
 	private void printOverwritingMessage(Environment env) {
 		env.write("If you would like to overwrite it, enter \"" + DO_OVERWRITE + "\", otherwise enter \""
 				+ DONT_OVERWRITE + "\": ");
 	}
 
+	/**
+	 * Perform copying.
+	 *
+	 * @param sourceFile the source file
+	 * @param destinationFile the destination file
+	 */
 	//@formatter:off
 	private void performCopying(Path sourceFile, Path destinationFile) {
 		

@@ -5,14 +5,24 @@ import java.util.Arrays;
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HelpCommand.
+ */
 public class HelpCommand extends Command{
 
+	/**
+	 * Instantiates a new help command.
+	 */
 	public HelpCommand() {
 		super("help", Arrays.asList("Command that provides detailed info about the available commands",
 									"If started with no arguments, it lists names of all supported commands.",
 									"If started with single argument, it prints name and the description of selected command"));
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);

@@ -16,13 +16,23 @@ import java.util.Date;
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LsCommand.
+ */
 public class LsCommand extends Command {
 
+	/**
+	 * Instantiates a new ls command.
+	 */
 	public LsCommand() {
 		super("ls", Arrays.asList("Command takes a single argument(directory) and writes a directory listing.",
 				"Does not use recursion."));
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);

@@ -10,15 +10,29 @@ import static hr.fer.zemris.java.hw06.shell.ShellStatus.CONTINUE;
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TreeCommand.
+ */
 public class TreeCommand extends Command {
+	
+	/** The Constant START_PADDING. */
 	public static final int START_PADDING = 0;
+	
+	/** The Constant PADDING_MARGIN. */
 	public static final int PADDING_MARGIN = 2;
 
+	/**
+	 * Instantiates a new tree command.
+	 */
 	public TreeCommand() {
 		super("tree", Arrays.asList("Prints directory tree",
 								    "Each directory level shifts output two charatcers to the right"));
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
@@ -46,6 +60,12 @@ public class TreeCommand extends Command {
 		return CONTINUE;
 	}
 
+	/**
+	 * Prints the directory tree.
+	 *
+	 * @param directory the directory
+	 * @param padding the padding
+	 */
 	private void printDirectoryTree(File directory, int padding) {
 		for(File file : directory.listFiles()) {
 			printPadding(padding);
@@ -59,6 +79,11 @@ public class TreeCommand extends Command {
 		}
 	}
 
+	/**
+	 * Prints the padding.
+	 *
+	 * @param padding the padding
+	 */
 	private void printPadding(int padding) {
 		StringBuilder sb = new StringBuilder(padding);
 		

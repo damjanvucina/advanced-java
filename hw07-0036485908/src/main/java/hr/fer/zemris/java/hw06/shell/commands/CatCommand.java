@@ -11,8 +11,15 @@ import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellIOException;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CatCommand.
+ */
 public class CatCommand extends Command {
 
+	/**
+	 * Instantiates a new cat command.
+	 */
 	//@formatter:off
 	public CatCommand() {
 		super("cat", Arrays.asList("Opens given file and writes its content to console",
@@ -23,6 +30,9 @@ public class CatCommand extends Command {
 	}
 	//@formatter:on
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);

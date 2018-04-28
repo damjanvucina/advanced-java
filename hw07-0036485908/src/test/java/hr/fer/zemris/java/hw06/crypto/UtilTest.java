@@ -44,5 +44,15 @@ public class UtilTest {
 	public void byteToHexRegularTest() {
 		Assert.assertEquals("d2150b21", Util.bytetohex(new byte[] {-46, 21, 11, 33}));
 	}
+	
+	@Test(expected=NullPointerException.class)
+	public void HexToByteNullArgument(){
+		Util.hextobyte(null);
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void ByteToHexNullArgument(){
+		Util.bytetohex(null);
+	}
 
 }

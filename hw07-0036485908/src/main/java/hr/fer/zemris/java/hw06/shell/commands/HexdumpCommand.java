@@ -13,21 +13,47 @@ import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 import static hr.fer.zemris.java.hw06.crypto.Util.bytetohex;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HexdumpCommand.
+ */
 public class HexdumpCommand extends Command {
+	
+	/** The Constant BUFFER_SIZE. */
 	public static final int BUFFER_SIZE = 16;
+	
+	/** The Constant OFFSET_FORMAT_LENGTH. */
 	public static final int OFFSET_FORMAT_LENGTH = 8;
+	
+	/** The Constant ZERO. */
 	public static final String ZERO = "0";
+	
+	/** The Constant MIDDLE_OF_BLOCK. */
 	public static final int MIDDLE_OF_BLOCK = 16;
+	
+	/** The Constant SEPARATOR. */
 	public static final String SEPARATOR = "|";
+	
+	/** The Constant TABLE_WIDTH. */
 	public static final int TABLE_WIDTH = 24;
+	
+	/** The Constant ASCII_MIN. */
 	public static final int ASCII_MIN = 32;
+	
+	/** The Constant ASCII_MAX. */
 	public static final int ASCII_MAX = 127;
 
+	/**
+	 * Instantiates a new hexdump command.
+	 */
 	public HexdumpCommand() {
 		super("hexdump", Arrays.asList("Expects a single argument: file name", "Produces hex-output"));
 
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
@@ -73,6 +99,12 @@ public class HexdumpCommand extends Command {
 		return ShellStatus.CONTINUE;
 	}
 
+	/**
+	 * Ascii normalize.
+	 *
+	 * @param buffer the buffer
+	 * @return the string
+	 */
 	private String asciiNormalize(String buffer) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -86,6 +118,12 @@ public class HexdumpCommand extends Command {
 		return sb.toString();
 	}
 
+	/**
+	 * Prints the buffer formatted.
+	 *
+	 * @param env the env
+	 * @param blockOutput the block output
+	 */
 	private void printBufferFormatted(Environment env, String blockOutput) {
 		StringBuilder sb = new StringBuilder();
 		int padding = 0;
@@ -116,10 +154,22 @@ public class HexdumpCommand extends Command {
 		env.write(sb.toString());
 	}
 
+	/**
+	 * Prints the block offset.
+	 *
+	 * @param env the env
+	 * @param blockOffset the block offset
+	 */
 	private void printBlockOffset(Environment env, int blockOffset) {
 		env.write(formatOffsetOutput(blockOffset) + ":");
 	}
 
+	/**
+	 * Format offset output.
+	 *
+	 * @param blockOffset the block offset
+	 * @return the string
+	 */
 	private String formatOffsetOutput(int blockOffset) {
 		int length = Integer.toHexString(blockOffset).length();
 		StringBuilder sb = new StringBuilder(appendSymbol(ZERO, OFFSET_FORMAT_LENGTH - length));
@@ -129,6 +179,13 @@ public class HexdumpCommand extends Command {
 		return sb.toString();
 	}
 
+	/**
+	 * Append symbol.
+	 *
+	 * @param symbol the symbol
+	 * @param length the length
+	 * @return the string
+	 */
 	private String appendSymbol(String symbol, int length) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < length; i++) {

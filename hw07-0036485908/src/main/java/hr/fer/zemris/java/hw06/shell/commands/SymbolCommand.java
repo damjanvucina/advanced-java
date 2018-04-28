@@ -6,13 +6,23 @@ import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 import static hr.fer.zemris.java.hw06.shell.MyShell.*;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SymbolCommand.
+ */
 public class SymbolCommand extends Command {
 
+	/**
+	 * Instantiates a new symbol command.
+	 */
 	public SymbolCommand() {
 		super("symbol", Arrays.asList("Command used for viewing and editing symbols.",
 				"Editable symbols are PROMPT, MORELINES and MULTILINE."));
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
@@ -65,10 +75,25 @@ public class SymbolCommand extends Command {
 		return ShellStatus.CONTINUE;
 	}
 
+	/**
+	 * Prints the updated symbol.
+	 *
+	 * @param symbol the symbol
+	 * @param oldCharacter the old character
+	 * @param newCharacter the new character
+	 * @param env the env
+	 */
 	private void printUpdatedSymbol(String symbol, Character oldCharacter, Character newCharacter, Environment env) {
 		env.writeln("Symbol for " +  symbol + " changed from '" + oldCharacter + "' to '" + newCharacter + "'");
 	}
 
+	/**
+	 * Prints the symbol.
+	 *
+	 * @param symbol the symbol
+	 * @param character the character
+	 * @param env the env
+	 */
 	private void printSymbol(String symbol, Character character, Environment env) {
 		env.writeln("Symbol for " + symbol + " is '" + character + "'");
 	}
