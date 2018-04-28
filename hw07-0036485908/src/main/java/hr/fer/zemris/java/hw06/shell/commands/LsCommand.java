@@ -16,22 +16,34 @@ import java.util.Date;
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class LsCommand.
+ * The command that takes a single argument – directory – and writes a directory
+ * listing (not recursive).
+ * 
+ * @author Damjan Vučina
  */
 public class LsCommand extends Command {
 
 	/**
-	 * Instantiates a new ls command.
+	 * Instantiates a new ls command and provides description that can later be
+	 * obtained via help command..
 	 */
 	public LsCommand() {
 		super("ls", Arrays.asList("Command takes a single argument(directory) and writes a directory listing.",
 				"Does not use recursion."));
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	/**
+	 * Method that takes a single argument – directory – and writes a directory
+	 * listing (not recursive). Output is formatted and consists this information:
+	 * First column indicates if current object is directory (d), readable (r),
+	 * writable (w) and executable (x). Second column contains object size in bytes
+	 * that is right aligned and occupies 10 characters. Follows file creation
+	 * date/time and finally file name.
+	 * 
+	 * @return ShellStatus The enum that defines the result of the execution of the
+	 *         specified command. MyShell program will end by terminating only if
+	 *         there is no way of recovering from the user's invalid input.
 	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
@@ -84,7 +96,7 @@ public class LsCommand extends Command {
 				private String acquireCreationTime(BasicFileAttributes attributes) {
 					FileTime fileTime = attributes.creationTime();
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					
+
 					String formattedDateTime = sdf.format(new Date(fileTime.toMillis()));
 					return formattedDateTime;
 				}

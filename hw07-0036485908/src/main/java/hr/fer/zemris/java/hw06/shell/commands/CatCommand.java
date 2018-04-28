@@ -11,14 +11,20 @@ import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellIOException;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CatCommand.
+ * This class represents a command that opens given file and writes its content
+ * to console. Command takes one or two arguments. The first argument is path to
+ * some file and is mandatory. The second argument is charset name that should
+ * be used to interpret chars from bytes. If not provided, a default platform
+ * charset is used.
+ * 
+ * @author Damjan Vučina
  */
 public class CatCommand extends Command {
 
 	/**
-	 * Instantiates a new cat command.
+	 * Instantiates a new cat command and provides description that can later be
+	 * obtained via help command.
 	 */
 	//@formatter:off
 	public CatCommand() {
@@ -30,18 +36,28 @@ public class CatCommand extends Command {
 	}
 	//@formatter:on
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	/**
+	 * Method that is charged with execution of the cat command. Command takes one
+	 * or two arguments and they are appended within second method argument. The
+	 * first argument within is path to some file and is mandatory. The second
+	 * argument within is charset name that should be used to interpret chars from
+	 * bytes. If not provided, a default platform charset is used.
+	 * 
+	 * @throws ShellIOException if IOException occured while writing file content.
+	 * 
+	 * @return ShellStatus The enum that defines the result of the execution of the
+	 *         specified command. MyShell program will end by terminating only if
+	 *         there is no way of recovering from the user's invalid input.
 	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
-		
+
 		if (input.length < 1 || input.length > 2) {
 			env.writeln("Command " + getCommandName() + " takes one or two arguments.");
 			return ShellStatus.CONTINUE;
 		}
-		
+
 		Path path = Paths.get(input[0]);
 		if (!Files.exists(path) || Files.isDirectory(path)) {
 			env.writeln("First argument must be an existing file.");

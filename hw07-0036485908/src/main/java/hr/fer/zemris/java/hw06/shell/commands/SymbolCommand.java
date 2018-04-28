@@ -6,22 +6,30 @@ import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 import static hr.fer.zemris.java.hw06.shell.MyShell.*;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class SymbolCommand.
+ * The command that is used for changing the prompt, multilines or morelines
+ * symbol.
+ * 
+ * @author Damjan Vučina
  */
 public class SymbolCommand extends Command {
 
 	/**
-	 * Instantiates a new symbol command.
+	 * Instantiates a new symbol command and provides description that can later be
+	 * obtained via help command.
 	 */
 	public SymbolCommand() {
 		super("symbol", Arrays.asList("Command used for viewing and editing symbols.",
 				"Editable symbols are PROMPT, MORELINES and MULTILINE."));
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#executeCommand(hr.fer.zemris.java.hw06.shell.Environment, java.lang.String)
+	/**
+	 * Method that prints out the symbol for the specified symbol or updated the
+	 * specified symbol with the newly provided character in the arguments
+	 * 
+	 * @return ShellStatus The enum that defines the result of the execution of the
+	 *         specified command. MyShell program will end by terminating only if
+	 *         there is no way of recovering from the user's invalid input.
 	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
@@ -30,7 +38,7 @@ public class SymbolCommand extends Command {
 			env.writeln("Command " + getCommandName() + " takes one or two arguments.");
 			return ShellStatus.CONTINUE;
 		}
-		
+
 		switch (input[0]) {
 		case PROMPT:
 
@@ -78,21 +86,32 @@ public class SymbolCommand extends Command {
 	/**
 	 * Prints the updated symbol.
 	 *
-	 * @param symbol the symbol
-	 * @param oldCharacter the old character
-	 * @param newCharacter the new character
-	 * @param env the env
+	 * @param symbol
+	 *            the symbol
+	 * @param oldCharacter
+	 *            the old character
+	 * @param newCharacter
+	 *            the new character
+	 * @param env
+	 *            the reference to the object that is assigned with the task of
+	 *            making the communication between the user, shell and specific
+	 *            command possible and uniform.
 	 */
 	private void printUpdatedSymbol(String symbol, Character oldCharacter, Character newCharacter, Environment env) {
-		env.writeln("Symbol for " +  symbol + " changed from '" + oldCharacter + "' to '" + newCharacter + "'");
+		env.writeln("Symbol for " + symbol + " changed from '" + oldCharacter + "' to '" + newCharacter + "'");
 	}
 
 	/**
 	 * Prints the symbol.
 	 *
-	 * @param symbol the symbol
-	 * @param character the character
-	 * @param env the env
+	 * @param symbol
+	 *            the symbol
+	 * @param character
+	 *            the character
+	 * @param env
+	 *            the reference to the object that is assigned with the task of
+	 *            making the communication between the user, shell and specific
+	 *            command possible and uniform.
 	 */
 	private void printSymbol(String symbol, Character character, Environment env) {
 		env.writeln("Symbol for " + symbol + " is '" + character + "'");

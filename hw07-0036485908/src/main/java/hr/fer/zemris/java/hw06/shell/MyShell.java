@@ -41,7 +41,7 @@ import static hr.fer.zemris.java.hw06.shell.ShellStatus.CONTINUE;
  */
 public class MyShell {
 
-	/** The constant that defines the prPROMPTompt symbol */
+	/** The constant that defines the PROMPT symbol */
 	public static final String PROMPT = "PROMPT";
 
 	/** The constant that defines the MORELINES symbol */

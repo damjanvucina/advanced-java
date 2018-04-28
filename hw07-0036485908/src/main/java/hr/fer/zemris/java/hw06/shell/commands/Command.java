@@ -10,39 +10,51 @@ import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import static hr.fer.zemris.java.hw06.shell.MyShell.WHITESPACE;
 import static hr.fer.zemris.java.hw06.shell.ArgumentSplitterState.*;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Command.
+ * The abstract base class that represents a single command. Every command class
+ * of this MyShell must extended this class at the same time implementing the
+ * environment interface used for uniforming the communication between the user,
+ * shell and a specific command.
+ * 
+ * @author Damjan Vučina
  */
 public abstract class Command implements ShellCommand {
-	
-	/** The name. */
+
+	/** The name of the command. */
 	private String name;
-	
-	/** The description. */
+
+	/**
+	 * The description of the command that can later be obtained via help method.
+	 */
 	private List<String> description;
 
 	/**
-	 * Instantiates a new command.
+	 * Instantiates a new command with the specified name and description.
 	 *
-	 * @param name the name
-	 * @param description the description
+	 * @param name
+	 *            the name of the command
+	 * @param description
+	 *            the description of the command
 	 */
 	public Command(String name, List<String> description) {
 		this.name = name;
 		this.description = description;
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#getCommandName()
+	/**
+	 * Gets the name of the specified command
+	 * 
+	 * @return name of the specified command
 	 */
 	@Override
 	public String getCommandName() {
 		return name;
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw06.shell.ShellCommand#getCommandDescription()
+	/**
+	 * Gets the description of the specified command
+	 * 
+	 * @return description of the specified command
 	 */
 	@Override
 	public List<String> getCommandDescription() {
@@ -50,10 +62,13 @@ public abstract class Command implements ShellCommand {
 	}
 
 	/**
-	 * Split arguments.
+	 * Splits the arguments of the command that have already been extracted from the
+	 * user's query by the MyShell class. Multiple arguments are all appended
+	 * together to a single string splitted by the whitespaces.
 	 *
-	 * @param arguments the arguments
-	 * @return the string[]
+	 * @param arguments
+	 *            the arguments of the command to be split apart
+	 * @return the string array consisting of the command's arguments
 	 */
 	public String[] splitArguments(String arguments) {
 		if (!arguments.contains("\"")) {
