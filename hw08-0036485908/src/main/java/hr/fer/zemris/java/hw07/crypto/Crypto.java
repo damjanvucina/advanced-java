@@ -1,4 +1,4 @@
-package hr.fer.zemris.java.hw06.crypto;
+package hr.fer.zemris.java.hw07.crypto;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

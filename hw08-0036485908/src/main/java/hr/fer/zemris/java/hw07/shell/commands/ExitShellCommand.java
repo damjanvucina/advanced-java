@@ -1,9 +1,9 @@
-package hr.fer.zemris.java.hw06.shell.commands;
+package hr.fer.zemris.java.hw07.shell.commands;
 
 import java.util.Arrays;
 
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
+import hr.fer.zemris.java.hw07.shell.Environment;
+import hr.fer.zemris.java.hw07.shell.ShellStatus;
 
 /**
  * The class that represents a command that si in charge of closing the MyShell

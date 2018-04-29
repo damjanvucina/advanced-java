@@ -1,7 +1,8 @@
-package hr.fer.zemris.java.hw06.shell.commands;
+package hr.fer.zemris.java.hw07.shell.commands;
+
+import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 
 import java.io.IOException;
-import static hr.fer.zemris.java.hw06.shell.MyShell.WHITESPACE;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,8 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
+import hr.fer.zemris.java.hw07.shell.Environment;
+import hr.fer.zemris.java.hw07.shell.ShellStatus;
 
 /**
  * The command that takes a single argument – directory – and writes a directory

@@ -1,6 +1,6 @@
-package hr.fer.zemris.java.hw06.shell.commands;
+package hr.fer.zemris.java.hw07.shell.commands;
 
-import static hr.fer.zemris.java.hw06.shell.ShellStatus.*;
+import static hr.fer.zemris.java.hw07.shell.ShellStatus.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,8 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
+import hr.fer.zemris.java.hw07.shell.Environment;
+import hr.fer.zemris.java.hw07.shell.ShellStatus;
 
 /**
  * The command that is used for the process of copying a file from one location

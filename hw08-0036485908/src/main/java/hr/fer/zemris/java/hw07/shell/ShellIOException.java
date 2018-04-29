@@ -1,4 +1,4 @@
-package hr.fer.zemris.java.hw06.shell;
+package hr.fer.zemris.java.hw07.shell;
 
 // TODO: Auto-generated Javadoc
 /**

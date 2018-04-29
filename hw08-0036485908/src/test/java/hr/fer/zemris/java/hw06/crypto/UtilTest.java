@@ -3,6 +3,8 @@ package hr.fer.zemris.java.hw06.crypto;
 import org.junit.Assert;
 import org.junit.Test;
 
+import hr.fer.zemris.java.hw07.crypto.Util;
+
 public class UtilTest {
 	
 	@Test

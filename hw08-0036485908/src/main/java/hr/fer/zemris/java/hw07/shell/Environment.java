@@ -1,84 +1,45 @@
-package hr.fer.zemris.java.hw06.shell;
+package hr.fer.zemris.java.hw07.shell;
 
-import java.util.Scanner;
 import java.util.SortedMap;
-import static hr.fer.zemris.java.hw06.shell.MyShell.PROMPT;
-import static hr.fer.zemris.java.hw06.shell.MyShell.MULTILINE;
-import static hr.fer.zemris.java.hw06.shell.MyShell.MORELINES;
 
 /**
- * The class that implements the interface Environment and as such provides the
- * methods for communication between user, MyShell class and various command
- * classes.
+ * The interface that provides methods for communication between user, MyShell
+ * class and various command classes.
  * 
  * @author Damjan Vučina
  */
-public class Dispatcher implements Environment {
-
-	/** The scanner used for reading from console. */
-	Scanner sc;
+public interface Environment {
 
 	/**
-	 * Instantiates a new dispatcher class used for communication between user,
-	 * MyShell class and various command classes.
+	 * Read line.
 	 *
-	 * @param sc
-	 *            The scanner used for reading from console.
-	 */
-	public Dispatcher(Scanner sc) {
-		this.sc = sc;
-	}
-
-	/**
-	 * Method used for reading a new line from console if it exists.
-	 * 
+	 * @return the string
 	 * @throws ShellIOException
-	 *             if this scanner is closed
+	 *             the shell IO exception
 	 */
-	@Override
-	public String readLine() {
-		try {
-			if (sc.hasNextLine()) {
-				return sc.nextLine().trim();
-			}
-		} catch (ShellIOException e) {
-			System.out.println("This scanner is closed");
-		}
-		return null;
-	}
+	String readLine() throws ShellIOException;
 
 	/**
 	 * Method used for writing a new chunk of text to the console. Unlike writeln
 	 * method this method does not put CR/LF at the end of the output.
 	 * 
+	 * @param text
+	 *            the text
 	 * @throws ShellIOException
 	 *             if this scanner is closed
 	 */
-	@Override
-	public void write(String text) {
-		try {
-			System.out.print(text);
-		} catch (ShellIOException e) {
-			System.out.println("Error writing to console occured.");
-		}
-	}
+	void write(String text) throws ShellIOException;
 
 	/**
 	 * Method used for writing a new chunk of text to the console. Unlike write
 	 * method this method does put CR/LF at the end of the output.
-	 * 
+	 *
+	 * @param text
+	 *            the text
 	 * @throws ShellIOException
 	 *             if this scanner is closed
 	 */
-
-	@Override
-	public void writeln(String text) {
-		try {
-			System.out.println(text);
-		} catch (ShellIOException e) {
-			e.printStackTrace();
-		}
-	}
+	void writeln(String text) throws ShellIOException;
 
 	/**
 	 * Method used for accessing the map consisting of the all available commands
@@ -87,10 +48,7 @@ public class Dispatcher implements Environment {
 	 * @return unmodifiable map consisting of the all available commands suppoted by
 	 *         this MyShell.
 	 */
-	@Override
-	public SortedMap<String, ShellCommand> commands() {
-		return MyShell.getCommands();
-	}
+	SortedMap<String, ShellCommand> commands();
 
 	/**
 	 * Gets the symbol which is currently in use as multiline symbol. For each line
@@ -99,20 +57,17 @@ public class Dispatcher implements Environment {
 	 * 
 	 * @return the symbol which is currently in use as multiline symbol.
 	 */
-	@Override
-	public Character getMultilineSymbol() {
-		return MyShell.getSymbols().get(MULTILINE);
-	}
+	Character getMultilineSymbol();
 
 	/**
 	 * Sets the symbol which is currently in use as multiline symbol. For each line
 	 * that is part of multi-line command (except for the first one) this shell
 	 * writes MULTILINESYMBOL at the beginning followed by a single whitespace.
+	 * 
+	 * @param symbol
+	 *            the new multiline symbol
 	 */
-	@Override
-	public void setMultilineSymbol(Character symbol) {
-		MyShell.getSymbols().put(MULTILINE, symbol);
-	}
+	void setMultilineSymbol(Character symbol);
 
 	/**
 	 * Gets the symbol which is currently in use as prompt symbol. Whenever the
@@ -121,10 +76,7 @@ public class Dispatcher implements Environment {
 	 * 
 	 * @return the symbol which is currently in use as prompt symbol.
 	 */
-	@Override
-	public Character getPromptSymbol() {
-		return MyShell.getSymbols().get(PROMPT);
-	}
+	Character getPromptSymbol();
 
 	/**
 	 * Sets the symbol which is currently in use as prompt symbol. Whenever the
@@ -132,10 +84,7 @@ public class Dispatcher implements Environment {
 	 * inform the user about it.
 	 * 
 	 */
-	@Override
-	public void setPromptSymbol(Character symbol) {
-		MyShell.getSymbols().put(PROMPT, symbol);
-	}
+	void setPromptSymbol(Character symbol);
 
 	/**
 	 * Gets the symbol which is currently in use as morelines symbol. Morelines
@@ -143,12 +92,12 @@ public class Dispatcher implements Environment {
 	 * that the query is not yet finished and new furhter arguments are to be
 	 * provided.
 	 * 
+	 * 	 * @param symbol
+	 *            the new promt symbol
+	 * 
 	 * @return the symbol which is currently in use as morelines symbol.
 	 */
-	@Override
-	public Character getMorelinesSymbol() {
-		return MyShell.getSymbols().get(MORELINES);
-	}
+	Character getMorelinesSymbol();
 
 	/**
 	 * Sets the symbol which is currently in use as morelines symbol. Morelines
@@ -156,10 +105,9 @@ public class Dispatcher implements Environment {
 	 * that the query is not yet finished and new furhter arguments are to be
 	 * provided.
 	 * 
+	 * 	 * @param symbol
+	 *            the new morelines symbol
+	 * 
 	 */
-	@Override
-	public void setMorelinesSymbol(Character symbol) {
-		MyShell.getSymbols().put(MORELINES, symbol);
-	}
-
+	void setMorelinesSymbol(Character symbol);
 }

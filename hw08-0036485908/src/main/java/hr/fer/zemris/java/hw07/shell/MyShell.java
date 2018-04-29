@@ -1,4 +1,6 @@
-package hr.fer.zemris.java.hw06.shell;
+package hr.fer.zemris.java.hw07.shell;
+
+import static hr.fer.zemris.java.hw07.shell.ShellStatus.CONTINUE;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,18 +8,16 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-import hr.fer.zemris.java.hw06.shell.commands.CatCommand;
-import hr.fer.zemris.java.hw06.shell.commands.CharsetsCommand;
-import hr.fer.zemris.java.hw06.shell.commands.CopyCommand;
-import hr.fer.zemris.java.hw06.shell.commands.ExitShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.HelpCommand;
-import hr.fer.zemris.java.hw06.shell.commands.HexdumpCommand;
-import hr.fer.zemris.java.hw06.shell.commands.LsCommand;
-import hr.fer.zemris.java.hw06.shell.commands.MkdirCommand;
-import hr.fer.zemris.java.hw06.shell.commands.SymbolCommand;
-import hr.fer.zemris.java.hw06.shell.commands.TreeCommand;
-
-import static hr.fer.zemris.java.hw06.shell.ShellStatus.CONTINUE;
+import hr.fer.zemris.java.hw07.shell.commands.CatCommand;
+import hr.fer.zemris.java.hw07.shell.commands.CharsetsCommand;
+import hr.fer.zemris.java.hw07.shell.commands.CopyCommand;
+import hr.fer.zemris.java.hw07.shell.commands.ExitShellCommand;
+import hr.fer.zemris.java.hw07.shell.commands.HelpCommand;
+import hr.fer.zemris.java.hw07.shell.commands.HexdumpCommand;
+import hr.fer.zemris.java.hw07.shell.commands.LsCommand;
+import hr.fer.zemris.java.hw07.shell.commands.MkdirCommand;
+import hr.fer.zemris.java.hw07.shell.commands.SymbolCommand;
+import hr.fer.zemris.java.hw07.shell.commands.TreeCommand;
 
 /**
  * The class that represents a Shell. It provides the methods for communication
@@ -82,6 +82,7 @@ public class MyShell {
 
 	/** The constant that defines the help command. */
 	public static final String HELP_COMMAND = "help";
+	public static final String PWD_COMMAND = "pwd";
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -228,6 +229,10 @@ public class MyShell {
 
 		case HELP_COMMAND:
 			command = commands.get(HELP_COMMAND);
+			break;
+			
+		case PWD_COMMAND:
+			command = commands.get(PWD_COMMAND);
 			break;
 
 		default:

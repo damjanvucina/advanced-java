@@ -1,4 +1,4 @@
-package hr.fer.zemris.java.hw06.shell;
+package hr.fer.zemris.java.hw07.shell;
 
 /**
  * The enum that defines the result of the execution of the specified command.

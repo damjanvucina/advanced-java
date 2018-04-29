@@ -1,4 +1,4 @@
-package hr.fer.zemris.java.hw06.shell.commands;
+package hr.fer.zemris.java.hw07.shell.commands;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -7,9 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellIOException;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
+import hr.fer.zemris.java.hw07.shell.Environment;
+import hr.fer.zemris.java.hw07.shell.ShellIOException;
+import hr.fer.zemris.java.hw07.shell.ShellStatus;
 
 /**
  * This class represents a command that opens given file and writes its content

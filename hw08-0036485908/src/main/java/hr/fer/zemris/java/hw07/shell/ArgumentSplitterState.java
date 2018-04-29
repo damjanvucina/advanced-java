@@ -1,4 +1,4 @@
-package hr.fer.zemris.java.hw06.shell;
+package hr.fer.zemris.java.hw07.shell;
 
 /**
  * The enumeration used in the process of parsing the user input path to enable

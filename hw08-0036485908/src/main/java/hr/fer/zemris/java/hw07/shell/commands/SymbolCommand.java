@@ -1,10 +1,11 @@
-package hr.fer.zemris.java.hw06.shell.commands;
+package hr.fer.zemris.java.hw07.shell.commands;
+
+import static hr.fer.zemris.java.hw07.shell.MyShell.*;
 
 import java.util.Arrays;
 
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
-import static hr.fer.zemris.java.hw06.shell.MyShell.*;
+import hr.fer.zemris.java.hw07.shell.Environment;
+import hr.fer.zemris.java.hw07.shell.ShellStatus;
 
 /**
  * The command that is used for changing the prompt, multilines or morelines
