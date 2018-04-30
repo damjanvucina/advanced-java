@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.HELP_COMMAND;
 /**
  * The command that is used for checking out the supported commands or for
  * obtaining more detailed information about a specified command.
@@ -18,7 +18,7 @@ public class HelpCommand extends Command {
 	 * obtained via help command.
 	 */
 	public HelpCommand() {
-		super("help",
+		super(HELP_COMMAND,
 				Arrays.asList("Command that provides detailed info about the available commands",
 						"If started with no arguments, it lists names of all supported commands.",
 						"If started with single argument, it prints name and the description of selected command"));

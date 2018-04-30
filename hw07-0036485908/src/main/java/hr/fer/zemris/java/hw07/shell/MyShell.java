@@ -15,8 +15,10 @@ import hr.fer.zemris.java.hw07.shell.commands.CopyCommand;
 import hr.fer.zemris.java.hw07.shell.commands.ExitShellCommand;
 import hr.fer.zemris.java.hw07.shell.commands.HelpCommand;
 import hr.fer.zemris.java.hw07.shell.commands.HexdumpCommand;
+import hr.fer.zemris.java.hw07.shell.commands.ListdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.LsCommand;
 import hr.fer.zemris.java.hw07.shell.commands.MkdirCommand;
+import hr.fer.zemris.java.hw07.shell.commands.PopdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.PushdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.PwdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.SymbolCommand;
@@ -88,6 +90,8 @@ public class MyShell {
 	public static final String PWD_COMMAND = "pwd";
 	public static final String CD_COMMAND = "cd";
 	public static final String PUSHD_COMMAND = "pushd";
+	public static final String POPD_COMMAND = "popd";
+	public static final String LISTD_COMMAND = "listd";
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -243,10 +247,18 @@ public class MyShell {
 		case CD_COMMAND:
 			command = commands.get(CD_COMMAND);
 			break;
+			
 		case PUSHD_COMMAND:
 			command = commands.get(PUSHD_COMMAND);
 			break;
+			
+		case POPD_COMMAND:
+			command = commands.get(POPD_COMMAND);
+			break;
 
+		case LISTD_COMMAND:
+			command = commands.get(LISTD_COMMAND);
+			break;
 
 
 		default:
@@ -322,6 +334,8 @@ public class MyShell {
 		commands.put(PWD_COMMAND, new PwdCommand());
 		commands.put(CD_COMMAND, new CdCommand());
 		commands.put(PUSHD_COMMAND, new PushdCommand());
+		commands.put(POPD_COMMAND, new PopdCommand());
+		commands.put(LISTD_COMMAND, new ListdCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');

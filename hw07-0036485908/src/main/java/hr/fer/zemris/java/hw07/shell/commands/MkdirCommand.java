@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.MKDIR_COMMAND;
 /**
  * The command that takes a single argument: directory name, and creates the
  * appropriate directory structure.
@@ -21,7 +21,7 @@ public class MkdirCommand extends Command {
 	 * obtained via help command.
 	 */
 	public MkdirCommand() {
-		super("mkdir", Arrays.asList("Command takes a single argument: directory name",
+		super(MKDIR_COMMAND, Arrays.asList("Command takes a single argument: directory name",
 				"Creates the appropriate directory structure"));
 	}
 

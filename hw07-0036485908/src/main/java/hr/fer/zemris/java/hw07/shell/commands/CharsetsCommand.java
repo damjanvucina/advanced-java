@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.CHARSETS_COMMAND;
 /**
  * Command charsets takes no arguments and lists names of supported charsets for
  * users Java platform. A single charset name is written per line.
@@ -21,7 +21,7 @@ public class CharsetsCommand extends Command {
 	 * be obtained via help command..
 	 */
 	public CharsetsCommand() {
-		super("charsets", Arrays.asList("Lists names of supported charsets for user's Java platform."));
+		super(CHARSETS_COMMAND, Arrays.asList("Lists names of supported charsets for user's Java platform."));
 	}
 
 	/**

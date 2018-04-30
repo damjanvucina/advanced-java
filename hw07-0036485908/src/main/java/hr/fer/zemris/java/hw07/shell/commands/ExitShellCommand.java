@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.EXIT_SHELL_COMMAND;
 /**
  * The class that represents a command that si in charge of closing the MyShell
  * program.
@@ -18,7 +18,7 @@ public class ExitShellCommand extends Command {
 	 * be obtained via help command.
 	 */
 	public ExitShellCommand() {
-		super("exit", Arrays.asList("Command used for exiting this shell."));
+		super(EXIT_SHELL_COMMAND, Arrays.asList("Command used for exiting this shell."));
 	}
 
 	/**

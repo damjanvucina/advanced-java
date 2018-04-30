@@ -15,7 +15,7 @@ import java.util.Date;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.LS_COMMAND;
 /**
  * The command that takes a single argument – directory – and writes a directory
  * listing (not recursive).
@@ -29,7 +29,7 @@ public class LsCommand extends Command {
 	 * obtained via help command..
 	 */
 	public LsCommand() {
-		super("ls", Arrays.asList("Command takes a single argument(directory) and writes a directory listing.",
+		super(LS_COMMAND, Arrays.asList("Command takes a single argument(directory) and writes a directory listing.",
 				"Does not use recursion."));
 	}
 

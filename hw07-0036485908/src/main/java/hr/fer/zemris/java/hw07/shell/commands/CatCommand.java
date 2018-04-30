@@ -9,7 +9,7 @@ import java.util.Arrays;
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellIOException;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.CAT_COMMAND;
 /**
  * This class represents a command that opens given file and writes its content
  * to console. Command takes one or two arguments. The first argument is path to
@@ -27,7 +27,7 @@ public class CatCommand extends Command {
 	 */
 	//@formatter:off
 	public CatCommand() {
-		super("cat", Arrays.asList("Opens given file and writes its content to console",
+		super(CAT_COMMAND, Arrays.asList("Opens given file and writes its content to console",
 								   "Command takes one or two arguments",
 								   "The first argument is path to some file and is mandatory",
 								   "The second argument is charset name that should be used to interpret chars from bytes"));

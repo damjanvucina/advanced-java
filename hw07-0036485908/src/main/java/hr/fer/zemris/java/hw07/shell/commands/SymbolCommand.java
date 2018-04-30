@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.SYMBOL_COMMAND;
 /**
  * The command that is used for changing the prompt, multilines or morelines
  * symbol.
@@ -20,7 +20,7 @@ public class SymbolCommand extends Command {
 	 * obtained via help command.
 	 */
 	public SymbolCommand() {
-		super("symbol", Arrays.asList("Command used for viewing and editing symbols.",
+		super(SYMBOL_COMMAND, Arrays.asList("Command used for viewing and editing symbols.",
 				"Editable symbols are PROMPT, MORELINES and MULTILINE."));
 	}
 

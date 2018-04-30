@@ -125,8 +125,8 @@ public abstract class Command implements ShellCommand {
 		return Paths.get(String.valueOf(path));
 	}
 
-	public void updateWorkingDirectory(Environment env, Path path, String arguments) {
-		if (!Files.exists(path) || arguments.trim().equals("")) {
+	public void updateWorkingDirectory(Environment env, Path path) {
+		if (!Files.exists(path)) {
 			env.writeln("Provided path does not exist");
 		}
 

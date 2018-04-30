@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.COPY_COMMAND;
 /**
  * The command that is used for the process of copying a file from one location
  * to the another. Source file can only be a regular file but the destination
@@ -37,7 +37,7 @@ public class CopyCommand extends Command {
 	 * obtained via help command.
 	 */
 	public CopyCommand() {
-		super("copy", Arrays.asList("Copies first file to the second file", "Command expects two arguments",
+		super(COPY_COMMAND, Arrays.asList("Copies first file to the second file", "Command expects two arguments",
 				"Source file must be a regular file", "Destination file can be a directory"));
 	}
 

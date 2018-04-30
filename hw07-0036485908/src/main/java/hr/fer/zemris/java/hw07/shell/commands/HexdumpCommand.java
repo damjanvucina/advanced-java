@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.HEXDUMP_COMMAND;
 /**
  * The method that is used for dumping the byte contents of a given file. This
  * method can be used for debugging the file and inspection of the file's
@@ -63,7 +63,7 @@ public class HexdumpCommand extends Command {
 	 * obtained via help command..
 	 */
 	public HexdumpCommand() {
-		super("hexdump", Arrays.asList("Expects a single argument: file name", "Produces hex-output"));
+		super(HEXDUMP_COMMAND, Arrays.asList("Expects a single argument: file name", "Produces hex-output"));
 
 	}
 

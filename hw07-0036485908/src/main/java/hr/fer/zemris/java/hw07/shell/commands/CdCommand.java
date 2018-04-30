@@ -6,11 +6,11 @@ import java.util.Arrays;
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
 import static hr.fer.zemris.java.hw07.shell.ShellStatus.CONTINUE;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.CD_COMMAND;
 public class CdCommand extends Command {
 
 	public CdCommand() {
-		super("cd", Arrays.asList("Invoked with a single argument",
+		super(CD_COMMAND, Arrays.asList("Invoked with a single argument",
 								  "Argument represents the new path to the to be set working directory"));
 		
 	}
@@ -23,10 +23,10 @@ public class CdCommand extends Command {
 					"Command " + getCommandName() + " takes a single argument, arguments provided: " + input.length);
 			return CONTINUE;
 		}
-
-		Path path = getResolved(env, input[0]);
-		updateWorkingDirectory(env, path, arguments);
 		
+		Path path = getResolved(env, input[0]);
+		
+		updateWorkingDirectory(env, path);
 		return CONTINUE;
 	}
 

@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
-
+import static hr.fer.zemris.java.hw07.shell.MyShell.TREE_COMMAND;
 /**
  * The command that prints to the console directory structure of the specified
  * directory.
@@ -29,7 +29,7 @@ public class TreeCommand extends Command {
 	 * obtained via help command.
 	 */
 	public TreeCommand() {
-		super("tree", Arrays.asList("Prints directory tree",
+		super(TREE_COMMAND, Arrays.asList("Prints directory tree",
 				"Each directory level shifts output two charatcers to the right"));
 	}
 
