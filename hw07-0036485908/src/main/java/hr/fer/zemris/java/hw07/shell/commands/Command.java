@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import hr.fer.zemris.java.hw07.shell.ArgumentSplitterState;
 import hr.fer.zemris.java.hw07.shell.Environment;
@@ -138,4 +139,20 @@ public abstract class Command implements ShellCommand {
 			env.writeln("Current working directory set to: " + String.valueOf(path));
 		}
 	}
+	
+	public Path popFromStack(Environment env, String stackId) {
+		@SuppressWarnings("unchecked")
+		Stack<Path> stack = (Stack<Path>) env.getSharedData(stackId);
+
+		if (stack.isEmpty()) {
+			env.writeln("Internally managed stack is empty");
+			return null;
+		}
+
+		Path poppedPath = stack.pop();
+		env.setSharedData(stackId, stack);
+		
+		return poppedPath;
+	}
+	
 }

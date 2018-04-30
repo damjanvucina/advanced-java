@@ -12,6 +12,7 @@ import hr.fer.zemris.java.hw07.shell.commands.CatCommand;
 import hr.fer.zemris.java.hw07.shell.commands.CdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.CharsetsCommand;
 import hr.fer.zemris.java.hw07.shell.commands.CopyCommand;
+import hr.fer.zemris.java.hw07.shell.commands.DropdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.ExitShellCommand;
 import hr.fer.zemris.java.hw07.shell.commands.HelpCommand;
 import hr.fer.zemris.java.hw07.shell.commands.HexdumpCommand;
@@ -92,6 +93,7 @@ public class MyShell {
 	public static final String PUSHD_COMMAND = "pushd";
 	public static final String POPD_COMMAND = "popd";
 	public static final String LISTD_COMMAND = "listd";
+	public static final String DROPD_COMMAND = "dropd";
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -259,6 +261,10 @@ public class MyShell {
 		case LISTD_COMMAND:
 			command = commands.get(LISTD_COMMAND);
 			break;
+			
+		case DROPD_COMMAND:
+			command = commands.get(DROPD_COMMAND);
+			break;
 
 
 		default:
@@ -336,6 +342,7 @@ public class MyShell {
 		commands.put(PUSHD_COMMAND, new PushdCommand());
 		commands.put(POPD_COMMAND, new PopdCommand());
 		commands.put(LISTD_COMMAND, new ListdCommand());
+		commands.put(DROPD_COMMAND, new DropdCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');

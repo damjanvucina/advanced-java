@@ -5,11 +5,11 @@ import static hr.fer.zemris.java.hw07.shell.Dispatcher.CD_STACK;
 
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Stack;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
 import static hr.fer.zemris.java.hw07.shell.MyShell.POPD_COMMAND;
+
 public class PopdCommand extends Command {
 
 	public PopdCommand() {
@@ -25,21 +25,12 @@ public class PopdCommand extends Command {
 			return CONTINUE;
 		}
 
-		@SuppressWarnings("unchecked")
-		Stack<Path> stack = (Stack<Path>) env.getSharedData(CD_STACK);
-
-		if (stack.isEmpty()) {
-			env.writeln("Internally managed stack is empty");
-			return CONTINUE;
+		Path poppedPath = popFromStack(env, CD_STACK);
+		
+		if(poppedPath != null) {
+			updateWorkingDirectory(env, poppedPath);
 		}
-
-		Path updatedWorkingDir = stack.pop();
-		env.setSharedData(CD_STACK, stack);
-
-		updateWorkingDirectory(env, updatedWorkingDir);
-
 		return CONTINUE;
-
 	}
 
 }

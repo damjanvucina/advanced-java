@@ -21,6 +21,7 @@ public class ListdCommand extends Command{
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		if (!(arguments.trim().equals(""))) {
 			env.writeln("Command " + getCommandName() + " takes zero arguments");
+			
 			return CONTINUE;
 		}
 		
@@ -29,6 +30,7 @@ public class ListdCommand extends Command{
 		
 		if(stack.isEmpty()) {
 			env.writeln("There are no stored working directory paths");
+			
 		} else {
 			stack.stream()
 				 .sorted()
