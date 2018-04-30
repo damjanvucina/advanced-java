@@ -3,7 +3,9 @@ package hr.fer.zemris.java.hw07.shell.commands;
 import static hr.fer.zemris.java.hw07.shell.ArgumentSplitterState.*;
 import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -114,8 +116,26 @@ public abstract class Command implements ShellCommand {
 			return result.stream().toArray(String[]::new);
 		}
 	}
-	
+
 	public Path getResolved(Environment env, String other) {
 		return env.getCurrentDirectory().resolve(other).normalize();
+	}
+
+	public Path clonePath(Path path) {
+		return Paths.get(String.valueOf(path));
+	}
+
+	public void updateWorkingDirectory(Environment env, Path path, String arguments) {
+		if (!Files.exists(path) || arguments.trim().equals("")) {
+			env.writeln("Provided path does not exist");
+		}
+
+		else if (Files.isRegularFile(path)) {
+			env.writeln("Argument must be directory path, not a regular file path.");
+
+		} else {
+			env.setCurrentDirectory(path);
+			env.writeln("Current working directory set to: " + String.valueOf(path));
+		}
 	}
 }

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.SortedMap;
+import java.util.Stack;
 
 /**
  * The class that implements the interface Environment and as such provides the
@@ -20,6 +21,7 @@ import java.util.SortedMap;
  * @author Damjan Vučina
  */
 public class Dispatcher implements Environment {
+	public static final String CD_STACK = "cdstack";
 
 	/** The scanner used for reading from console. */
 	Scanner sc;
@@ -37,6 +39,12 @@ public class Dispatcher implements Environment {
 		this.sc = sc;
 		currentDirectory = Paths.get(System.getProperty("user.dir"));
 		sharedData = new HashMap<>();
+		setUpSharedData();
+	}
+
+	private void setUpSharedData() {
+		Stack<Path> stack = new Stack<>();
+		sharedData.put(CD_STACK, stack);
 	}
 
 	/**

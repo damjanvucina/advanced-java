@@ -1,6 +1,5 @@
 package hr.fer.zemris.java.hw07.shell.commands;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
@@ -26,18 +25,8 @@ public class CdCommand extends Command {
 		}
 
 		Path path = getResolved(env, input[0]);
-		if (!Files.exists(path) || arguments.trim().equals("")) {
-			env.writeln("Provided path does not exist");
-			return CONTINUE;
-		}
+		updateWorkingDirectory(env, path, arguments);
 		
-		if (Files.isRegularFile(path)) {
-			env.writeln("Argument must be directory path, not a regular file path.");
-			return CONTINUE;
-		}
-		
-		env.setCurrentDirectory(path);
-		env.writeln("Current working directory set to: " + String.valueOf(path));
 		return CONTINUE;
 	}
 

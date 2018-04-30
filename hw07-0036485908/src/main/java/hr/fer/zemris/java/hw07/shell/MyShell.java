@@ -17,6 +17,7 @@ import hr.fer.zemris.java.hw07.shell.commands.HelpCommand;
 import hr.fer.zemris.java.hw07.shell.commands.HexdumpCommand;
 import hr.fer.zemris.java.hw07.shell.commands.LsCommand;
 import hr.fer.zemris.java.hw07.shell.commands.MkdirCommand;
+import hr.fer.zemris.java.hw07.shell.commands.PushdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.PwdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.SymbolCommand;
 import hr.fer.zemris.java.hw07.shell.commands.TreeCommand;
@@ -86,6 +87,7 @@ public class MyShell {
 	public static final String HELP_COMMAND = "help";
 	public static final String PWD_COMMAND = "pwd";
 	public static final String CD_COMMAND = "cd";
+	public static final String PUSHD_COMMAND = "pushd";
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -241,6 +243,10 @@ public class MyShell {
 		case CD_COMMAND:
 			command = commands.get(CD_COMMAND);
 			break;
+		case PUSHD_COMMAND:
+			command = commands.get(PUSHD_COMMAND);
+			break;
+
 
 
 		default:
@@ -315,6 +321,7 @@ public class MyShell {
 		commands.put(HELP_COMMAND, new HelpCommand());
 		commands.put(PWD_COMMAND, new PwdCommand());
 		commands.put(CD_COMMAND, new CdCommand());
+		commands.put(PUSHD_COMMAND, new PushdCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');
