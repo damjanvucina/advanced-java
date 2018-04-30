@@ -1,7 +1,10 @@
-package hr.fer.zemris.java.hw06.shell.commands;
+package hr.fer.zemris.java.hw07.shell.commands;
 
 import java.io.BufferedReader;
-import static hr.fer.zemris.java.hw06.shell.MyShell.WHITESPACE;
+
+import static hr.fer.zemris.java.hw07.crypto.Util.bytetohex;
+import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -9,9 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
-import static hr.fer.zemris.java.hw06.crypto.Util.bytetohex;
+import hr.fer.zemris.java.hw07.shell.Environment;
+import hr.fer.zemris.java.hw07.shell.ShellStatus;
 
 /**
  * The method that is used for dumping the byte contents of a given file. This

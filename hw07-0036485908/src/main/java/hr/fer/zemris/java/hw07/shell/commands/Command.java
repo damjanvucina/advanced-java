@@ -1,14 +1,14 @@
-package hr.fer.zemris.java.hw06.shell.commands;
+package hr.fer.zemris.java.hw07.shell.commands;
+
+import static hr.fer.zemris.java.hw07.shell.ArgumentSplitterState.*;
+import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import hr.fer.zemris.java.hw06.shell.ArgumentSplitterState;
-import hr.fer.zemris.java.hw06.shell.ShellCommand;
-
-import static hr.fer.zemris.java.hw06.shell.MyShell.WHITESPACE;
-import static hr.fer.zemris.java.hw06.shell.ArgumentSplitterState.*;
+import hr.fer.zemris.java.hw07.shell.ArgumentSplitterState;
+import hr.fer.zemris.java.hw07.shell.ShellCommand;
 
 /**
  * The abstract base class that represents a single command. Every command class

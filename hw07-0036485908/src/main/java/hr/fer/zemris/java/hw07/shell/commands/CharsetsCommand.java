@@ -1,11 +1,12 @@
-package hr.fer.zemris.java.hw06.shell.commands;
+package hr.fer.zemris.java.hw07.shell.commands;
+
+import static hr.fer.zemris.java.hw07.shell.ShellStatus.CONTINUE;
 
 import java.nio.charset.Charset;
-import static hr.fer.zemris.java.hw06.shell.ShellStatus.CONTINUE;
 import java.util.Arrays;
 
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
+import hr.fer.zemris.java.hw07.shell.Environment;
+import hr.fer.zemris.java.hw07.shell.ShellStatus;
 
 /**
  * Command charsets takes no arguments and lists names of supported charsets for
