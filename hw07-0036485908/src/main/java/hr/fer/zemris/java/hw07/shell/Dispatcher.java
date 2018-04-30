@@ -4,6 +4,11 @@ import static hr.fer.zemris.java.hw07.shell.MyShell.MORELINES;
 import static hr.fer.zemris.java.hw07.shell.MyShell.MULTILINE;
 import static hr.fer.zemris.java.hw07.shell.MyShell.PROMPT;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.SortedMap;
 
@@ -18,6 +23,8 @@ public class Dispatcher implements Environment {
 
 	/** The scanner used for reading from console. */
 	Scanner sc;
+	Path currentDirectory;
+	Map<String, Object> sharedData;
 
 	/**
 	 * Instantiates a new dispatcher class used for communication between user,
@@ -28,6 +35,8 @@ public class Dispatcher implements Environment {
 	 */
 	public Dispatcher(Scanner sc) {
 		this.sc = sc;
+		currentDirectory = Paths.get(System.getProperty("user.dir"));
+		sharedData = new HashMap<>();
 	}
 
 	/**
@@ -161,6 +170,40 @@ public class Dispatcher implements Environment {
 	@Override
 	public void setMorelinesSymbol(Character symbol) {
 		MyShell.getSymbols().put(MORELINES, symbol);
+	}
+
+	@Override
+	public Path getCurrentDirectory() {
+		return currentDirectory;
+	}
+
+	@Override
+	public void setCurrentDirectory(Path path) {
+		if(Files.notExists(path)) {
+			throw new ShellIOException("Provided path does not exist.");
+			
+		} else if(Files.isRegularFile(path)) {
+			throw new ShellIOException("Provided path is file path, not a directory path.");
+		}
+		currentDirectory = path;
+	}
+
+	@Override
+	public Object getSharedData(String key) {
+		if(key == null) {
+			throw new ShellIOException("Shared data does not store elements with null keys.");
+		}
+		
+		return sharedData.get(key);
+	}
+
+	@Override
+	public void setSharedData(String key, Object value) {
+		if(key == null) {
+			throw new ShellIOException("Shared data cannot store elements with null keys.");
+		}
+		
+		sharedData.put(key, value);
 	}
 
 }

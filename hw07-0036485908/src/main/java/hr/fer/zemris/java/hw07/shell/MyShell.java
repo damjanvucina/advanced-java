@@ -16,6 +16,7 @@ import hr.fer.zemris.java.hw07.shell.commands.HelpCommand;
 import hr.fer.zemris.java.hw07.shell.commands.HexdumpCommand;
 import hr.fer.zemris.java.hw07.shell.commands.LsCommand;
 import hr.fer.zemris.java.hw07.shell.commands.MkdirCommand;
+import hr.fer.zemris.java.hw07.shell.commands.PwdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.SymbolCommand;
 import hr.fer.zemris.java.hw07.shell.commands.TreeCommand;
 
@@ -305,6 +306,7 @@ public class MyShell {
 		commands.put(TREE_COMMAND, new TreeCommand());
 		commands.put(SYMBOL_COMMAND, new SymbolCommand());
 		commands.put(HELP_COMMAND, new HelpCommand());
+		commands.put(PWD_COMMAND, new PwdCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');
