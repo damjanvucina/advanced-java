@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
@@ -88,7 +87,7 @@ public class HexdumpCommand extends Command {
 			return ShellStatus.CONTINUE;
 		}
 
-		Path path = Paths.get(input[0]);
+		Path path = getResolved(env, input[0]);
 		if (Files.isDirectory(path)) {
 			env.writeln("Command " + getCommandName() + " argument must be a normal file, not a directory.");
 			return ShellStatus.CONTINUE;

@@ -3,7 +3,6 @@ package hr.fer.zemris.java.hw07.shell.commands;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
@@ -42,7 +41,7 @@ public class MkdirCommand extends Command {
 			return ShellStatus.CONTINUE;
 		}
 
-		Path path = Paths.get(input[0]);
+		Path path = getResolved(env, input[0]);
 
 		if (Files.exists(path)) {
 			env.writeln("File with that name already exists.");

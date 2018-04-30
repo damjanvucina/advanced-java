@@ -3,11 +3,13 @@ package hr.fer.zemris.java.hw07.shell.commands;
 import static hr.fer.zemris.java.hw07.shell.ArgumentSplitterState.*;
 import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import hr.fer.zemris.java.hw07.shell.ArgumentSplitterState;
+import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellCommand;
 
 /**
@@ -111,5 +113,9 @@ public abstract class Command implements ShellCommand {
 
 			return result.stream().toArray(String[]::new);
 		}
+	}
+	
+	public Path getResolved(Environment env, String other) {
+		return env.getCurrentDirectory().resolve(other).normalize();
 	}
 }

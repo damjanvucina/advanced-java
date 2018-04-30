@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
@@ -60,8 +59,8 @@ public class CopyCommand extends Command {
 			env.writeln("Command " + getCommandName() + " takes two arguments, arguments provided: " + input.length);
 			return ShellStatus.CONTINUE;
 		}
-		Path sourceFile = Paths.get(input[0]);
-		Path destinationFile = Paths.get(input[1]);
+		Path sourceFile = getResolved(env, input[0]);
+		Path destinationFile = getResolved(env, input[1]);
 
 		if (!Files.exists(sourceFile)) {
 			env.writeln("File " + sourceFile + " does not exist.");

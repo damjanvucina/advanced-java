@@ -5,7 +5,6 @@ import static hr.fer.zemris.java.hw07.shell.ShellStatus.CONTINUE;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
@@ -51,7 +50,7 @@ public class TreeCommand extends Command {
 			return CONTINUE;
 		}
 
-		Path path = Paths.get(input[0]);
+		Path path = getResolved(env, input[0]);
 		if (!Files.exists(path)) {
 			env.writeln("Provided file does not exist");
 			return CONTINUE;

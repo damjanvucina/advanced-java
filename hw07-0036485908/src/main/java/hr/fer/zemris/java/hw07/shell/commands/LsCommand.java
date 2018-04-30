@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -55,7 +54,7 @@ public class LsCommand extends Command {
 			return ShellStatus.CONTINUE;
 		}
 
-		Path path = Paths.get(input[0]);
+		Path path = getResolved(env, input[0]);
 		if (!Files.exists(path)) {
 			env.writeln("Provided file does not exist");
 			return ShellStatus.CONTINUE;

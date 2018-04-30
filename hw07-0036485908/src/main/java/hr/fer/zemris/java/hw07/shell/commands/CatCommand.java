@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
@@ -58,7 +57,7 @@ public class CatCommand extends Command {
 			return ShellStatus.CONTINUE;
 		}
 
-		Path path = Paths.get(input[0]);
+		Path path =getResolved(env, input[0]);
 		if (!Files.exists(path) || Files.isDirectory(path)) {
 			env.writeln("First argument must be an existing file.");
 			return ShellStatus.CONTINUE;

@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 import hr.fer.zemris.java.hw07.shell.commands.CatCommand;
+import hr.fer.zemris.java.hw07.shell.commands.CdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.CharsetsCommand;
 import hr.fer.zemris.java.hw07.shell.commands.CopyCommand;
 import hr.fer.zemris.java.hw07.shell.commands.ExitShellCommand;
@@ -84,6 +85,7 @@ public class MyShell {
 	/** The constant that defines the help command. */
 	public static final String HELP_COMMAND = "help";
 	public static final String PWD_COMMAND = "pwd";
+	public static final String CD_COMMAND = "cd";
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -235,6 +237,11 @@ public class MyShell {
 		case PWD_COMMAND:
 			command = commands.get(PWD_COMMAND);
 			break;
+			
+		case CD_COMMAND:
+			command = commands.get(CD_COMMAND);
+			break;
+
 
 		default:
 			System.out.println("Invalid command, was: " + input[0]);
@@ -307,6 +314,7 @@ public class MyShell {
 		commands.put(SYMBOL_COMMAND, new SymbolCommand());
 		commands.put(HELP_COMMAND, new HelpCommand());
 		commands.put(PWD_COMMAND, new PwdCommand());
+		commands.put(CD_COMMAND, new CdCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');
