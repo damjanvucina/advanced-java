@@ -46,7 +46,7 @@ public class CopyCommand extends Command {
 	 * destination location. If the destination file already exists, user is asked
 	 * if overwriting of the old file is to be performed. Source file can only be a
 	 * regular file but the destination file can be a directory as well. If the
-	 * destionation file is in fact a directory the source file is copied in it.
+	 * destination file is in fact a directory the source file is copied in it.
 	 * 
 	 * @return ShellStatus The enum that defines the result of the execution of the
 	 *         specified command. MyShell program will end by terminating only if

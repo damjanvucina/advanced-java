@@ -3,6 +3,7 @@ package hr.fer.zemris.java.hw07.shell.commands;
 import static hr.fer.zemris.java.hw07.shell.ArgumentSplitterState.*;
 import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -139,7 +140,7 @@ public abstract class Command implements ShellCommand {
 			env.writeln("Current working directory set to: " + String.valueOf(path));
 		}
 	}
-	
+
 	public Path popFromStack(Environment env, String stackId) {
 		@SuppressWarnings("unchecked")
 		Stack<Path> stack = (Stack<Path>) env.getSharedData(stackId);
@@ -151,8 +152,22 @@ public abstract class Command implements ShellCommand {
 
 		Path poppedPath = stack.pop();
 		env.setSharedData(stackId, stack);
-		
+
 		return poppedPath;
 	}
-	
+
+	public Path createDirectory(Environment env, Path path) {
+		Path p = null;
+		
+		try {
+			p = Files.createDirectory(path);
+			env.writeln("File " + path + " created successfully");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return p;
+	}
+
 }

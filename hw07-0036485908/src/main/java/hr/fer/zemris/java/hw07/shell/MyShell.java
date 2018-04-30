@@ -12,6 +12,7 @@ import hr.fer.zemris.java.hw07.shell.commands.CatCommand;
 import hr.fer.zemris.java.hw07.shell.commands.CdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.CharsetsCommand;
 import hr.fer.zemris.java.hw07.shell.commands.CopyCommand;
+import hr.fer.zemris.java.hw07.shell.commands.CptreeCommand;
 import hr.fer.zemris.java.hw07.shell.commands.DropdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.ExitShellCommand;
 import hr.fer.zemris.java.hw07.shell.commands.HelpCommand;
@@ -96,6 +97,7 @@ public class MyShell {
 	public static final String LISTD_COMMAND = "listd";
 	public static final String DROPD_COMMAND = "dropd";
 	public static final String RMTREE_COMMAND = "rmtree";
+	public static final String CPTREE_COMMAND = "cptree";
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -271,8 +273,10 @@ public class MyShell {
 		case RMTREE_COMMAND:
 			command = commands.get(RMTREE_COMMAND);
 			break;
-
-
+			
+		case CPTREE_COMMAND:
+			command = commands.get(CPTREE_COMMAND);
+			break;
 
 		default:
 			System.out.println("Invalid command, was: " + input[0]);
@@ -351,6 +355,7 @@ public class MyShell {
 		commands.put(LISTD_COMMAND, new ListdCommand());
 		commands.put(DROPD_COMMAND, new DropdCommand());
 		commands.put(RMTREE_COMMAND, new RmtreeCommand());
+		commands.put(CPTREE_COMMAND, new CptreeCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');

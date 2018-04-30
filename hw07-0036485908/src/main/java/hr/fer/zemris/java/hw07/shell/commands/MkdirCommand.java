@@ -1,6 +1,5 @@
 package hr.fer.zemris.java.hw07.shell.commands;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -47,13 +46,8 @@ public class MkdirCommand extends Command {
 			env.writeln("File with that name already exists.");
 			return ShellStatus.CONTINUE;
 		}
-
-		try {
-			Files.createDirectory(path);
-			env.writeln("File " + path + " created successfully");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		createDirectory(env, path);
 
 		return ShellStatus.CONTINUE;
 	}
