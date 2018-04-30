@@ -22,6 +22,7 @@ import hr.fer.zemris.java.hw07.shell.commands.MkdirCommand;
 import hr.fer.zemris.java.hw07.shell.commands.PopdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.PushdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.PwdCommand;
+import hr.fer.zemris.java.hw07.shell.commands.RmtreeCommand;
 import hr.fer.zemris.java.hw07.shell.commands.SymbolCommand;
 import hr.fer.zemris.java.hw07.shell.commands.TreeCommand;
 
@@ -94,6 +95,7 @@ public class MyShell {
 	public static final String POPD_COMMAND = "popd";
 	public static final String LISTD_COMMAND = "listd";
 	public static final String DROPD_COMMAND = "dropd";
+	public static final String RMTREE_COMMAND = "rmtree";
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -265,6 +267,11 @@ public class MyShell {
 		case DROPD_COMMAND:
 			command = commands.get(DROPD_COMMAND);
 			break;
+			
+		case RMTREE_COMMAND:
+			command = commands.get(RMTREE_COMMAND);
+			break;
+
 
 
 		default:
@@ -343,6 +350,7 @@ public class MyShell {
 		commands.put(POPD_COMMAND, new PopdCommand());
 		commands.put(LISTD_COMMAND, new ListdCommand());
 		commands.put(DROPD_COMMAND, new DropdCommand());
+		commands.put(RMTREE_COMMAND, new RmtreeCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');
