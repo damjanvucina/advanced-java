@@ -52,7 +52,6 @@ public class CptreeCommand extends Command {
 		}
 
 		else if (Files.exists(destinationDir.getParent())) {
-			System.out.println("a");
 			Path parent = createDirectory(env, destinationDir);
 			performCopying(env, sourceDir, parent);
 			env.writeln("Copied  " + String.valueOf(sourceDir) +
