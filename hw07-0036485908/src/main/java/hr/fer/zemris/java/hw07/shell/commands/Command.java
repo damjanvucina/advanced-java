@@ -4,17 +4,26 @@ import static hr.fer.zemris.java.hw07.shell.ArgumentSplitterState.*;
 import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw07.shell.ArgumentSplitterState;
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellCommand;
+import hr.fer.zemris.java.hw07.shell.ShellIOException;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.UNICODE_CASE;
 
 /**
  * The abstract base class that represents a single command. Every command class
@@ -158,7 +167,7 @@ public abstract class Command implements ShellCommand {
 
 	public Path createDirectory(Environment env, Path path) {
 		Path p = null;
-		
+
 		try {
 			p = Files.createDirectory(path);
 			env.writeln("File " + path + " created successfully");
@@ -166,8 +175,55 @@ public abstract class Command implements ShellCommand {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return p;
+	}
+
+	public void treeWalker(String fileName, String regex, Consumer<Path> action) {
+		Path sourceDir = Paths.get(fileName);
+		Pattern pattern = Pattern.compile(regex, CASE_INSENSITIVE & UNICODE_CASE);
+
+		try {
+			Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
+					if (pattern.matcher(path.getFileName().toString()).matches()) {
+						action.accept(path);
+					}
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		} catch (IOException e) {
+			throw new ShellIOException("Error walking directory " + sourceDir);
+		}
+	}
+	
+	public void treeGroupingWalker(Environment env, String fileName, String regex) {
+		Path sourceDir = Paths.get(fileName);
+		Pattern pattern = Pattern.compile(regex, CASE_INSENSITIVE & UNICODE_CASE);
+
+		try {
+			Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
+				
+				@Override
+				public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
+					Matcher matcher = pattern.matcher(path.getFileName().toString());
+					
+					if (matcher.matches()) {
+						env.write(path.getFileName().toString() + WHITESPACE);
+						
+						for(int i=0, count = matcher.groupCount(); i <= count; i++) {
+							env.write(String.valueOf(i) + ": ");
+							env.write(matcher.group(i) + WHITESPACE);
+						}
+						env.writeln("");
+					}
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		} catch (IOException e) {
+			throw new ShellIOException("Error walking directory " + sourceDir);
+		}
 	}
 
 }

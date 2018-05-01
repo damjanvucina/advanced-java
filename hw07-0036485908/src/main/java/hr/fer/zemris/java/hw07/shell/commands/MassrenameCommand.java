@@ -1,14 +1,10 @@
 package hr.fer.zemris.java.hw07.shell.commands;
 
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
@@ -48,6 +44,7 @@ public class MassrenameCommand extends Command {
 	}
 	
 	//massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b filter "slika\d+-[^.]+\.jpg"
+	//massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b groups slika(\d+)-([^.]+)\.jpg
 
 	public ShellStatus processMassrenameCommands(Environment env, String[] input) {
 		ShellStatus status = CONTINUE;
@@ -59,11 +56,17 @@ public class MassrenameCommand extends Command {
 				return CONTINUE;
 			}
 			
-			processFilterSubcommand(env, input[0], input[3]);
+			treeWalker(input[0], input[3], path -> env.writeln(path.toString()));
 			break;
 			
 		case MASSRENAME_GROUPS:
-//			status = validateMassrenameArguments(env, input, SINGLE_REGEX);
+			status = validateMassrenameArguments(env, input, SINGLE_REGEX);		
+			if(status == TERMINATE) {
+				return CONTINUE;
+			}
+			
+			treeGroupingWalker(env, input[0], input[3]);
+			break;
 			
 		case MASSRENAME_SHOW:
 //			status = validateMassrenameArguments(env, input, DOUBLE_REGEX);
@@ -78,26 +81,7 @@ public class MassrenameCommand extends Command {
 		
 		return CONTINUE;
 	}
-	
-	private void processFilterSubcommand(Environment env, String fileName, String regex) {
-		Path sourceDir = Paths.get(fileName);
-		Pattern pattern = Pattern.compile(regex);
 		
-		try {
-			Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
-					if(pattern.matcher(path.getFileName().toString()).matches()) {
-						env.writeln(path.toString());
-					}
-					return FileVisitResult.CONTINUE;
-				}
-			});
-		} catch (IOException e) {
-			env.write("Error deleting directory tree.");
-		}
-	}
-
 	public ShellStatus validateMassrenameArguments(Environment env, String[] input, int numOfRegexes) {
 		Path sourceDir = Paths.get(input[0]);
 		
