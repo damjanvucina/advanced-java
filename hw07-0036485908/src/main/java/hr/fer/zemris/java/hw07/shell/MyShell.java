@@ -19,6 +19,7 @@ import hr.fer.zemris.java.hw07.shell.commands.HelpCommand;
 import hr.fer.zemris.java.hw07.shell.commands.HexdumpCommand;
 import hr.fer.zemris.java.hw07.shell.commands.ListdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.LsCommand;
+import hr.fer.zemris.java.hw07.shell.commands.MassrenameCommand;
 import hr.fer.zemris.java.hw07.shell.commands.MkdirCommand;
 import hr.fer.zemris.java.hw07.shell.commands.PopdCommand;
 import hr.fer.zemris.java.hw07.shell.commands.PushdCommand;
@@ -98,6 +99,7 @@ public class MyShell {
 	public static final String DROPD_COMMAND = "dropd";
 	public static final String RMTREE_COMMAND = "rmtree";
 	public static final String CPTREE_COMMAND = "cptree";
+	public static final String MASSRENAME_COMMAND = "massrename";
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -277,6 +279,10 @@ public class MyShell {
 		case CPTREE_COMMAND:
 			command = commands.get(CPTREE_COMMAND);
 			break;
+			
+		case MASSRENAME_COMMAND:
+			command = commands.get(MASSRENAME_COMMAND);
+			break;
 
 		default:
 			System.out.println("Invalid command, was: " + input[0]);
@@ -356,6 +362,7 @@ public class MyShell {
 		commands.put(DROPD_COMMAND, new DropdCommand());
 		commands.put(RMTREE_COMMAND, new RmtreeCommand());
 		commands.put(CPTREE_COMMAND, new CptreeCommand());
+		commands.put(MASSRENAME_COMMAND, new MassrenameCommand());
 
 		symbols.put(PROMPT, '>');
 		symbols.put(MORELINES, '\\');
