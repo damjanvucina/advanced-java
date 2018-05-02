@@ -1,13 +1,20 @@
 package hr.fer.zemris.java.hw07.shell.commands;
 
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.UNICODE_CASE;
+
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
+import hr.fer.zemris.java.hw07.shell.NameBuilder;
+import hr.fer.zemris.java.hw07.shell.NameBuilderParser;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
 import static hr.fer.zemris.java.hw07.shell.MyShell.MASSRENAME_COMMAND;
 import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
@@ -46,6 +53,7 @@ public class MassrenameCommand extends Command {
 
 	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b filter "slika\d+-[^.]+\.jpg"
 	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b groups slika(\d+)-([^.]+)\.jpg
+	//massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b show slika(\d+)-([^.]+)\.jpg gradovi-${2}-${1,03}.jpg
 
 	public ShellStatus processMassrenameCommands(Environment env, String[] input) {
 		ShellStatus status = CONTINUE;
@@ -82,7 +90,22 @@ public class MassrenameCommand extends Command {
 			break;
 
 		case MASSRENAME_SHOW:
-			// status = validateMassrenameArguments(env, input, DOUBLE_REGEX);
+			 status = validateMassrenameArguments(env, input, DOUBLE_REGEX);
+			 
+			 NameBuilderParser parser = new NameBuilderParser(input[4]);
+			 NameBuilder builder = parser.getNameBuilder();
+			 Pattern pattern = Pattern.compile(input[3], CASE_INSENSITIVE & UNICODE_CASE);
+			 
+			 Path srcDir = Paths.get(input[0]);
+			 for(File file : srcDir.toFile().listFiles()) {
+				 Matcher matcher = pattern.matcher(file.getName());
+				 if(matcher.matches()) {
+					 
+				 }
+			 }
+			 
+			 System.out.println("Prošlo sve čoviče!");
+			 break;
 
 		case MASSRENAME_EXECUTE:
 			// status = validateMassrenameArguments(env, input, DOUBLE_REGEX);

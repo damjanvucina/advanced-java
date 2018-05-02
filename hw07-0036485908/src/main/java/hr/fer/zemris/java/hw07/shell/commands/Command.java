@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -179,25 +178,6 @@ public abstract class Command implements ShellCommand {
 
 		return p;
 	}
-
-//	public void treeWalker(String fileName, String regex, Consumer<Path> action) {
-//		Path sourceDir = Paths.get(fileName);
-//		Pattern pattern = Pattern.compile(regex, CASE_INSENSITIVE & UNICODE_CASE);
-//
-//		try {
-//			Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
-//				@Override
-//				public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
-//					if (pattern.matcher(path.getFileName().toString()).matches()) {
-//						action.accept(path);
-//					}
-//					return FileVisitResult.CONTINUE;
-//				}
-//			});
-//		} catch (IOException e) {
-//			throw new ShellIOException("Error walking directory " + sourceDir);
-//		}
-//	}
 	
 	public void treeWalker(String fileName, String regex, BiConsumer<Path, Matcher> action) {
 		Path sourceDir = Paths.get(fileName);

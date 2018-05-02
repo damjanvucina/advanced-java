@@ -3,32 +3,41 @@ package hr.fer.zemris.java.hw07.shell;
 import static hr.fer.zemris.java.hw07.shell.NameBuilderParserState.GROUP;
 import static hr.fer.zemris.java.hw07.shell.NameBuilderParserState.NONGROUP;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class NameBuilderParser {
-	
-	private String regex;
+	public static final String SIMPLE_GROUP = "\\d{1,}";
+	public static final String COMPLEX_GROUP = "\\d{1,},\\d{1,}";
+
+	private char[] regex;
+	private int currentPosition;
+	private int length;
+	private NameBuilderParserState state;
+	private List<NameBuilder> nameBuilders;
 
 	public NameBuilderParser(String regex) {
-		this.regex = regex;
+		this.regex = regex.toCharArray();
+
+		currentPosition = 0;
+		length = regex.length();
+		state = NONGROUP;
+		nameBuilders = new LinkedList<>();
 	}
-	
+
 	public String getRegex() {
-		return regex;
+		return String.valueOf(regex);
 	}
-	
+
 	public NameBuilder getNameBuilder() {
-		
-		StringBuilder sb = new StringBuilder();
-		int currentPosition = 0;
-		int length = regex.length();
-		NameBuilderParserState state = NONGROUP;
-		
-		while(currentPosition < length) {
-			
+
+		while (currentPosition < length) {
+
 			switch (state) {
 			case NONGROUP:
 				processNonGroupState();
 				break;
-				
+
 			case GROUP:
 				processGroupState();
 				break;
@@ -37,18 +46,97 @@ public class NameBuilderParser {
 				throw new ShellIOException("Invalid NameBuilderParserState");
 			}
 		}
+		
+		return new NameBuilderReferencing(nameBuilders);
 	}
 
 	private void processNonGroupState() {
+		StringBuilder sb = new StringBuilder();
+
+		while (currentPosition < length && regex[currentPosition] != '$' && (currentPosition < length-1 && regex[currentPosition + 1] != +'{')) {
+			sb.append(regex[currentPosition++]);
+		}
 		
+		if(currentPosition == length-1) {
+			sb.append(regex[currentPosition]);
+		}
+
+		if (sb.length() != 0) {
+			nameBuilders.add(new NameBuilderPrinting(sb.toString()));
+		}
+		currentPosition += 2;// process group start
+		state = GROUP;
 	}
 
 	private void processGroupState() {
+		StringBuilder sb = new StringBuilder();
+
+		while (currentPosition < length && regex[currentPosition] != +'}') {
+			if (Character.isWhitespace(regex[currentPosition])) {
+				currentPosition++;
+				continue;
+			}
+			sb.append(regex[currentPosition++]);
+		}
+
+		String group = sb.toString();
+		if (group.matches(SIMPLE_GROUP)) {
+			nameBuilders.add(new NameBuilderGrouping(Integer.parseInt(group), ""));
+			
+		} else if (group.matches(COMPLEX_GROUP)) {
+			int groupSeparator = group.indexOf(",");
+			int groupNumber = Integer.parseInt(group.substring(0, groupSeparator));
+			String format = group.substring(groupSeparator+1);
+			
+			nameBuilders.add(new NameBuilderGrouping(groupNumber, format));
+			
+		} else {
+			throw new ShellIOException("Invalid grouping format");
+		}
+
+		currentPosition+=1; //process group end
+		state = NONGROUP;
+	}
+
+	private static class NameBuilderPrinting implements NameBuilder {
+		private String fragment;
+
+		public NameBuilderPrinting(String fragment) {
+			this.fragment = fragment;
+		}
+
+		@Override
+		public void execute(NameBuilderInfo info) {
+			System.out.println(fragment);
+		}
+	}
+
+	private static class NameBuilderGrouping implements NameBuilder {
+		private int groupNumber;
+		private String format;
+		
+		public NameBuilderGrouping(int groupNumber, String format) {
+			this.groupNumber = groupNumber;
+			this.format = format;
+		}
+		
+		@Override
+		public void execute(NameBuilderInfo info) {
+		}
 		
 	}
-	
-	
-	
-	
+
+	public static class NameBuilderReferencing implements NameBuilder {
+		private List<NameBuilder> nameBuilders;
+		
+		public NameBuilderReferencing(List<NameBuilder> nameBuilders) {
+			this.nameBuilders = nameBuilders;
+		}
+
+		@Override
+		public void execute(NameBuilderInfo info) {
+
+		}
+	}
 
 }
