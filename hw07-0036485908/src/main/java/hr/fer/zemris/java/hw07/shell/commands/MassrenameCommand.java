@@ -68,7 +68,7 @@ public class MassrenameCommand extends Command {
 				return CONTINUE;
 			}
 
-			treeWalker(input[0], input[3], (path, matcher) -> env.writeln(path.toString()));
+			directoryWalker(input[0], input[3], (path, matcher) -> env.writeln(path.toString()));
 			break;
 
 		case MASSRENAME_GROUPS:
@@ -77,7 +77,7 @@ public class MassrenameCommand extends Command {
 				return CONTINUE;
 			}
 
-			treeWalker(input[0], input[3], new BiConsumer<Path, Matcher>() {
+			directoryWalker(input[0], input[3], new BiConsumer<Path, Matcher>() {
 				@Override
 				public void accept(Path path, Matcher matcher) {
 					env.write(path.getFileName().toString() + WHITESPACE);
@@ -100,19 +100,16 @@ public class MassrenameCommand extends Command {
 
 			NameBuilderParser parser = new NameBuilderParser(input[4]);
 			NameBuilder builder = parser.getNameBuilder();
-			Pattern pattern = Pattern.compile(input[3], CASE_INSENSITIVE & UNICODE_CASE);
-
-			Path srcDir = Paths.get(input[0]);
-			for (File file : srcDir.toFile().listFiles()) {
-				Matcher matcher = pattern.matcher(file.getName());
-				if (matcher.matches()) {
+			
+			directoryWalker(input[0], input[3], new BiConsumer<Path, Matcher>() {
+				@Override
+				public void accept(Path path, Matcher matcher) {
 					BuilderInfo info = new BuilderInfo(matcher);
-					System.out.print(file.getName() + SHOW_SEPARATOR);
+					System.out.print(path.toFile().getName() + SHOW_SEPARATOR);
 					builder.execute(info);
 					System.out.println();
 				}
-			}
-
+			});
 			break;
 
 		case MASSRENAME_EXECUTE:
@@ -120,6 +117,9 @@ public class MassrenameCommand extends Command {
 			if (status == TERMINATE) {
 				return CONTINUE;
 			}
+			
+			
+			
 
 		default:
 			env.writeln("Invalid massrename subcommand, was: " + input[2]);

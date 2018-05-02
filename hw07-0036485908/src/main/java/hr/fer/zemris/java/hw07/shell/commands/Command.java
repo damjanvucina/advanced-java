@@ -3,6 +3,7 @@ package hr.fer.zemris.java.hw07.shell.commands;
 import static hr.fer.zemris.java.hw07.shell.ArgumentSplitterState.*;
 import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -179,23 +180,37 @@ public abstract class Command implements ShellCommand {
 		return p;
 	}
 	
-	public void treeWalker(String fileName, String regex, BiConsumer<Path, Matcher> action) {
+//	public void treeWalker(String fileName, String regex, BiConsumer<Path, Matcher> action) {
+//		Path sourceDir = Paths.get(fileName);
+//		Pattern pattern = Pattern.compile(regex, CASE_INSENSITIVE & UNICODE_CASE);
+//
+//		try {
+//			Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
+//				@Override
+//				public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
+//					Matcher matcher = pattern.matcher(path.getFileName().toString());
+//					if ((matcher.matches())) {
+//						action.accept(path, matcher);
+//					}
+//					return FileVisitResult.CONTINUE;
+//				}
+//			});
+//		} catch (IOException e) {
+//			throw new ShellIOException("Error walking directory " + sourceDir);
+//		}
+//	}
+	
+	public void directoryWalker(String fileName, String regex, BiConsumer<Path, Matcher> action) {
 		Path sourceDir = Paths.get(fileName);
 		Pattern pattern = Pattern.compile(regex, CASE_INSENSITIVE & UNICODE_CASE);
 
-		try {
-			Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
-					Matcher matcher = pattern.matcher(path.getFileName().toString());
-					if ((matcher.matches())) {
-						action.accept(path, matcher);
-					}
-					return FileVisitResult.CONTINUE;
-				}
-			});
-		} catch (IOException e) {
-			throw new ShellIOException("Error walking directory " + sourceDir);
+		for(File file : sourceDir.toFile().listFiles()) {
+			Matcher matcher = pattern.matcher(file.toPath().getFileName().toString());
+			if ((matcher.matches())) {
+				action.accept(file.toPath(), matcher);
+			}
 		}
 	}
+	
+	
 }
