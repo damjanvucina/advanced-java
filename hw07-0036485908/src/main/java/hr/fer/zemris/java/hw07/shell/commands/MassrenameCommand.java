@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.NameBuilder;
+import hr.fer.zemris.java.hw07.shell.NameBuilderInfo;
 import hr.fer.zemris.java.hw07.shell.NameBuilderParser;
 import hr.fer.zemris.java.hw07.shell.ShellStatus;
 import static hr.fer.zemris.java.hw07.shell.MyShell.MASSRENAME_COMMAND;
@@ -29,6 +30,7 @@ public class MassrenameCommand extends Command {
 	public static final int SINGLE_REGEX = 1;
 	public static final int DOUBLE_REGEX = 2;
 	public static final int MANDATORY_ARGS_NUM = 3;
+	public static final String SHOW_SEPARATOR = " => ";
 
 	public MassrenameCommand() {
 		super(MASSRENAME_COMMAND, Arrays.asList(
@@ -53,7 +55,8 @@ public class MassrenameCommand extends Command {
 
 	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b filter "slika\d+-[^.]+\.jpg"
 	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b groups slika(\d+)-([^.]+)\.jpg
-	//massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b show slika(\d+)-([^.]+)\.jpg gradovi-${2}-${1,03}.jpg
+	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b show slika(\d+)-([^.]+)\.jpg gradovi-${2}-${1,03}.jpg
+	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b execute slika(\d+)-([^.]+)\.jpg gradovi-${2}-${1,03}.jpg
 
 	public ShellStatus processMassrenameCommands(Environment env, String[] input) {
 		ShellStatus status = CONTINUE;
@@ -83,32 +86,40 @@ public class MassrenameCommand extends Command {
 						env.write(String.valueOf(i) + ": ");
 						env.write(matcher.group(i) + WHITESPACE);
 					}
-					
+
 					env.writeln("");
 				}
 			});
 			break;
 
 		case MASSRENAME_SHOW:
-			 status = validateMassrenameArguments(env, input, DOUBLE_REGEX);
-			 
-			 NameBuilderParser parser = new NameBuilderParser(input[4]);
-			 NameBuilder builder = parser.getNameBuilder();
-			 Pattern pattern = Pattern.compile(input[3], CASE_INSENSITIVE & UNICODE_CASE);
-			 
-			 Path srcDir = Paths.get(input[0]);
-			 for(File file : srcDir.toFile().listFiles()) {
-				 Matcher matcher = pattern.matcher(file.getName());
-				 if(matcher.matches()) {
-					 
-				 }
-			 }
-			 
-			 System.out.println("Prošlo sve čoviče!");
-			 break;
+			status = validateMassrenameArguments(env, input, DOUBLE_REGEX);
+			if (status == TERMINATE) {
+				return CONTINUE;
+			}
+
+			NameBuilderParser parser = new NameBuilderParser(input[4]);
+			NameBuilder builder = parser.getNameBuilder();
+			Pattern pattern = Pattern.compile(input[3], CASE_INSENSITIVE & UNICODE_CASE);
+
+			Path srcDir = Paths.get(input[0]);
+			for (File file : srcDir.toFile().listFiles()) {
+				Matcher matcher = pattern.matcher(file.getName());
+				if (matcher.matches()) {
+					BuilderInfo info = new BuilderInfo(matcher);
+					System.out.print(file.getName() + SHOW_SEPARATOR);
+					builder.execute(info);
+					System.out.println();
+				}
+			}
+
+			break;
 
 		case MASSRENAME_EXECUTE:
-			// status = validateMassrenameArguments(env, input, DOUBLE_REGEX);
+			status = validateMassrenameArguments(env, input, DOUBLE_REGEX);
+			if (status == TERMINATE) {
+				return CONTINUE;
+			}
 
 		default:
 			env.writeln("Invalid massrename subcommand, was: " + input[2]);
@@ -142,4 +153,22 @@ public class MassrenameCommand extends Command {
 		return TERMINATE;
 	}
 
+	private static class BuilderInfo implements NameBuilderInfo {
+		private Matcher matcher;
+		private StringBuilder fileNameBuilder;
+
+		public BuilderInfo(Matcher matcher) {
+			this.matcher = matcher;
+		}
+
+		@Override
+		public StringBuilder getStringBuilder() {
+			return fileNameBuilder;
+		}
+
+		@Override
+		public String getGroup(int index) {
+			return matcher.group(index);
+		}
+	}
 }

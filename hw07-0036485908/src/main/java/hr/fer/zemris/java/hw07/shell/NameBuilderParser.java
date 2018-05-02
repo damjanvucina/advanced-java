@@ -107,7 +107,7 @@ public class NameBuilderParser {
 
 		@Override
 		public void execute(NameBuilderInfo info) {
-			System.out.println(fragment);
+			System.out.print(fragment);
 		}
 	}
 
@@ -122,8 +122,36 @@ public class NameBuilderParser {
 		
 		@Override
 		public void execute(NameBuilderInfo info) {
+			String output;
+			
+			if(format.equals("")) {
+				output = info.getGroup(groupNumber);
+				
+			} else {
+				char paddingSymbol = format.charAt(0);
+				int outputLength = Integer.parseInt(format.substring(1));
+				String grouping = info.getGroup(groupNumber);
+				StringBuilder sb = new StringBuilder();
+				
+				if(grouping.length() < outputLength) {
+					sb.append(getSymbolSequence(paddingSymbol, outputLength - grouping.length()));
+					sb.append(grouping);
+				}
+				
+				output = sb.toString();
+			}
+			
+			System.out.print(output);
 		}
-		
+
+		private String getSymbolSequence(char paddingSymbol, int repetitions) {
+			StringBuilder sb = new StringBuilder(repetitions);
+			while(repetitions-- > 0) {
+				sb.append(paddingSymbol);
+			}
+			
+			return sb.toString();
+		}
 	}
 
 	public static class NameBuilderReferencing implements NameBuilder {
@@ -135,7 +163,9 @@ public class NameBuilderParser {
 
 		@Override
 		public void execute(NameBuilderInfo info) {
-
+			for(NameBuilder builder : nameBuilders) {
+				builder.execute(info);
+			}
 		}
 	}
 
