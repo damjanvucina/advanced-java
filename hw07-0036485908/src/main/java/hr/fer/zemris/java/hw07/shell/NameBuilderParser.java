@@ -100,6 +100,7 @@ public class NameBuilderParser {
 
 	private static class NameBuilderPrinting implements NameBuilder {
 		private String fragment;
+		private StringBuilder segment;
 
 		public NameBuilderPrinting(String fragment) {
 			this.fragment = fragment;
@@ -107,13 +108,21 @@ public class NameBuilderParser {
 
 		@Override
 		public void execute(NameBuilderInfo info) {
+			segment = new StringBuilder();
+			segment.append(fragment);
 			System.out.print(fragment);
+		}
+
+		@Override
+		public StringBuilder getStringBuilder() {
+			return segment;
 		}
 	}
 
 	private static class NameBuilderGrouping implements NameBuilder {
 		private int groupNumber;
 		private String format;
+		private StringBuilder segment;
 		
 		public NameBuilderGrouping(int groupNumber, String format) {
 			this.groupNumber = groupNumber;
@@ -126,6 +135,8 @@ public class NameBuilderParser {
 			
 			if(format.equals("")) {
 				output = info.getGroup(groupNumber);
+				segment = new StringBuilder();
+				segment.append(output);
 				
 			} else {
 				char paddingSymbol = format.charAt(0);
@@ -138,6 +149,7 @@ public class NameBuilderParser {
 					sb.append(grouping);
 				}
 				
+				segment = sb;
 				output = sb.toString();
 			}
 			
@@ -151,6 +163,11 @@ public class NameBuilderParser {
 			}
 			
 			return sb.toString();
+		}
+
+		@Override
+		public StringBuilder getStringBuilder() {
+			return segment;
 		}
 	}
 
@@ -166,6 +183,17 @@ public class NameBuilderParser {
 			for(NameBuilder builder : nameBuilders) {
 				builder.execute(info);
 			}
+		}
+
+		@Override
+		public StringBuilder getStringBuilder() {
+			StringBuilder sb = new StringBuilder();
+			
+			for(NameBuilder builder : nameBuilders) {
+				sb.append(builder.getStringBuilder());
+			}
+			
+			return sb;
 		}
 	}
 

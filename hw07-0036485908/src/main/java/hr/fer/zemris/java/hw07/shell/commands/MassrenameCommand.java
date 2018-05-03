@@ -4,11 +4,15 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.UNICODE_CASE;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +25,7 @@ import static hr.fer.zemris.java.hw07.shell.MyShell.MASSRENAME_COMMAND;
 import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 import static hr.fer.zemris.java.hw07.shell.ShellStatus.CONTINUE;
 import static hr.fer.zemris.java.hw07.shell.ShellStatus.TERMINATE;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class MassrenameCommand extends Command {
 	public static final String MASSRENAME_FILTER = "filter";
@@ -57,9 +62,12 @@ public class MassrenameCommand extends Command {
 	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b groups slika(\d+)-([^.]+)\.jpg
 	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b show slika(\d+)-([^.]+)\.jpg gradovi-${2}-${1,03}.jpg
 	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b execute slika(\d+)-([^.]+)\.jpg gradovi-${2}-${1,03}.jpg
-
+	
 	public ShellStatus processMassrenameCommands(Environment env, String[] input) {
 		ShellStatus status = CONTINUE;
+		NameBuilderParser parser;
+		NameBuilder builder;
+
 		switch (input[2].trim()) {
 
 		case MASSRENAME_FILTER:
@@ -67,7 +75,8 @@ public class MassrenameCommand extends Command {
 			if (status == TERMINATE) {
 				return CONTINUE;
 			}
-
+			
+			
 			directoryWalker(input[0], input[3], (path, matcher) -> env.writeln(path.toString()));
 			break;
 
@@ -98,18 +107,11 @@ public class MassrenameCommand extends Command {
 				return CONTINUE;
 			}
 
-			NameBuilderParser parser = new NameBuilderParser(input[4]);
-			NameBuilder builder = parser.getNameBuilder();
-			
-			directoryWalker(input[0], input[3], new BiConsumer<Path, Matcher>() {
-				@Override
-				public void accept(Path path, Matcher matcher) {
-					BuilderInfo info = new BuilderInfo(matcher);
-					System.out.print(path.toFile().getName() + SHOW_SEPARATOR);
-					builder.execute(info);
-					System.out.println();
-				}
-			});
+			parser = new NameBuilderParser(input[4]);
+			builder = parser.getNameBuilder();
+
+			invokeGroupingWalker(input, builder, path -> System.out.print(path.toFile().getName() + SHOW_SEPARATOR));
+
 			break;
 
 		case MASSRENAME_EXECUTE:
@@ -117,9 +119,54 @@ public class MassrenameCommand extends Command {
 			if (status == TERMINATE) {
 				return CONTINUE;
 			}
-			
-			
-			
+
+			parser = new NameBuilderParser(input[4]);
+			builder = parser.getNameBuilder();
+			Path destinationDir = Paths.get(input[1]);
+
+			if (Files.notExists(destinationDir)) {
+				try {
+					Files.createDirectory(destinationDir);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			directoryWalker(input[0], input[3], new BiConsumer<Path, Matcher>() {
+
+				@Override
+				public void accept(Path path, Matcher matcher) {
+					BuilderInfo info = new BuilderInfo(matcher);
+					System.out.print(input[0] + "\\" + path.toFile().getName() + SHOW_SEPARATOR + input[1] + "\\");
+					builder.execute(info);
+
+					Path sourceFile = Paths.get(input[0] + "\\" + path.toFile().getName());
+					Path destinationFile = Paths.get(input[1] + "\\" + builder.getStringBuilder().toString());
+
+					try {
+						Files.move(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException e) {
+						System.out.println("File " + sourceFile.toString() + " already exist.");
+					}
+
+					System.out.println();
+				}
+			});
+
+//			//@formatter:off
+//			invokeGroupingWalker(input, builder, path -> { System.out.print(input[0] + "\\" + path.toFile().getName()
+//														   + SHOW_SEPARATOR + input[1] + "\\");
+//														   
+////														   try {
+////															Files.move(, REPLACE_EXISTING);
+////														   } catch (IOException e) {
+////															e.printStackTrace();
+////														   }
+//														 });
+//
+//			//@formatter:on
+
+			break;
 
 		default:
 			env.writeln("Invalid massrename subcommand, was: " + input[2]);
@@ -127,6 +174,19 @@ public class MassrenameCommand extends Command {
 		}
 
 		return CONTINUE;
+	}
+
+	private void invokeGroupingWalker(String[] input, NameBuilder builder, Consumer<Path> action) {
+		directoryWalker(input[0], input[3], new BiConsumer<Path, Matcher>() {
+
+			@Override
+			public void accept(Path path, Matcher matcher) {
+				BuilderInfo info = new BuilderInfo(matcher);
+				action.accept(path);
+				builder.execute(info);
+				System.out.println();
+			}
+		});
 	}
 
 	public ShellStatus validateMassrenameArguments(Environment env, String[] input, int numOfRegexes) {
@@ -155,15 +215,9 @@ public class MassrenameCommand extends Command {
 
 	private static class BuilderInfo implements NameBuilderInfo {
 		private Matcher matcher;
-		private StringBuilder fileNameBuilder;
 
 		public BuilderInfo(Matcher matcher) {
 			this.matcher = matcher;
-		}
-
-		@Override
-		public StringBuilder getStringBuilder() {
-			return fileNameBuilder;
 		}
 
 		@Override

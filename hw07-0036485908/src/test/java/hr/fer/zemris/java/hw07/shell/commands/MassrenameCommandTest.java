@@ -21,7 +21,7 @@ public class MassrenameCommandTest {
 	@Test
 	public void validateMassrenameArgumentsTest() {
 		MassrenameCommand command = new MassrenameCommand();
-		String[] input = command.splitArguments("C:\\Users\\D4MJ4N\\Desktop\\a C:\\Users\\D4MJ4N\\Desktop\\b show slika(\\d+)-([^.]+)\\.jpg gradovi-${2}-${1,03}.jpg");
+		String[] input = command.splitArguments("C:\\Users\\D4MJ4N\\Desktop\\a C:\\Users\\D4MJ4N\\Desktop\\b filter \"slika\\d+-[^.]+\\.jpg\"");
 		command.processMassrenameCommands(env, input);
 		System.out.println("a");
 	}

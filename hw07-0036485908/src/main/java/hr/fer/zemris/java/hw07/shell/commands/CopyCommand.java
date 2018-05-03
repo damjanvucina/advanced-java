@@ -170,7 +170,7 @@ public class CopyCommand extends Command {
 	 *            the destination file
 	 */
 	//@formatter:off
-	private void performCopying(Path sourceFile, Path destinationFile) {
+	public void performCopying(Path sourceFile, Path destinationFile) {
 		
 		try (FileInputStream inputStream = new FileInputStream(sourceFile.toFile());
 			 FileOutputStream outputStream = new FileOutputStream(destinationFile.toFile())) {
