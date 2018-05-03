@@ -107,15 +107,6 @@ public class MassrenameCommand extends Command {
 		return CONTINUE;
 	}
 
-	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b filter
-	// "slika\d+-[^.]+\.jpg"
-	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b groups
-	// slika(\d+)-([^.]+)\.jpg
-	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b show
-	// slika(\d+)-([^.]+)\.jpg gradovi-${2}-${1,03}.jpg
-	// massrename C:\Users\D4MJ4N\Desktop\a C:\Users\D4MJ4N\Desktop\b execute
-	// slika(\d+)-([^.]+)\.jpg gradovi-${2}-${1,03}.jpg
-
 	/**
 	 * Processes massrename command by identifiying subcommand and invoking methods
 	 * which perform further processing.

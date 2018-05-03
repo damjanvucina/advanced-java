@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.hw07.shell.commands;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import hr.fer.zemris.java.hw07.shell.Environment;
@@ -42,8 +43,10 @@ public class DropdCommand extends Command {
 			return CONTINUE;
 		}
 
-		popFromStack(env, CD_STACK);
-
+		Path popped = popFromStack(env, CD_STACK);
+		if (popped != null) {
+			env.writeln("Path " + popped.toString() + " dropped from stack.");
+		}
 		return CONTINUE;
 	}
 

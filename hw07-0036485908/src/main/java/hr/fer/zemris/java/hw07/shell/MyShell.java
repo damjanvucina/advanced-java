@@ -50,6 +50,9 @@ import hr.fer.zemris.java.hw07.shell.commands.TreeCommand;
  */
 public class MyShell {
 
+	/** The constant that defines any number of whitespaces. */
+	public static final String ANY_WHITESPACES = "\\s+";
+	
 	/**  The constant that defines the PROMPT symbol. */
 	public static final String PROMPT = "PROMPT";
 
@@ -118,6 +121,7 @@ public class MyShell {
 	
 	/** The constant that defines the massrename command. */
 	public static final String MASSRENAME_COMMAND = "massrename";
+
 
 	/**
 	 * A map consisting of the all available commands suppoted by this MyShell.
@@ -197,7 +201,7 @@ public class MyShell {
 			System.out.print(symbols.get(PROMPT) + WHITESPACE);
 
 			line = acquireNewLine();
-			processCommand(line.split(WHITESPACE));
+			processCommand(line.split(ANY_WHITESPACES));
 		}
 	}
 
