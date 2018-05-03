@@ -50,16 +50,16 @@ import hr.fer.zemris.java.hw07.shell.commands.TreeCommand;
  */
 public class MyShell {
 
-	/** The constant that defines the PROMPT symbol */
+	/**  The constant that defines the PROMPT symbol. */
 	public static final String PROMPT = "PROMPT";
 
-	/** The constant that defines the MORELINES symbol */
+	/**  The constant that defines the MORELINES symbol. */
 	public static final String MORELINES = "MORELINES";
 
-	/** The constant that defines the MULTILINE symbol */
+	/**  The constant that defines the MULTILINE symbol. */
 	public static final String MULTILINE = "MULTILINE";
 
-	/** The constant that defines a whitespace */
+	/**  The constant that defines a whitespace. */
 	public static final String WHITESPACE = " ";
 
 	/** The constant that defines the cat command. */
@@ -74,7 +74,7 @@ public class MyShell {
 	/** The constant that defines the exit command. */
 	public static final String EXIT_SHELL_COMMAND = "exit";
 
-	/** The constant that defines the hexdumo command. */
+	/** The constant that defines the hexdump command. */
 	public static final String HEXDUMP_COMMAND = "hexdump";
 
 	/** The constant that defines the ls command. */
@@ -91,14 +91,32 @@ public class MyShell {
 
 	/** The constant that defines the help command. */
 	public static final String HELP_COMMAND = "help";
+	
+	/** The constant that defines the pwd command. */
 	public static final String PWD_COMMAND = "pwd";
+	
+	/** The constant that defines the cd command. */
 	public static final String CD_COMMAND = "cd";
+	
+	/** The constant that defines the pushd command. */
 	public static final String PUSHD_COMMAND = "pushd";
+	
+	/** The constant that defines the popd command.*/
 	public static final String POPD_COMMAND = "popd";
+	
+	/** The constant that defines the listd command. */
 	public static final String LISTD_COMMAND = "listd";
+	
+	/**The constant that defines the dropd command.. */
 	public static final String DROPD_COMMAND = "dropd";
+	
+	/** The constant that defines the rmtree command. */
 	public static final String RMTREE_COMMAND = "rmtree";
+	
+	/** The constant that defines the cptree command.*/
 	public static final String CPTREE_COMMAND = "cptree";
+	
+	/** The constant that defines the massrename command. */
 	public static final String MASSRENAME_COMMAND = "massrename";
 
 	/**
@@ -106,7 +124,7 @@ public class MyShell {
 	 */
 	private static TreeMap<String, ShellCommand> commands = new TreeMap<>();
 
-	/** A map consisting of the symbols currently in use by this MyShell */
+	/**  A map consisting of the symbols currently in use by this MyShell. */
 	private static Map<String, Character> symbols = new HashMap<>();
 
 	/** The scanner used for obtaining the user input. */

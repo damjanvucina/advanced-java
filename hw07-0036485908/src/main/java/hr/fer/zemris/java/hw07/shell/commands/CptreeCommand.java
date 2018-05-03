@@ -13,19 +13,46 @@ import hr.fer.zemris.java.hw07.shell.ShellStatus;
 import static hr.fer.zemris.java.hw07.shell.MyShell.CPTREE_COMMAND;
 import static hr.fer.zemris.java.hw07.shell.ShellStatus.CONTINUE;
 
+/**
+ * The command that is used for the purpose of copying the contents of the
+ * provided directory to the other provided directory. If the destination
+ * directory exists, source directory with its contents is copied in it. If the
+ * destination directory does not exist but its parent directory does, the
+ * source directory is copied under the destination directory name. If neither
+ * the destination directory nor its parent directory exist, this method has no
+ * effect.
+ * 
+ * @author Damjan Vučina
+ */
 public class CptreeCommand extends Command {
 
+	/**
+	 * Instantiates a new cptree command and provides description that can later be
+	 * obtained via help command.
+	 */
 	public CptreeCommand() {
 		super(CPTREE_COMMAND,
 				Arrays.asList("Invoked with two path arguments",
-							  "First path represents a directory to be copied, i.e. source directory",
-							  "Second path represents the locaton, i.e. destination directory",
-							  "If the last part of the source directory structure does not exist,"
+						"First path represents a directory to be copied, i.e. source directory",
+						"Second path represents the locaton, i.e. destination directory",
+						"If the last part of the source directory structure does not exist,"
 								+ " shell copies the source directory under that file name",
-							  "If two or more last parts of the source directory structure do not exist, "
+						"If two or more last parts of the source directory structure do not exist, "
 								+ "ShellIOException is thrown"));
 	}
 
+	/**
+	 * Copies the contents of the provided directory to the other provided
+	 * directory. If the destination directory exists, source directory with its
+	 * contents is copied in it. If the destination directory does not exist but its
+	 * parent directory does, the source directory is copied under the destination
+	 * directory name. If neither the destination directory nor its parent directory
+	 * exist, this method has no effect.
+	 * 
+	 * @return ShellStatus The enum that defines the result of the execution of the
+	 *         specified command. MyShell program will end by terminating only if
+	 *         there is no way of recovering from the user's invalid input.
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
@@ -54,8 +81,7 @@ public class CptreeCommand extends Command {
 		else if (Files.exists(destinationDir.getParent())) {
 			Path parent = createDirectory(env, destinationDir);
 			performCopying(env, sourceDir, parent);
-			env.writeln("Copied  " + String.valueOf(sourceDir) +
-					   " directory as " + String.valueOf(parent));
+			env.writeln("Copied  " + String.valueOf(sourceDir) + " directory as " + String.valueOf(parent));
 		} else {
 			env.writeln("Invalid destination directory.");
 		}
@@ -63,6 +89,21 @@ public class CptreeCommand extends Command {
 		return CONTINUE;
 	}
 
+	/**
+	 * Helper method which performes copying directory itself. If the destination
+	 * directory exists, source directory with its contents is copied in it. If the
+	 * destination directory does not exist but its parent directory does, the
+	 * source directory is copied under the destination directory name. If neither
+	 * the destination directory nor its parent directory exist, this method has no
+	 * effect.
+	 *
+	 * @param env
+	 *            the reference to the object that makes communication between user, shell and commands possible
+	 * @param sourceDir
+	 *            the source directory
+	 * @param destinationDir
+	 *            the destination directory
+	 */
 	private void performCopying(Environment env, Path sourceDir, Path destinationDir) {
 		try {
 			Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {

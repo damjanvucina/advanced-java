@@ -42,7 +42,7 @@ public class CopyCommand extends Command {
 	}
 
 	/**
-	 * Mehtod that is charged with the process of copying the source file to the
+	 * Method that is charged with the process of copying the source file to the
 	 * destination location. If the destination file already exists, user is asked
 	 * if overwriting of the old file is to be performed. Source file can only be a
 	 * regular file but the destination file can be a directory as well. If the

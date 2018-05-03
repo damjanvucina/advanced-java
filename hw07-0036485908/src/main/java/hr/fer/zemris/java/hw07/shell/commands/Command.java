@@ -5,12 +5,9 @@ import static hr.fer.zemris.java.hw07.shell.MyShell.WHITESPACE;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +19,6 @@ import java.util.regex.Pattern;
 import hr.fer.zemris.java.hw07.shell.ArgumentSplitterState;
 import hr.fer.zemris.java.hw07.shell.Environment;
 import hr.fer.zemris.java.hw07.shell.ShellCommand;
-import hr.fer.zemris.java.hw07.shell.ShellIOException;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.UNICODE_CASE;
 
@@ -58,8 +54,8 @@ public abstract class Command implements ShellCommand {
 	}
 
 	/**
-	 * Gets the name of the specified command
-	 * 
+	 * Gets the name of the specified command.
+	 *
 	 * @return name of the specified command
 	 */
 	@Override
@@ -68,8 +64,8 @@ public abstract class Command implements ShellCommand {
 	}
 
 	/**
-	 * Gets the description of the specified command
-	 * 
+	 * Gets the description of the specified command.
+	 *
 	 * @return description of the specified command
 	 */
 	@Override
@@ -129,14 +125,40 @@ public abstract class Command implements ShellCommand {
 		}
 	}
 
+	/**
+	 * Resolves other file to this path.
+	 *
+	 * @param env
+	 *            the reference to the object that makes communicaton between user,
+	 *            shell and commands possible
+	 * @param other
+	 *            the other file
+	 * @return the resolved file path
+	 */
 	public Path getResolved(Environment env, String other) {
 		return env.getCurrentDirectory().resolve(other).normalize();
 	}
 
+	/**
+	 * Clones path.
+	 *
+	 * @param path
+	 *            the path
+	 * @return the path
+	 */
 	public Path clonePath(Path path) {
 		return Paths.get(String.valueOf(path));
 	}
 
+	/**
+	 * Updates the working directory.
+	 *
+	 * @param env
+	 *            the reference to the object that makes communicaton between user,
+	 *            shell and commands possible
+	 * @param path
+	 *            the path
+	 */
 	public void updateWorkingDirectory(Environment env, Path path) {
 		if (!Files.exists(path)) {
 			env.writeln("Provided path does not exist");
@@ -151,6 +173,16 @@ public abstract class Command implements ShellCommand {
 		}
 	}
 
+	/**
+	 * Pops from shared data's stack.
+	 *
+	 * @param env
+	 *            the reference to the object that makes communicaton between user,
+	 *            shell and commands possible
+	 * @param stackId
+	 *            the stack id
+	 * @return the path
+	 */
 	public Path popFromStack(Environment env, String stackId) {
 		@SuppressWarnings("unchecked")
 		Stack<Path> stack = (Stack<Path>) env.getSharedData(stackId);
@@ -166,6 +198,16 @@ public abstract class Command implements ShellCommand {
 		return poppedPath;
 	}
 
+	/**
+	 * Creates a directory.
+	 *
+	 * @param env
+	 *            the reference to the object that makes communicaton between user,
+	 *            shell and commands possible
+	 * @param path
+	 *            the path
+	 * @return the path
+	 */
 	public Path createDirectory(Environment env, Path path) {
 		Path p = null;
 
@@ -179,38 +221,29 @@ public abstract class Command implements ShellCommand {
 
 		return p;
 	}
-	
-//	public void treeWalker(String fileName, String regex, BiConsumer<Path, Matcher> action) {
-//		Path sourceDir = Paths.get(fileName);
-//		Pattern pattern = Pattern.compile(regex, CASE_INSENSITIVE & UNICODE_CASE);
-//
-//		try {
-//			Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
-//				@Override
-//				public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
-//					Matcher matcher = pattern.matcher(path.getFileName().toString());
-//					if ((matcher.matches())) {
-//						action.accept(path, matcher);
-//					}
-//					return FileVisitResult.CONTINUE;
-//				}
-//			});
-//		} catch (IOException e) {
-//			throw new ShellIOException("Error walking directory " + sourceDir);
-//		}
-//	}
-	
+
+	/**
+	 * Lists the directory, matches its files against the received regular
+	 * expression and invokes consumer method depending on the outcome of the
+	 * matching operation.
+	 *
+	 * @param fileName
+	 *            the file name
+	 * @param regex
+	 *            the regex
+	 * @param action
+	 *            the action
+	 */
 	public void directoryWalker(String fileName, String regex, BiConsumer<Path, Matcher> action) {
 		Path sourceDir = Paths.get(fileName);
 		Pattern pattern = Pattern.compile(regex, CASE_INSENSITIVE & UNICODE_CASE);
 
-		for(File file : sourceDir.toFile().listFiles()) {
+		for (File file : sourceDir.toFile().listFiles()) {
 			Matcher matcher = pattern.matcher(file.toPath().getFileName().toString());
 			if ((matcher.matches())) {
 				action.accept(file.toPath(), matcher);
 			}
 		}
 	}
-	
-	
+
 }

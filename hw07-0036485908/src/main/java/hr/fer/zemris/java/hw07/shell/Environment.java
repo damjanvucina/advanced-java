@@ -83,7 +83,8 @@ public interface Environment {
 	 * Sets the symbol which is currently in use as prompt symbol. Whenever the
 	 * MyShell expect some user input it writes prompt symbol to the console to
 	 * inform the user about it.
-	 * 
+	 *
+	 * @param symbol the new prompt symbol
 	 */
 	void setPromptSymbol(Character symbol);
 
@@ -108,11 +109,38 @@ public interface Environment {
 	 * 
 	 * 	 * @param symbol
 	 *            the new morelines symbol
-	 * 
+	 *
+	 * @param symbol the new morelines symbol
 	 */
 	void setMorelinesSymbol(Character symbol);
+	
+	/**
+	 * Returns absolute path of the current java process.
+	 *
+	 * @return the absolute path of the current java process.
+	 */
 	Path getCurrentDirectory();
+	
+	/**
+	 * Sets the absolute path of the current java process.
+	 *
+	 * @param path the new absolute path of the current java process.
+	 */
 	void setCurrentDirectory(Path path);
+	
+	/**
+	 * Gets the shared data, i.e. data that is shared between this shell command for optimization purposes.
+	 *
+	 * @param key the key of the shared data map
+	 * @return the shared data
+	 */
 	Object getSharedData(String key);
+	
+	/**
+	 * Sets the shared data, i.e. data that is shared between this shell command for optimization purposes.
+	 *
+	 * @param key the key of the shared data map
+	 * @param value the value
+	 */
 	void setSharedData(String key, Object value);
 }

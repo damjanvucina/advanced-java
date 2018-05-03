@@ -13,14 +13,31 @@ import hr.fer.zemris.java.hw07.shell.ShellStatus;
 import static hr.fer.zemris.java.hw07.shell.MyShell.RMTREE_COMMAND;
 import static hr.fer.zemris.java.hw07.shell.ShellStatus.CONTINUE;
 
+/**
+ * The command that is used for the purpose of deleting the contents of the
+ * provided directory.
+ * 
+ * @author Damjan Vučina
+ */
 public class RmtreeCommand extends Command {
 
+	/**
+	 * Instantiates a new rmtree command and provides description that can later be
+	 * obtained via help command.
+	 */
 	public RmtreeCommand() {
 		super(RMTREE_COMMAND, Arrays.asList("Argument must be an existing directory",
 				"Removes this directory and its entire subtree"));
 
 	}
 
+	/**
+	 * Deletes the contents of the provided directory.
+	 * 
+	 * @return ShellStatus The enum that defines the result of the execution of the
+	 *         specified command. MyShell program will end by terminating only if
+	 *         there is no way of recovering from the user's invalid input.
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		String[] input = splitArguments(arguments);
@@ -46,7 +63,7 @@ public class RmtreeCommand extends Command {
 					public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
 						env.writeln("Deleting file: " + path);
 						Files.delete(path);
-						
+
 						return FileVisitResult.CONTINUE;
 					}
 
@@ -54,16 +71,15 @@ public class RmtreeCommand extends Command {
 					public FileVisitResult postVisitDirectory(Path path, IOException exc) throws IOException {
 						env.writeln("Deleting directory: " + path);
 						Files.delete(path);
-						
+
 						return FileVisitResult.CONTINUE;
 					}
-
 
 				});
 			} catch (IOException e) {
 				env.write("Error deleting directory tree.");
 			}
-				
+
 		}
 		return CONTINUE;
 	}
