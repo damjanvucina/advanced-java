@@ -131,7 +131,7 @@ public class MassrenameCommand extends Command {
 				return CONTINUE;
 			}
 
-			directoryWalker(input[0], input[3], (path, matcher) -> env.writeln(path.toString()));
+			directoryWalker(input[0], input[3], (path, matcher) -> env.writeln(path.getFileName().toString()));
 			break;
 
 		case MASSRENAME_GROUPS:
@@ -317,6 +317,11 @@ public class MassrenameCommand extends Command {
 		@Override
 		public String getGroup(int index) {
 			return matcher.group(index);
+		}
+
+		@Override
+		public StringBuilder getStringBuilder() {
+			return null;
 		}
 	}
 }

@@ -184,6 +184,11 @@ public class NameBuilderParser {
 		public StringBuilder getStringBuilder() {
 			return segment;
 		}
+
+		@Override
+		public String getGroup(int index) {
+			return null;
+		}
 	}
 
 	/**
@@ -275,6 +280,11 @@ public class NameBuilderParser {
 		public StringBuilder getStringBuilder() {
 			return segment;
 		}
+
+		@Override
+		public String getGroup(int index) {
+			return null;
+		}
 	}
 
 	/**
@@ -323,6 +333,11 @@ public class NameBuilderParser {
 			}
 
 			return sb;
+		}
+
+		@Override
+		public String getGroup(int index) {
+			return null;
 		}
 	}
 

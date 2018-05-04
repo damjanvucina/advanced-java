@@ -16,4 +16,12 @@ public interface NameBuilderInfo {
 	 * @return the group
 	 */
 	String getGroup(int index);
+	
+	/**
+	 * Gets the string builder, i.e. the segment that this NameBuilderImplementation
+	 * was supposed to produce.
+	 *
+	 * @return the string builder
+	 */
+	StringBuilder getStringBuilder();
 }

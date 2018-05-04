@@ -6,7 +6,7 @@ package hr.fer.zemris.java.hw07.shell;
  * 
  * @author Damjan Vučina
  */
-public interface NameBuilder {
+public interface NameBuilder extends NameBuilderInfo {
 
 	/**
 	 * Executes the NameBuilder.
@@ -15,12 +15,4 @@ public interface NameBuilder {
 	 *            the info
 	 */
 	void execute(NameBuilderInfo info);
-
-	/**
-	 * Gets the string builder, i.e. the segment that this NameBuilderImplementation
-	 * was supposed to produce.
-	 *
-	 * @return the string builder
-	 */
-	StringBuilder getStringBuilder();
 }
