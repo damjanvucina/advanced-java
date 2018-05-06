@@ -10,6 +10,7 @@ import static java.lang.Math.sin;
 import static java.lang.Math.PI;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
+import static java.lang.Math.abs;
 
 public class Complex {
 	public static final Complex ZERO = new Complex(0, 0);
@@ -17,6 +18,7 @@ public class Complex {
 	public static final Complex ONE_NEG = new Complex(-1, 0);
 	public static final Complex IM = new Complex(0, 1);
 	public static final Complex IM_NEG = new Complex(0, -1);
+	public static final double DELTA = 1e-6;
 
 	private double re;
 	private double im;
@@ -139,4 +141,36 @@ public class Complex {
 			return sb.toString();
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(im);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(re);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Complex other = (Complex) obj;
+		if (abs(re - other.re) > DELTA)
+		//if (Double.doubleToLongBits(im) != Double.doubleToLongBits(other.im))
+			return false;
+		if (abs(im - other.im) > DELTA)
+		//if (Double.doubleToLongBits(re) != Double.doubleToLongBits(other.re))
+			return false;
+		return true;
+	}
+	
+	
 }
