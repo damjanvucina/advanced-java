@@ -32,7 +32,16 @@ public class ComplexRootedPolynomial {
 
 		return result;
 	}
-	
+
+	public ComplexPolynomial toComplexPolynom() {
+		ComplexPolynomial explicitForm = new ComplexPolynomial(roots.get(0), Complex.ONE);
+
+		for (int i = 1, size = roots.size(); i < size; i++) {
+			explicitForm = explicitForm.multiply(new ComplexPolynomial(roots.get(i).negate(), Complex.ONE));
+		}
+		
+		return explicitForm;
+	}
 
 	@Override
 	public String toString() {

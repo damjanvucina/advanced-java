@@ -88,7 +88,7 @@ public class Complex {
 		
 	}
 	
-	private double getAngle() {
+	double getAngle() {
 		double result = atan2(im, re);
 		return (result < 0) ? result + 2 * PI : result;
 	}

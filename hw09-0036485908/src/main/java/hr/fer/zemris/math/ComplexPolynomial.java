@@ -18,27 +18,32 @@ public class ComplexPolynomial {
 	}
 
 	public short order() {
-		if (factors == null) {
-			return 0;
-
-		} else {
 			return (short) (factors.size() - 1);
-		}
 	}
 
 	public ComplexPolynomial multiply(ComplexPolynomial p) {
 		Objects.requireNonNull(p, "Given complex polynomial cannot be null.");
 
-		Complex[] productFactors = new Complex[factors.size() * p.factors.size()];
-		int productIndex = 0;
-
+		Complex[] productFactors = new Complex[factors.size() + p.factors.size() - 1];
+		productFactors = multiplicationSetUp(productFactors.length);
+		
 		for (int i = 0, firstSize = factors.size(); i < firstSize; i++) {
-			for (int j = 0, secondSize = p.factors.size(); j < secondSize; j++) {
-				productFactors[productIndex] = factors.get(i).multiply(p.factors.get(j));
+			for (int j = 0, resultIndex = i+j, secondSize = p.factors.size(); j < secondSize; j++) {
+				productFactors[resultIndex] = productFactors[resultIndex].add(factors.get(i).multiply(p.factors.get(j)));
 			}
 		}
 
 		return new ComplexPolynomial(productFactors);
+	}
+
+	private Complex[] multiplicationSetUp(int length) {
+		Complex[] initialized = new Complex[length];
+		
+		for(int i =0; i< length; i++) {
+			initialized[i] = Complex.ZERO;
+		}
+		
+		return initialized;
 	}
 
 	public ComplexPolynomial derive() {

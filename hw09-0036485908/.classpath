@@ -19,6 +19,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-9">
 		<attributes>
+			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
@@ -27,5 +28,13 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/fractal-viewer-1.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/fractal-viewer-1.0.jar" sourcepath="lib/fractal-viewer-1.0.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/hw09-0036485908/lib/fractal-viewer-1.0-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/raytracer-1.0.jar" sourcepath="lib/raytracer-1.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/raytracer-1.0-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
