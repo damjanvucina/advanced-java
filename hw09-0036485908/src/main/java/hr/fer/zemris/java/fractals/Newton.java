@@ -8,10 +8,33 @@ import hr.fer.zemris.java.fractals.viewer.FractalViewer;
 import hr.fer.zemris.math.Complex;
 import hr.fer.zemris.math.ComplexRootedPolynomial;
 
+/**
+ * The main program which is responsible for obtaining complex roots from the
+ * user, parsing them and storing them apporopriately and lastly invoking the
+ * method for viewing the fractal.
+ * 
+ * @author Damjan Vučina
+ */
 public class Newton {
+
+	/**
+	 * The Constant DONE which is used for ending the process of requesting further
+	 * inputs from the user.
+	 */
 	public static final String DONE = "done";
+
+	/**
+	 * The list containing the Complex roots enterd by the user and parsed by this
+	 * class.
+	 */
 	public static List<Complex> list = new LinkedList<>();
 
+	/**
+	 * The main method. Invoked when the program is run.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 
@@ -42,7 +65,7 @@ public class Newton {
 						System.out.println("Invalid input.");
 						continue;
 					}
-					
+
 				}
 			}
 			currentNumber++;
@@ -54,7 +77,18 @@ public class Newton {
 		ComplexRootedPolynomial rootedPolynomial = new ComplexRootedPolynomial(list.toArray(new Complex[list.size()]));
 		FractalViewer.show(new FractalProducer(rootedPolynomial));
 	}
-	
+
+	/**
+	 * Method used for parsing users input of complex roots.General syntax for
+	 * complex numbers is of form a+ib or a-ib where parts that are zero can be
+	 * dropped, but not both (empty string is not legal complex number); for
+	 * example, zero can be given as 0, i0, 0+i0, 0-i0. If there is 'i' present but
+	 * no b is given, it is assumed that b is 1.
+	 *
+	 * @param input
+	 *            the user's input
+	 * @return the parsed complex number
+	 */
 	public static Complex parse(String input) {
 		if (input.endsWith("i")) {
 			input += "1";

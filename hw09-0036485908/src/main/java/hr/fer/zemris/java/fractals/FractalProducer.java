@@ -14,13 +14,32 @@ import hr.fer.zemris.math.Complex;
 import hr.fer.zemris.math.ComplexPolynomial;
 import hr.fer.zemris.math.ComplexRootedPolynomial;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FractalProducer.
+ */
 public class FractalProducer implements IFractalProducer {
+	
+	/** The Constant WORKER_FACTOR. */
 	public static final int WORKER_FACTOR = 8;
+	
+	/** The polynomial. */
 	ComplexPolynomial polynomial;
+	
+	/** The rooted polynomial. */
 	ComplexRootedPolynomial rootedPolynomial;
+	
+	/** The thread pool. */
 	ExecutorService threadPool;
+	
+	/** The num of processors. */
 	int numOfProcessors;
 
+	/**
+	 * Instantiates a new fractal producer.
+	 *
+	 * @param rootedPolynomial the rooted polynomial
+	 */
 	public FractalProducer(ComplexRootedPolynomial rootedPolynomial) {
 		this.rootedPolynomial = rootedPolynomial;
 		this.polynomial = rootedPolynomial.toComplexPolynom();
@@ -35,6 +54,9 @@ public class FractalProducer implements IFractalProducer {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.fractals.viewer.IFractalProducer#produce(double, double, double, double, int, int, long, hr.fer.zemris.java.fractals.viewer.IFractalResultObserver)
+	 */
 	//@formatter:off
 	@Override
 	public void produce(double reMin, double reMax,
