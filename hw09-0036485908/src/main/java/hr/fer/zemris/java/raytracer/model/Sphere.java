@@ -4,18 +4,63 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.pow;
 import static java.lang.Math.abs;
 
+/**
+ * The class used for the purpose of implementing a Sphere graphical object that
+ * exists within the scene.
+ * 
+ * @author Damjan Vučina
+ */
 public class Sphere extends GraphicalObject {
 
+	/** The center of the sphere. */
 	private Point3D center;
+
+	/** The radius of the sphere. */
 	private double radius;
+
+	/** The red diffusive component. */
 	private double kdr;
+
+	/** The green diffusive component. */
 	private double kdg;
+
+	/** The blue diffusive component. */
 	private double kdb;
+
+	/** The red reflective component */
 	private double krr;
+
+	/** The green reflective component */
 	private double krg;
+
+	/** The blue reflective component */
 	private double krb;
+
+	/** The power */
 	private double krn;
 
+	/**
+	 * Instantiates a new sphere with the specified parameters.
+	 *
+	 * @param center
+	 *            The center of the sphere.
+	 * @param radius
+	 *            the radius of the sphere.
+	 * @param kdr
+	 *            The red diffusive component.
+	 * @param kdg
+	 *            The green diffusive component.
+	 * @param kdb
+	 *            The blue diffusive component.
+	 * @param krr
+	 *            The red reflective component
+	 * @param krg
+	 *            The green reflective component
+	 * @param krb
+	 *            The blue reflective component
+	 * @param krn
+	 *            the power
+	 */
 	//@formatter:off
 	public Sphere(Point3D center, double radius,
 				  double kdr, double kdg, double kdb,
@@ -34,6 +79,9 @@ public class Sphere extends GraphicalObject {
 		this.krn = krn;
 	}
 
+	/**
+	 * Method used for the purpose of finding the closest intersection with the ray if one exists. 
+ 	*/
 	//pseudocode and algorithm used available at: http://www.lighthouse3d.com/tutorials/maths/ray-sphere-intersection/
 	@Override
 	public RayIntersection findClosestRayIntersection(Ray ray) {
@@ -115,6 +163,13 @@ public class Sphere extends GraphicalObject {
 		};
 	}
 	
+	/**
+	 * Helper method used for the purpose of calculating the distance between two Point3D objects in 3-dimensional space
+	 *
+	 * @param pointA the point A
+	 * @param pointB the point B
+	 * @return the double distance between the points
+	 */
 	private double distanceBeetweenPoints(Point3D pointA, Point3D pointB) {
 		 return sqrt(Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2) + Math.pow(pointA.z - pointB.z, 2));
 	}
