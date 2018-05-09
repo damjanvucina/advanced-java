@@ -85,13 +85,11 @@ public class ComplexPolynomial {
 	}
 
 	/**
-	 * Derives this Complex polyonomial
+	 * Derives this Complex polynomial.
 	 *
-	 * @return the complex polynomial which is the result of this 
+	 * @return the complex polynomial which is the result of this
 	 */
 	public ComplexPolynomial derive() {
-		Objects.requireNonNull(factors, "This polyonimal's factors cannot be null.");
-
 		Complex derivative[] = new Complex[factors.size() - 1];
 		for (int i = 0, length = derivative.length, factorsSize = factors.size(); i < length; i++) {
 			derivative[i] = factors.get(i).multiply(new Complex(factorsSize - 1 - i, 0));
@@ -101,11 +99,12 @@ public class ComplexPolynomial {
 	}
 
 	/**
-	 * Apply.
+	 * Calculates the value of the polynomial in the specified abscissa coordinate
 	 *
 	 * @param z
-	 *            the z
-	 * @return the complex
+	 *             the z complex number defining the abscissa coordinate
+	 * @return the complex number calculated as the value of the polynomial in the
+	 *         specified abscissa coordinate
 	 */
 	public Complex apply(Complex z) {
 		Objects.requireNonNull(z, "Given complex polynomial cannot be null.");
@@ -120,10 +119,9 @@ public class ComplexPolynomial {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/**
+	 * Prints a String representation of this ComplexPolynomial to the
+	 * console.
 	 */
 	@Override
 	public String toString() {
