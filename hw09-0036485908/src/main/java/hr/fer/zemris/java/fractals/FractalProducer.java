@@ -14,31 +14,36 @@ import hr.fer.zemris.math.Complex;
 import hr.fer.zemris.math.ComplexPolynomial;
 import hr.fer.zemris.math.ComplexRootedPolynomial;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class FractalProducer.
+ * The class used to draw the fractals derived from Newton-Raphson iteration.
+ * 
+ * @author Damjan Vučina
  */
 public class FractalProducer implements IFractalProducer {
-	
-	/** The Constant WORKER_FACTOR. */
+
+	/**
+	 * The Constant WORKER_FACTOR that is used to specify the effort to be put into
+	 * the process of calculating the fractals.
+	 */
 	public static final int WORKER_FACTOR = 8;
-	
-	/** The polynomial. */
+
+	/** The regular form polynomial. */
 	ComplexPolynomial polynomial;
-	
-	/** The rooted polynomial. */
+
+	/** The rooted form polynomial. */
 	ComplexRootedPolynomial rootedPolynomial;
-	
-	/** The thread pool. */
+
+	/** The thread pool used to perform tasks. */
 	ExecutorService threadPool;
-	
-	/** The num of processors. */
+
+	/** The num of processors currently available. */
 	int numOfProcessors;
 
 	/**
 	 * Instantiates a new fractal producer.
 	 *
-	 * @param rootedPolynomial the rooted polynomial
+	 * @param rootedPolynomial
+	 *            the rooted polynomial
 	 */
 	public FractalProducer(ComplexRootedPolynomial rootedPolynomial) {
 		this.rootedPolynomial = rootedPolynomial;
@@ -54,8 +59,9 @@ public class FractalProducer implements IFractalProducer {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.fractals.viewer.IFractalProducer#produce(double, double, double, double, int, int, long, hr.fer.zemris.java.fractals.viewer.IFractalResultObserver)
+	/**
+	 * Method used for the purpose of calculating the fractals using Newton-Raphson
+	 * iteration.
 	 */
 	//@formatter:off
 	@Override
@@ -90,7 +96,7 @@ public class FractalProducer implements IFractalProducer {
 
 			for (Future<Void> posao : results) {
 				try {
-					
+
 					posao.get();
 				} catch (InterruptedException | ExecutionException e) {
 				}
@@ -103,10 +109,15 @@ public class FractalProducer implements IFractalProducer {
 	}
 }
 
+/**
+ * Class implementing a task whose instances are to by executed.
+ * 
+ * @author Damjan Vučina
+ */
 class Calculation implements Callable<Void> {
 	private static final double CONVERGENCE_TRESHOLD = 1e-3;
 	private static final int MAX_ITERATIONS = 64;
-	
+
 	private double reMin;
 	private double reMax;
 	private double imMin;
@@ -119,7 +130,7 @@ class Calculation implements Callable<Void> {
 	private ComplexRootedPolynomial rootedPolynomial;
 	int offset;
 	private short[] data;
-	
+
 	//@formatter:off
 	public Calculation(double reMin, double reMax, 
 					   double imMin, double imMax,
@@ -144,13 +155,16 @@ class Calculation implements Callable<Void> {
 		this.data = data;
 	}
 
+	/**
+	 * Method invoked by the objects who are to execute specified tasks.
+	 */
 	@Override
 	public Void call() throws Exception {
-		for(int y = yMin; y<yMax ; y++) {
-			for(int x = 0 ; x < width ; x++) {
-				double cre = x / (width-1.0) * (reMax - reMin) + reMin;
-				double cim = (height-1.0-y) / (height-1) * (imMax - imMin) + imMin;
-				
+		for (int y = yMin; y < yMax; y++) {
+			for (int x = 0; x < width; x++) {
+				double cre = x / (width - 1.0) * (reMax - reMin) + reMin;
+				double cim = (height - 1.0 - y) / (height - 1) * (imMax - imMin) + imMin;
+
 				int iter = 0;
 				Complex zn = new Complex(cre, cim);
 				Complex zn1;
@@ -159,7 +173,7 @@ class Calculation implements Callable<Void> {
 				Complex fraction;
 				double module;
 				short index;
-				
+
 				do {
 					numerator = polynomial.apply(zn);
 					denominator = polynomial.derive().apply(zn);
@@ -167,12 +181,12 @@ class Calculation implements Callable<Void> {
 					zn1 = zn.sub(fraction);
 					iter++;
 					module = zn1.sub(zn).module();
-					
-				}while(module > CONVERGENCE_TRESHOLD && iter < MAX_ITERATIONS);
-				
+
+				} while (module > CONVERGENCE_TRESHOLD && iter < MAX_ITERATIONS);
+
 				index = (short) rootedPolynomial.indexOfClosestRootFor(zn1, MAX_ITERATIONS);
-				
-				if(index == -1) {
+
+				if (index == -1) {
 					data[offset++] = 0;
 				} else {
 					data[offset++] = index;
