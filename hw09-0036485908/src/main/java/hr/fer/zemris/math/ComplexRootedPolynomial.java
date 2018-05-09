@@ -4,19 +4,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ComplexRootedPolynomial.
+ * The class that represents a mathematical polynomial with complex factors in
+ * form f(z) = (z-z1)*(z-z2)*...*(z-zn), z(i) being intersections with abscissa.
+ * It provides user with method for calculating the value of the polynomial in
+ * the specified abscissa coordinate, a method for transforming into regular
+ * (non-root-form) polynomial and a method for closest root calculation.
+ * 
+ * @author Damjan Vučina
  */
 public class ComplexRootedPolynomial {
 
-	/** The roots. */
+	/** The roots of this Complex polynomial. */
 	List<Complex> roots;
 
 	/**
 	 * Instantiates a new complex rooted polynomial.
 	 *
-	 * @param roots the roots
+	 * @param roots
+	 *            the roots of this Complex polynomial.
+	 * @throws NullPointerException
+	 *             if the roots provided are null
+	 * @throw IllegalArgumentException if zero roots are provided
 	 */
 	public ComplexRootedPolynomial(Complex... roots) {
 		Objects.requireNonNull(roots, "This complex polynomial roots cannot be null.");
@@ -33,10 +42,12 @@ public class ComplexRootedPolynomial {
 	}
 
 	/**
-	 * Apply.
+	 * Calculates the value of the polynomial in the specified abscissa coordinate
 	 *
-	 * @param z the z
-	 * @return the complex
+	 * @param z
+	 *            the z complex number defining the abscissa coordinate
+	 * @return the complex number calculated as the value of the polynomial in the
+	 *         specified abscissa coordinate
 	 */
 	public Complex apply(Complex z) {
 		Objects.requireNonNull(z, "Given complex number cannot be null.");
@@ -50,9 +61,10 @@ public class ComplexRootedPolynomial {
 	}
 
 	/**
-	 * To complex polynom.
+	 * Transforms this ComplexRootedPolynomial into regular (non-root) form
+	 * polynomial.
 	 *
-	 * @return the complex polynomial
+	 * @return the complex polynomial in regular (non-root) form
 	 */
 	public ComplexPolynomial toComplexPolynom() {
 		ComplexPolynomial explicitForm = new ComplexPolynomial(roots.get(0), Complex.ONE);
@@ -60,12 +72,13 @@ public class ComplexRootedPolynomial {
 		for (int i = 1, size = roots.size(); i < size; i++) {
 			explicitForm = explicitForm.multiply(new ComplexPolynomial(roots.get(i).negate(), Complex.ONE));
 		}
-		
+
 		return explicitForm;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * Prints a String representation of this ComplexRootedPolynomial to the
+	 * console.
 	 */
 	@Override
 	public String toString() {
@@ -81,11 +94,14 @@ public class ComplexRootedPolynomial {
 	}
 
 	/**
-	 * Index of closest root for.
+	 * Calculates the index of closest root for the for given complex number z that
+	 * is within treshold; if there is no such returns -1.
 	 *
-	 * @param z the z
-	 * @param treshold the treshold
-	 * @return the int
+	 * @param z
+	 *            the complex number whose roots are inspected
+	 * @param treshold
+	 *            the treshold defining the distance between the roots
+	 * @return the indef of the closest root or -1 if there is none within the treshold
 	 */
 	public int indexOfClosestRootFor(Complex z, double treshold) {
 		Objects.requireNonNull(z, "Given complex number cannot be null.");
