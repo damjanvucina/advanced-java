@@ -33,7 +33,11 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/hw09-0036485908/lib/fractal-viewer-1.0-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/raytracer-1.0.jar" sourcepath="lib/raytracer-1.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/raytracer-1.0.jar" sourcepath="lib/raytracer-1.0-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/hw09-0036485908/lib/raytracer-1.0-sources.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/raytracer-1.0-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

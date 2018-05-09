@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.raytracer;
 
+import hr.fer.zemris.java.raytracer.model.GraphicalObject;
 import hr.fer.zemris.java.raytracer.model.IRayTracerProducer;
 import hr.fer.zemris.java.raytracer.model.IRayTracerResultObserver;
 import hr.fer.zemris.java.raytracer.model.Point3D;
@@ -8,13 +9,32 @@ import hr.fer.zemris.java.raytracer.model.RayIntersection;
 import hr.fer.zemris.java.raytracer.model.Scene;
 import hr.fer.zemris.java.raytracer.viewer.RayTracerViewer;
 
+/**
+ * A class representing a simplified raytracer, i.e. ray caster used for the
+ * purpose of rendering 3-dimensional scenes.
+ * 
+ * @author Damjan Vučina
+ */
 public class RayCaster {
 
+	/**
+	 * The main method. Invoked when the program is run.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		RayTracerViewer.show(getIRayTracerProducer(), new Point3D(10, 0, 0), new Point3D(0, 0, 0),
 				new Point3D(0, 0, 10), 20, 20);
 	}
 
+	/**
+	 * Method that is used for the purpose of acquiring an object charged with the
+	 * task of tracing the ray in the defined scene.
+	 *
+	 * @return the new object charged with the task of tracing the ray in the
+	 *         defined scene.
+	 */
 	private static IRayTracerProducer getIRayTracerProducer() {
 
 		return new IRayTracerProducer() {
@@ -78,7 +98,19 @@ public class RayCaster {
 			}
 
 			private RayIntersection findClosestIntersection(Scene scene, Ray ray) {
-				return null;
+				if (scene == null) {
+					return null;
+				}
+
+				RayIntersection currentIntersection = null;
+				for (GraphicalObject graphicalObject : scene.getObjects()) {
+
+					currentIntersection = graphicalObject.findClosestRayIntersection(ray);
+					if (currentIntersection != null) {
+						return currentIntersection;
+					}
+				}
+				return currentIntersection;
 			}
 		};
 	}
