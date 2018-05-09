@@ -102,6 +102,7 @@ public class ComplexRootedPolynomial {
 	 * @param treshold
 	 *            the treshold defining the distance between the roots
 	 * @return the indef of the closest root or -1 if there is none within the treshold
+	 * @throws NullPointerException if the given complex number is null
 	 */
 	public int indexOfClosestRootFor(Complex z, double treshold) {
 		Objects.requireNonNull(z, "Given complex number cannot be null.");

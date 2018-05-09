@@ -4,19 +4,26 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ComplexPolynomial.
+ * The class that represents a complex polynomial in regular(non-rooted) form,
+ * i.e. f(z) = zn*zn+zn-1*zn-1+...+z2*z2+z1*z+z0, z(i) being factors that user
+ * must provide. It provides user with method for calculating the value of the
+ * polynomial in the specified abscissa coordinate, a method for calculating the
+ * order of this polynomial, a method for multiplying polynomials, deriving this
+ * polynomial and acquiring String representation of this polynomial.
+ * 
+ * @author Damjan Vučina
  */
 public class ComplexPolynomial {
 
-	/** The factors. */
+	/** The factors of this Complex polynomial. */
 	List<Complex> factors;
 
 	/**
 	 * Instantiates a new complex polynomial.
 	 *
-	 * @param factors the factors
+	 * @param factors
+	 *            the factors of this Complex polynomial.
 	 */
 	public ComplexPolynomial(Complex... factors) {
 		Objects.requireNonNull(factors, "This complex polynomial's factors cannot be null.");
@@ -28,19 +35,21 @@ public class ComplexPolynomial {
 	}
 
 	/**
-	 * Order.
+	 * Calculates the order of this ComplexPolyomial.
 	 *
-	 * @return the short
+	 * @return the  order of this ComplexPolyomial.
 	 */
 	public short order() {
 		return (short) (factors.size() - 1);
 	}
 
 	/**
-	 * Multiply.
+	 * Multiplies this Complex polynomial with the one provided via arguments.
 	 *
-	 * @param p the p
-	 * @return the complex polynomial
+	 * @param p
+	 *            the given complex polynomial is null
+	 * @return the complex polynomial as the result of the multiplication
+	 * @throws NullPointerException if given complex polynomial is null
 	 */
 	public ComplexPolynomial multiply(ComplexPolynomial p) {
 		Objects.requireNonNull(p, "Given complex polynomial cannot be null.");
@@ -59,10 +68,11 @@ public class ComplexPolynomial {
 	}
 
 	/**
-	 * Multiplication set up.
+	 * Helper method used for initializing an array prior to multiplication operation.
 	 *
-	 * @param length the length
-	 * @return the complex[]
+	 * @param length
+	 *            the length of the array to be containing factors
+	 * @return the complex[] array
 	 */
 	private Complex[] multiplicationSetUp(int length) {
 		Complex[] initialized = new Complex[length];
@@ -75,9 +85,9 @@ public class ComplexPolynomial {
 	}
 
 	/**
-	 * Derive.
+	 * Derives this Complex polyonomial
 	 *
-	 * @return the complex polynomial
+	 * @return the complex polynomial which is the result of this 
 	 */
 	public ComplexPolynomial derive() {
 		Objects.requireNonNull(factors, "This polyonimal's factors cannot be null.");
@@ -93,7 +103,8 @@ public class ComplexPolynomial {
 	/**
 	 * Apply.
 	 *
-	 * @param z the z
+	 * @param z
+	 *            the z
 	 * @return the complex
 	 */
 	public Complex apply(Complex z) {
@@ -109,7 +120,9 @@ public class ComplexPolynomial {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
