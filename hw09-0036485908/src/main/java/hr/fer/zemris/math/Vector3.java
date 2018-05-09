@@ -37,7 +37,9 @@ public class Vector3 {
 
 	public Vector3 normalized() {
 		double norm = norm();
-
+		if (norm == 0) {
+			throw new IllegalArgumentException("Cannot normalize nul-vector.");
+		}
 		return new Vector3(x / norm, y / norm, z / norm);
 	}
 
@@ -61,7 +63,7 @@ public class Vector3 {
 
 	public Vector3 cross(Vector3 other) {
 		Objects.requireNonNull(other, "Other vector cannot be null.");
-		
+
 		double xComponent = y * other.z - z * other.y;
 		double yComponent = z * other.x - x * other.z;
 		double zComponent = x * other.y - y * other.x;
@@ -74,13 +76,19 @@ public class Vector3 {
 	}
 
 	public double cosAngle(Vector3 other) {
-		return dot(other) / (norm() * other.norm());
+		double thisNorm = norm();
+		double otherNorm = other.norm();
+		if(thisNorm == 0 || other.norm()==0) {
+			throw new IllegalArgumentException("Cannot calculate angle");
+		}
+		
+		return dot(other) / (thisNorm * otherNorm);
 	}
 
 	public double[] toArray() {
 		return new double[] { x, y, z };
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
