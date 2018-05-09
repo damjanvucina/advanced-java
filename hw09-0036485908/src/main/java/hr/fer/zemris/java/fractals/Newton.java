@@ -36,7 +36,13 @@ public class Newton {
 
 				} else {
 					input = input.replace(" ", "");
-					list.add(parse(input));
+					try {
+						list.add(parse(input));
+					} catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+						System.out.println("Invalid input.");
+						continue;
+					}
+					
 				}
 			}
 			currentNumber++;

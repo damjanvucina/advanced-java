@@ -12,40 +12,123 @@ import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.abs;
 
+/**
+ * The class that represents a complex number and provides user with methods for
+ * performing operations over it. These operations include calcluating module of
+ * the complex number, addition, subtraction, multiplication, division, negation
+ * as well as calculating complex number roots and its power. *
+ * 
+ * @author Damjan Vučina
+ */
 public class Complex {
+
+	/**
+	 * The Constant ZERO defining a complex number with real component set to zero
+	 * and imaginary component set to zero.
+	 */
 	public static final Complex ZERO = new Complex(0, 0);
+
+	/**
+	 * The Constant ONE defining a complex number with real component set to one and
+	 * imaginary component set to zero.
+	 */
 	public static final Complex ONE = new Complex(1, 0);
+
+	/**
+	 * The Constant ONE_NEG defining a complex number with real component set to
+	 * minus one and imaginary component set to zero.
+	 */
 	public static final Complex ONE_NEG = new Complex(-1, 0);
+
+	/**
+	 * The Constant IM defining a complex number with real component set to zero and
+	 * imaginary component set to one.
+	 */
 	public static final Complex IM = new Complex(0, 1);
+
+	/**
+	 * The Constant IM_NEG defining a complex number with real component set to zero
+	 * and imaginary component set to minus one.
+	 */
 	public static final Complex IM_NEG = new Complex(0, -1);
+
+	/**
+	 * The Constant DELTA used for checking whether complex numbers, i.e. their
+	 * components are equal. Two complex numbers are considered equal if their real
+	 * and imaginary components are equal down to the sixth decimal.
+	 */
 	public static final double DELTA = 1e-6;
 
+	/** The real component of the complex number. */
 	private double re;
+
+	/** The imaginary component of the complex number. */
 	private double im;
 
+	/**
+	 * Instantiates a new complex.
+	 *
+	 * @param re
+	 *            The real component of the complex number.
+	 * @param im
+	 *            The imaginary component of the complex number.
+	 */
 	public Complex(double re, double im) {
 		this.re = re;
 		this.im = im;
 	}
 
+	/**
+	 * Gets the real component of the complex number.
+	 *
+	 * @return the real component of the complex number.
+	 */
 	public double getRe() {
 		return re;
 	}
 
+	/**
+	 * Gets the imaginary component of the complex number.
+	 *
+	 * @return the imaginary component of the complex number.
+	 */
 	public double getIm() {
 		return im;
 	}
 
+	/**
+	 * Calculates the module of this complex number
+	 *
+	 * @return the double value of the module of the complex number
+	 */
 	public double module() {
 		return sqrt(pow(re, 2) + pow(im, 2));
 	}
 
+	/**
+	 * Multiplies this complex number and the one provided via arguments.
+	 *
+	 * @param c
+	 *            the complex number provided via arguments
+	 * @return the complex number which is the result of multiplication operation
+	 * @throws NullPointerException
+	 *             if the complex number provided via arguments is null
+	 */
 	public Complex multiply(Complex c) {
 		Objects.requireNonNull(c, "Other complex number cannot be null.");
 
 		return new Complex(re * c.re - im * c.im, im * c.re + re * c.im);
 	}
 
+	/**
+	 * Divides this complex number and the one provided via arguments.
+	 *
+	 * @param c
+	 *            the complex number provided via arguments
+	 * @return the complex number which is the result of division operation
+	 * @throws NullPointerException
+	 *             if the complex number provided via arguments is null
+	 */
 	public Complex divide(Complex c) {
 		Objects.requireNonNull(c, "Other complex number cannot be null.");
 
@@ -60,39 +143,84 @@ public class Complex {
 		return new Complex(firstNumerator / denominator, secondNumerator / denominator);
 	}
 
+	/**
+	 * Adds this complex number and the one provided via arguments.
+	 *
+	 * @param c
+	 *            the complex number provided via arguments
+	 * @return the complex number which is the result of addition operation
+	 * @throws NullPointerException
+	 *             if the complex number provided via arguments is null
+	 */
 	public Complex add(Complex c) {
 		Objects.requireNonNull(c, "Other complex number cannot be null.");
 
 		return new Complex(re + c.re, im + c.im);
 	}
 
+	/**
+	 * Subtracts this complex number and the one provided via arguments.
+	 *
+	 * @param c
+	 *            the complex number provided via arguments
+	 * @return the complex number which is the result of subtraction operation
+	 * @throws NullPointerException
+	 *             if the complex number provided via arguments is null
+	 */
 	public Complex sub(Complex c) {
 		Objects.requireNonNull(c, "Other complex number cannot be null.");
 
 		return new Complex(re - c.re, im - c.im);
 	}
 
+	/**
+	 * Negates this complex number.
+	 *
+	 * @return the complex number as the result of the negation operation
+	 */
 	public Complex negate() {
 		return new Complex(-re, -im);
 	}
-	
+
+	/**
+	 * Calculates the given power of this complex number. Powers of complex numbers
+	 * are just special cases of products when the power is a positive whole number.
+	 *
+	 * @param n
+	 *            the given power of this complex number
+	 * @return the complex number which is the result of power operation
+	 * @throws IllegalArgumentException
+	 *             if the given exponent is negative
+	 */
 	public Complex power(int n) {
 		if (n < 0) {
 			throw new IllegalArgumentException("Exponent must be non-negative, was:" + n);
 		}
-		
+
 		double magnitudePowered = pow(module(), n);
 		double argument = n * getAngle();
 
 		return new Complex(magnitudePowered * cos(argument), magnitudePowered * sin(argument));
-		
+
 	}
-	
+
+	/**
+	 * Helper method that calculates the angle of the complex number.
+	 *
+	 * @return the angle of the complex number
+	 */
 	double getAngle() {
 		double result = atan2(im, re);
 		return (result < 0) ? result + 2 * PI : result;
 	}
-	
+
+	/**
+	 * Calculates the roots of this complex number
+	 *
+	 * @param n
+	 *            the number of roots to be calculated
+	 * @return the list of the roots of this complex number
+	 */
 	public List<Complex> root(int n) {
 		if (n <= 0) {
 			throw new IllegalArgumentException("Exponent in root caculation must be positive, was: " + n);
@@ -105,10 +233,13 @@ public class Complex {
 			double argument = (getAngle() + 2 * i * PI) / n;
 			roots.add(new Complex(moduleRooted * cos(argument), moduleRooted * sin(argument)));
 		}
-		
+
 		return roots;
 	}
-	
+
+	/**
+	 * Prints a String representation of this complex number to the console.
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -142,6 +273,11 @@ public class Complex {
 		}
 	}
 
+	/**
+	 * Checks if two instances of Complex number class are equal by calculating
+	 * their hash. Two instances of Complex class are considered equal if their
+	 * corresponding coordinates are equal down to the sixth decimal point.
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -154,6 +290,11 @@ public class Complex {
 		return result;
 	}
 
+	/**
+	 * Checks if two instances of Complex number class are equal. Two instances of
+	 * Complex class are considered equal if their corresponding coordinates are
+	 * equal down to the sixth decimal point.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -164,13 +305,12 @@ public class Complex {
 			return false;
 		Complex other = (Complex) obj;
 		if (abs(re - other.re) > DELTA)
-		//if (Double.doubleToLongBits(im) != Double.doubleToLongBits(other.im))
+			// if (Double.doubleToLongBits(im) != Double.doubleToLongBits(other.im))
 			return false;
 		if (abs(im - other.im) > DELTA)
-		//if (Double.doubleToLongBits(re) != Double.doubleToLongBits(other.re))
+			// if (Double.doubleToLongBits(re) != Double.doubleToLongBits(other.re))
 			return false;
 		return true;
 	}
-	
-	
+
 }
