@@ -5,17 +5,18 @@ import java.util.regex.Pattern;
 
 public class RCPosition {
 	private static final String RCPOSITION_VALIDATOR = "(\\d){1},(\\d){1}";
+	private static final String WHITESPACE = " ";
+	private static final String EMPTY_STRING = "";
 	private static final int EXTRACT_ROW = 1;
 	private static final int EXTRACT_COL = 2;
-	
+
 	private int row;
 	private int column;
-	private static Pattern pattern;
-	
+	private static Pattern pattern = Pattern.compile(RCPOSITION_VALIDATOR);;
+
 	public RCPosition(int row, int column) {
 		this.row = row;
 		this.column = column;
-		pattern = Pattern.compile(RCPOSITION_VALIDATOR);
 	}
 
 	public int getRow() {
@@ -50,28 +51,33 @@ public class RCPosition {
 			return false;
 		return true;
 	}
-	
+
 	public static RCPosition extractRCPosition(String position) {
+		if (position == null) {
+			throw new CalcLayoutException("RCPosition cannot be null");
+		}
+
+		if (EMPTY_STRING.equals(position)) {
+			throw new CalcLayoutException("RCPosition cannot be empty string");
+		}
+
+		position = position.replace(WHITESPACE, EMPTY_STRING);
 		Matcher matcher = pattern.matcher(position);
-		
-		if(!matcher.matches()) {
+
+		if (!matcher.matches()) {
 			throw new CalcLayoutException("Invalid String representation of RCPosition, was: " + position);
 		}
-		
+
 		//@formatter:off
 		return new RCPosition(Integer.parseInt(matcher.group(EXTRACT_ROW)),
 							  Integer.parseInt(matcher.group(EXTRACT_COL)));
 		//@formatter:on
 	}
-	
+
 //	public static void main(String[] args) {
-//		RCPosition position = new RCPosition(1, 1);
-//		System.out.println(position.pattern.matcher("1,2").matches());
-//		Matcher matcher = position.pattern.matcher("1,2");
-//		if(matcher.matches()) {
-//			System.out.println(matcher.group(1));
-//			System.out.println(matcher.group(2));
-//		}
+//		RCPosition position = extractRCPosition(" 1 , 2");
+//		System.out.println(position.getRow());
+//		System.out.println(position.getColumn());
 //	}
 
 }

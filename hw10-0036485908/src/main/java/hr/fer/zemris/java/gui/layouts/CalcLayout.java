@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.LayoutManager2;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import static java.lang.Math.max;
 
@@ -15,21 +14,21 @@ public class CalcLayout implements LayoutManager2 {
 	public static final int NUM_OF_COLS = 7;
 	public static final int NUM_OF_ROW_GAPS = NUM_OF_ROWS - 1;
 	public static final int NUM_OF_COL_GAPS = NUM_OF_COLS - 1;
-	
+
 	public static final int DEFAULT_GAP = 0;
-	
+
 	public static final int MIN_ROW = 1;
 	public static final int MIN_COL = 1;
 	public static final int MAX_ROW = NUM_OF_ROWS;
 	public static final int MAX_COL = NUM_OF_COLS;
 	public static final int MAX_COMPONENTS = 31;
-	
+
 	public static final String LAYOUT_PREFFERED = "preffered";
 	public static final String LAYOUT_MINIMUM = "minimum";
 	public static final String LAYOUT_MAXIMUM = "maximum";
 	public static final RCPosition CALC_SCREEEN = new RCPosition(1, 1);
-
-	
+	public static final int CALC_SCREEN_WIDTH_FACTOR = 5;
+	public static final int CALC_GAPS = 4;
 
 	private int gap;
 	Map<Component, RCPosition> components;
@@ -50,39 +49,43 @@ public class CalcLayout implements LayoutManager2 {
 
 	@Override
 	public void addLayoutComponent(Component component, Object obj) {
-		Objects.requireNonNull(component, "Provided component cannot be null.");
-		Objects.requireNonNull(obj, "Provided constraint cannot be null.");
+		if (component == null) {
+			throw new CalcLayoutException("Provided component cannot be null.");
+		}
+		if (obj == null) {
+			throw new CalcLayoutException("Provided constraint cannot be null.");
+		}
 
 		RCPosition currentPosition;
 		if (obj instanceof RCPosition) {
 			currentPosition = (RCPosition) obj;
-			
-		} else if (obj instanceof String){
-			currentPosition = RCPosition.extractRCPosition((String) obj); 
-			
+
+		} else if (obj instanceof String) {
+			currentPosition = RCPosition.extractRCPosition((String) obj);
+
 		} else {
-			throw new CalcLayoutException("Invalid RCPosition constraint, must be of either String or RCPosition class.");
+			throw new CalcLayoutException(
+					"Invalid RCPosition constraint, must be of either String or RCPosition class.");
 		}
-		
+
 		validateRCPositionAvailability(currentPosition);
-		
+
 		components.put(component, currentPosition);
 	}
 
 	private void validateRCPositionAvailability(RCPosition currentPosition) {
 		int row = currentPosition.getRow();
 		int col = currentPosition.getColumn();
-		
-		if(row < MIN_ROW || row > MAX_ROW || col < MIN_COL || col > MAX_COL ) {
-			throw new CalcLayoutException("Invalid RCPosition requested.");
-			
-		} else if(components.size() >= MAX_COMPONENTS) {
-			throw new CalcLayoutException("Maximum number of components reached.");
-		}
-	}
 
-	@Override
-	public void layoutContainer(Container container) {
+		if (row < MIN_ROW || row > MAX_ROW || col < MIN_COL || col > MAX_COL) {
+			throw new CalcLayoutException("Invalid RCPosition requested.");
+
+		} else if (components.size() >= MAX_COMPONENTS) {
+			throw new CalcLayoutException("Maximum number of components reached.");
+
+		} else if (row == 1 && (col == 2 || col == 3 || col == 4 || col == 5)) {
+			throw new CalcLayoutException("Cannot take up positions reserved for calculator's screen.");
+		}
 	}
 
 	@Override
@@ -155,17 +158,61 @@ public class CalcLayout implements LayoutManager2 {
 	}
 
 	@Override
+	public void layoutContainer(Container container) {
+		Dimension containerDimension = preferredLayoutSize(container);
+
+		int containterWidth = containerDimension.width;
+		int containerHeight = containerDimension.height;
+
+		int componentWidth = containterWidth * factorize(container, (cont) -> cont.getWidth(), (dim) -> dim.width);
+		int componentHeight = containerHeight * factorize(container, (cont) -> cont.getHeight(), (dim) -> dim.height);
+
+		int componentWidthFactor = componentWidth + gap;
+		int componentHeightFactor = componentHeight + gap;
+
+		for (Map.Entry<Component, RCPosition> entry : components.entrySet()) {
+			Component currentComponent = entry.getKey();
+			RCPosition currentPosition = entry.getValue();
+
+			//@formatter:off
+			if (!currentPosition.equals(CALC_SCREEEN)) {
+				currentComponent.setBounds((currentPosition.getRow() - 1) * componentWidthFactor,
+										   (currentPosition.getColumn()-1) * componentHeightFactor, 
+										   componentWidth,
+										   componentHeight);
+				
+
+			} else {
+				currentComponent.setBounds(0,
+										   0,
+										   componentWidth * CALC_SCREEN_WIDTH_FACTOR + CALC_GAPS * gap,
+										   componentHeight);
+			}
+			//@formatter:on
+		}
+	}
+
+	//@formatter:off
+	private int factorize(Container container,
+						  Function<Container, Integer> contAction,
+			              Function<Dimension, Integer> dimAction) {
+		
+		return contAction.apply(container) / dimAction.apply(preferredLayoutSize(container));
+	}
+	//@formatter:on
+
+	@Override
 	public float getLayoutAlignmentX(Container container) {
-		return 0;
+		return container.getAlignmentX();
 	}
 
 	@Override
 	public float getLayoutAlignmentY(Container container) {
-		return 0;
+		return container.getAlignmentY();
 	}
 
 	@Override
 	public void invalidateLayout(Container container) {
-	}
 
+	}
 }
