@@ -34,6 +34,10 @@ public class CalcLayout implements LayoutManager2 {
 	Map<Component, RCPosition> components;
 
 	public CalcLayout(int gap) {
+		if(gap < 0) {
+			throw new CalcLayoutException("Gap cannot be set to a value less than zero, was: " + gap);
+		}
+		
 		this.gap = gap;
 		components = new HashMap<>();
 	}
@@ -44,7 +48,6 @@ public class CalcLayout implements LayoutManager2 {
 
 	@Override
 	public void addLayoutComponent(String s, Component component) {
-		throw new CalcLayoutException("Unsupported operation requested.");
 	}
 
 	@Override
@@ -83,8 +86,11 @@ public class CalcLayout implements LayoutManager2 {
 		} else if (components.size() >= MAX_COMPONENTS) {
 			throw new CalcLayoutException("Maximum number of components reached.");
 
-		} else if (row == 1 && (col == 2 || col == 3 || col == 4 || col == 5)) {
+		} else if (row == 1 && col >= 2 && col <= 5) {
 			throw new CalcLayoutException("Cannot take up positions reserved for calculator's screen.");
+
+		} else if (components.containsValue(currentPosition)) {
+			throw new CalcLayoutException("Requested RCPosition has already been taken.");
 		}
 	}
 
@@ -159,13 +165,13 @@ public class CalcLayout implements LayoutManager2 {
 
 	@Override
 	public void layoutContainer(Container container) {
-		Dimension containerDimension = preferredLayoutSize(container);
+		Dimension componentDimension = calculateComponentSize((component) -> component.getPreferredSize());
 
-		int containterWidth = containerDimension.width;
-		int containerHeight = containerDimension.height;
+		int componentWidthAbs = componentDimension.width;
+		int componentHeightAbs = componentDimension.height;
 
-		int componentWidth = containterWidth * factorize(container, (cont) -> cont.getWidth(), (dim) -> dim.width);
-		int componentHeight = containerHeight * factorize(container, (cont) -> cont.getHeight(), (dim) -> dim.height);
+		int componentWidth = componentWidthAbs * factorize(container, (cont) -> cont.getWidth(), (dim) -> dim.width);
+		int componentHeight = componentHeightAbs * factorize(container, (cont) -> cont.getHeight(), (dim) -> dim.height);
 
 		int componentWidthFactor = componentWidth + gap;
 		int componentHeightFactor = componentHeight + gap;
@@ -176,8 +182,8 @@ public class CalcLayout implements LayoutManager2 {
 
 			//@formatter:off
 			if (!currentPosition.equals(CALC_SCREEEN)) {
-				currentComponent.setBounds((currentPosition.getRow() - 1) * componentWidthFactor,
-										   (currentPosition.getColumn()-1) * componentHeightFactor, 
+				currentComponent.setBounds((currentPosition.getColumn() - 1) * componentWidthFactor,
+										   (currentPosition.getRow() - 1) * componentHeightFactor, 
 										   componentWidth,
 										   componentHeight);
 				
@@ -213,6 +219,5 @@ public class CalcLayout implements LayoutManager2 {
 
 	@Override
 	public void invalidateLayout(Container container) {
-
 	}
 }
