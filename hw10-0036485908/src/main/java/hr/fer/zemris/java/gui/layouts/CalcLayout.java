@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.LayoutManager2;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import static java.lang.Math.max;
 
@@ -14,11 +15,21 @@ public class CalcLayout implements LayoutManager2 {
 	public static final int NUM_OF_COLS = 7;
 	public static final int NUM_OF_ROW_GAPS = NUM_OF_ROWS - 1;
 	public static final int NUM_OF_COL_GAPS = NUM_OF_COLS - 1;
+	
 	public static final int DEFAULT_GAP = 0;
+	
+	public static final int MIN_ROW = 1;
+	public static final int MIN_COL = 1;
+	public static final int MAX_ROW = NUM_OF_ROWS;
+	public static final int MAX_COL = NUM_OF_COLS;
+	public static final int MAX_COMPONENTS = 31;
+	
 	public static final String LAYOUT_PREFFERED = "preffered";
 	public static final String LAYOUT_MINIMUM = "minimum";
 	public static final String LAYOUT_MAXIMUM = "maximum";
 	public static final RCPosition CALC_SCREEEN = new RCPosition(1, 1);
+
+	
 
 	private int gap;
 	Map<Component, RCPosition> components;
@@ -34,6 +45,40 @@ public class CalcLayout implements LayoutManager2 {
 
 	@Override
 	public void addLayoutComponent(String s, Component component) {
+		throw new CalcLayoutException("Unsupported operation requested.");
+	}
+
+	@Override
+	public void addLayoutComponent(Component component, Object obj) {
+		Objects.requireNonNull(component, "Provided component cannot be null.");
+		Objects.requireNonNull(obj, "Provided constraint cannot be null.");
+
+		RCPosition currentPosition;
+		if (obj instanceof RCPosition) {
+			currentPosition = (RCPosition) obj;
+			
+		} else if (obj instanceof String){
+			currentPosition = RCPosition.extractRCPosition((String) obj); 
+			
+		} else {
+			throw new CalcLayoutException("Invalid RCPosition constraint, must be of either String or RCPosition class.");
+		}
+		
+		validateRCPositionAvailability(currentPosition);
+		
+		components.put(component, currentPosition);
+	}
+
+	private void validateRCPositionAvailability(RCPosition currentPosition) {
+		int row = currentPosition.getRow();
+		int col = currentPosition.getColumn();
+		
+		if(row < MIN_ROW || row > MAX_ROW || col < MIN_COL || col > MAX_COL ) {
+			throw new CalcLayoutException("Invalid RCPosition requested.");
+			
+		} else if(components.size() >= MAX_COMPONENTS) {
+			throw new CalcLayoutException("Maximum number of components reached.");
+		}
 	}
 
 	@Override
@@ -45,14 +90,13 @@ public class CalcLayout implements LayoutManager2 {
 		Dimension componentSize = calculateComponentSize((component) -> component.getMinimumSize());
 		return calculateLayoutSize(container, componentSize);
 	}
-	
 
 	@Override
 	public Dimension maximumLayoutSize(Container container) {
 		Dimension componentSize = calculateComponentSize((component) -> component.getMaximumSize());
 		return calculateLayoutSize(container, componentSize);
 	}
-	
+
 	@Override
 	public Dimension preferredLayoutSize(Container container) {
 		Dimension componentSize = calculateComponentSize((component) -> component.getPreferredSize());
@@ -67,14 +111,14 @@ public class CalcLayout implements LayoutManager2 {
 
 		//@formatter:off
 		int layoutWidth = NUM_OF_COLS * componentWidth +
-					  NUM_OF_COL_GAPS * gap + 
-					  insetsWidth;
+						  NUM_OF_COL_GAPS * gap + 
+					      insetsWidth;
 		
 		int layoutHeight = NUM_OF_ROWS * componentHeight + 
-					   NUM_OF_ROW_GAPS * gap +
-					   insetsHeight;
+					       NUM_OF_ROW_GAPS * gap +
+					       insetsHeight;
 		//@formatter:on
-		
+
 		return new Dimension(layoutWidth, layoutHeight);
 	}
 
@@ -101,14 +145,13 @@ public class CalcLayout implements LayoutManager2 {
 		return CALC_SCREEEN.equals(position);
 	}
 
-
-
 	@Override
 	public void removeLayoutComponent(Component component) {
-	}
+		if (component == null) {
+			throw new CalcLayoutException("This layout does not store null components");
+		}
 
-	@Override
-	public void addLayoutComponent(Component component, Object obj) {
+		components.remove(component);
 	}
 
 	@Override
@@ -124,6 +167,5 @@ public class CalcLayout implements LayoutManager2 {
 	@Override
 	public void invalidateLayout(Container container) {
 	}
-
 
 }
