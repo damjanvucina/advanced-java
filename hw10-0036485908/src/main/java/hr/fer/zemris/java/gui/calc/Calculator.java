@@ -30,12 +30,13 @@ public class Calculator extends JFrame {
 	private static final Color SCREEN_COLOR = Color.ORANGE;
 	private static final Color BORDER_COLOR = Color.BLACK;
 	private static final Color BUTTON_COLOR = Color.decode("#4C8DAD");
+	private static final DoubleBinaryOperator NO_INVERTED_OPERATION = null;
 
 	private CalcModelImpl model;
 	private Screen screen;
 	private boolean invertedTicked;
-	private Map<UnaryButton, String> buttonsRegular;
-	private Map<UnaryButton, String> buttonsInverted;
+	private Map<JButton, String> buttonsRegular;
+	private Map<JButton, String> buttonsInverted;
 	private Stack<Double> stack;
 
 	public Calculator() {
@@ -73,8 +74,6 @@ public class Calculator extends JFrame {
 		addBinaryButtons(p);
 
 		addSpecialButtons(p);
-
-		p.add(new JButton("x^n"), new RCPosition(5, 1));
 
 		return p;
 	}
@@ -134,20 +133,25 @@ public class Calculator extends JFrame {
 	}
 
 	private void addBinaryButtons(JPanel p) {
-		BinaryButton addition = new BinaryButton("+", (x, y) -> x + y);
+		BinaryButton addition = new BinaryButton("+", (x, y) -> x + y, NO_INVERTED_OPERATION);
 		p.add(addition, new RCPosition(5, 6));
 
-		BinaryButton subtraction = new BinaryButton("-", (x, y) -> x - y);
+		BinaryButton subtraction = new BinaryButton("-", (x, y) -> x - y, NO_INVERTED_OPERATION);
 		p.add(subtraction, new RCPosition(4, 6));
 
-		BinaryButton multiplication = new BinaryButton("*", (x, y) -> x * y);
+		BinaryButton multiplication = new BinaryButton("*", (x, y) -> x * y, NO_INVERTED_OPERATION);
 		p.add(multiplication, new RCPosition(3, 6));
 
-		BinaryButton division = new BinaryButton("/", (x, y) -> x / y);
+		BinaryButton division = new BinaryButton("/", (x, y) -> x / y, NO_INVERTED_OPERATION);
 		p.add(division, new RCPosition(2, 6));
 
-		BinaryButton equalsSymbol = new BinaryButton("=", (x, y) -> 0);
+		BinaryButton equalsSymbol = new BinaryButton("=", (x, y) -> 0, NO_INVERTED_OPERATION);
 		p.add(equalsSymbol, new RCPosition(1, 6));
+
+		BinaryButton power = new BinaryButton("x^n", (x, y) -> Math.pow(x, y), (x, y) -> Math.pow(x, 1 / y));
+		p.add(power, new RCPosition(5, 1));
+		buttonsRegular.put(power, "x^n");
+		buttonsInverted.put(power, "x^1/n");
 	}
 
 	private void addUnaryButtons(JPanel p) {
@@ -199,10 +203,12 @@ public class Calculator extends JFrame {
 		private static final long serialVersionUID = 1L;
 		String value;
 		DoubleBinaryOperator operation;
+		DoubleBinaryOperator invertedOperation;
 
-		public BinaryButton(String value, DoubleBinaryOperator operation) {
+		public BinaryButton(String value, DoubleBinaryOperator operation, DoubleBinaryOperator invertedOperation) {
 			this.value = value;
 			this.operation = operation;
+			this.invertedOperation = invertedOperation;
 			setText(value);
 			addActionListener(this);
 		}
@@ -211,7 +217,7 @@ public class Calculator extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 			CalcModelImpl model = Calculator.this.model;
 			double currentNumber = Calculator.this.model.getValue();
-			
+
 			if (!model.isActiveOperandSet()) {
 				performSuccesiveCalculation(model, currentNumber);
 
@@ -223,15 +229,21 @@ public class Calculator extends JFrame {
 				model.setValue(result);
 				performSuccesiveCalculation(model, result);
 			}
-			
-			if(this.value == "=") {
+
+			if (this.value.equals("=")) {
 				model.clearAllWithoutNotifying();
 			}
 		}
 
 		private void performSuccesiveCalculation(CalcModelImpl model, double value) {
 			model.setActiveOperand(value);
-			model.setPendingBinaryOperation(operation);
+
+			if (this.value.equals("x^n") && invertedTicked == true) {
+				model.setPendingBinaryOperation(invertedOperation);
+			} else {
+				model.setPendingBinaryOperation(operation);
+			}
+
 			model.clearWithoutNotifying();
 		}
 	}
