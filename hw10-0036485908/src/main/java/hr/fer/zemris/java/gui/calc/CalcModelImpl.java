@@ -74,7 +74,7 @@ public class CalcModelImpl implements CalcModel {
 		if (screen == null) {
 			return;
 		}
-		
+
 		screen = String.valueOf(Double.parseDouble(screen) * -1);
 
 	}
@@ -97,8 +97,8 @@ public class CalcModelImpl implements CalcModel {
 		if (STARTING_ZERO.equals(screen) && digit == 0) {
 			return;
 		}
-		
-		if(screen != null && screen.length() >= MAX_DIGITS) {
+
+		if (screen != null && screen.length() >= MAX_DIGITS) {
 			return;
 		}
 
@@ -107,6 +107,8 @@ public class CalcModelImpl implements CalcModel {
 		} else {
 			screen = screen + String.valueOf(digit);
 		}
+		
+		notifyObservers();
 	}
 
 	@Override
@@ -142,24 +144,34 @@ public class CalcModelImpl implements CalcModel {
 
 	@Override
 	public void setPendingBinaryOperation(DoubleBinaryOperator op) {
-		if(op == null) {
+		if (op == null) {
 			throw new CalculatorException("Pending operation cannot be set to null.");
 		}
-		
+
 		pendingOperation = op;
 	}
-	
 
 	@Override
 	public String toString() {
-		if(screen == null) {
+		if (screen == null) {
 			return "0";
-			
+
 		} else if (screen.endsWith(".0")) {
 			return screen.substring(0, screen.lastIndexOf("."));
-			
+
 		} else {
 			return screen == null ? "0" : String.valueOf(screen);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private void notifyObservers() {
+		if (observers == null) {
+			return;
+		}
+
+		for (CalcValueListener listener : observers) {
+			listener.valueChanged(this);
 		}
 	}
 
