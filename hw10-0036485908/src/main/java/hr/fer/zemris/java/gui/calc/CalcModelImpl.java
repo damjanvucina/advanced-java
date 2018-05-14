@@ -3,7 +3,6 @@ package hr.fer.zemris.java.gui.calc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleBinaryOperator;
-import static hr.fer.zemris.java.gui.calc.Operation.*;
 
 public class CalcModelImpl implements CalcModel {
 	public static final String STARTING_ZERO = "0";
@@ -12,11 +11,10 @@ public class CalcModelImpl implements CalcModel {
 	private String screen;
 	private String activeOperand;
 	@SuppressWarnings("unused")
-	private Operation pendingOperation;
+	private DoubleBinaryOperator pendingOperation;
 	private List<CalcValueListener> observers;
 
 	public CalcModelImpl() {
-		pendingOperation = NONE;
 		observers = new ArrayList<>();
 	}
 
@@ -68,7 +66,7 @@ public class CalcModelImpl implements CalcModel {
 	public void clearAll() {
 		clear();
 		activeOperand = null;
-		pendingOperation = NONE;
+		pendingOperation = null;
 	}
 
 	@Override
@@ -139,12 +137,18 @@ public class CalcModelImpl implements CalcModel {
 
 	@Override
 	public DoubleBinaryOperator getPendingBinaryOperation() {
-		return null;
+		return pendingOperation;
 	}
 
 	@Override
 	public void setPendingBinaryOperation(DoubleBinaryOperator op) {
+		if(op == null) {
+			throw new CalculatorException("Pending operation cannot be set to null.");
+		}
+		
+		pendingOperation = op;
 	}
+	
 
 	@Override
 	public String toString() {
