@@ -36,6 +36,20 @@ public class Calculator extends JFrame {
 	private static final Font BUTTON_FONT = new Font("ARIAL", Font.BOLD, 20);
 	private static final Font SCREEN_FONT = new Font("ARIAL", Font.BOLD, 30);
 	private static final Dimension MINIMUM_SIZE = new Dimension(500, 500);
+	private static final String CLR_TOOLTIP = "Clears current entry";
+	private static final String RES_TOOLTIP = "Restarts calculator";
+	private static final String PUSH_TOOLTIP = "Pushes current entry to the stack";
+	private static final String POP_TOOLTIP = "Pops last pushed entry from the stack";
+	private static final String INV_TOOLTIP = "Displays advanced math functions";
+	private static final String RECIPROCAL_TOOLTIP = "Calculates reciprocal value of current entry";
+	private static final String LOG_TOOLTIP = "Calculates 10 base logarithm";
+	private static final String LN_TOOLTIP = "Calculates e base logarithm";
+	private static final String POWER_TOOLTIP = "Calculates n-th power/root of current entry";
+	private static final String SWAP_SIGN_TOOLTIP = "Changes arithmetic sign";
+	private static final String SIN_TOOLTIP = "Calculates sine/inverse sine of current entry";
+	private static final String COS_TOOLTIP = "Calculates cosine/inverse cosine of current entry";
+	private static final String TAN_TOOLTIP = "Calculates tangent/inverse tangent of current entry";
+	private static final String CTG_TOOLTIP = "Calculates cotangent/inverse cotangent of current entry";
 
 	private CalcModelImpl model;
 	private Screen screen;
@@ -86,22 +100,27 @@ public class Calculator extends JFrame {
 
 	private void addSpecialButtons(JPanel p) {
 		JCheckBox invCheckBox = new JCheckBox("Inv");
+		invCheckBox.setToolTipText(INV_TOOLTIP);
 		invCheckBox.addActionListener(l -> invertDualButtonsNames());
 		p.add(invCheckBox, new RCPosition(5, 7));
 
 		JButton clr = new JButton("clr");
+		clr.setToolTipText(CLR_TOOLTIP);
 		clr.addActionListener(l -> model.clear());
 		p.add(clr, new RCPosition(1, 7));
 
 		JButton res = new JButton("res");
+		res.setToolTipText(RES_TOOLTIP);
 		res.addActionListener(l -> model.clearAll());
 		p.add(res, new RCPosition(2, 7));
 
 		JButton push = new JButton("push");
+		push.setToolTipText(PUSH_TOOLTIP);
 		push.addActionListener(l -> stack.push(model.getValue()));
 		p.add(push, new RCPosition(3, 7));
 
 		JButton pop = new JButton("pop");
+		pop.setToolTipText(POP_TOOLTIP);
 		pop.addActionListener(l -> {
 			if (!stack.isEmpty()) {
 				model.setValue(stack.pop());
@@ -114,6 +133,7 @@ public class Calculator extends JFrame {
 		p.add(pop, new RCPosition(4, 7));
 
 		JButton reciprocal = new JButton("1/x");
+		reciprocal.setToolTipText(RECIPROCAL_TOOLTIP);
 		reciprocal.addActionListener(l -> model.setValue(1 / model.getValue()));
 		p.add(reciprocal, new RCPosition(2, 1));
 
@@ -122,6 +142,7 @@ public class Calculator extends JFrame {
 		p.add(point, new RCPosition(5, 5));
 
 		JButton signSwapper = new JButton("+/-");
+		signSwapper.setToolTipText(SWAP_SIGN_TOOLTIP);
 		signSwapper.addActionListener(l -> model.swapSign());
 		p.add(signSwapper, new RCPosition(5, 4));
 	}
@@ -155,38 +176,45 @@ public class Calculator extends JFrame {
 		p.add(equalsSymbol, new RCPosition(1, 6));
 
 		BinaryButton power = new BinaryButton("x^n", (x, y) -> Math.pow(x, y), (x, y) -> Math.pow(x, 1 / y));
+		power.setToolTipText(POWER_TOOLTIP);
 		p.add(power, new RCPosition(5, 1));
 		buttonsRegular.put(power, "x^n");
-		buttonsInverted.put(power, "x^1/n");
+		buttonsInverted.put(power, "x^/n");
 	}
 
 	private void addUnaryButtons(JPanel p) {
 		UnaryButton sin = new UnaryButton("sin", Math::sin, Math::asin);
+		sin.setToolTipText(SIN_TOOLTIP);
 		p.add(sin, new RCPosition(2, 2));
 		buttonsRegular.put(sin, "sin");
 		buttonsInverted.put(sin, "asin");
 
 		UnaryButton cos = new UnaryButton("cos", Math::cos, Math::acos);
+		cos.setToolTipText(COS_TOOLTIP);
 		p.add(cos, new RCPosition(3, 2));
 		buttonsRegular.put(cos, "cos");
 		buttonsInverted.put(cos, "acos");
 
 		UnaryButton tan = new UnaryButton("tan", Math::tan, Math::atan);
+		tan.setToolTipText(TAN_TOOLTIP);
 		p.add(tan, new RCPosition(4, 2));
 		buttonsRegular.put(tan, "tan");
 		buttonsInverted.put(tan, "atan");
 
 		UnaryButton ctg = new UnaryButton("ctg", x -> 1 / Math.tan(x), x -> PI / 2 - Math.atan(x));
+		ctg.setToolTipText(CTG_TOOLTIP);
 		p.add(ctg, new RCPosition(5, 2));
 		buttonsRegular.put(ctg, "ctg");
 		buttonsInverted.put(ctg, "actg");
 
 		UnaryButton log = new UnaryButton("log", x -> Math.log10(x), x -> Math.pow(10, x));
+		log.setToolTipText(LOG_TOOLTIP);
 		p.add(log, new RCPosition(3, 1));
 		buttonsRegular.put(log, "log");
 		buttonsInverted.put(log, "10^x");
 
 		UnaryButton ln = new UnaryButton("ln", x -> Math.log(x), x -> Math.pow(E, x));
+		ln.setToolTipText(LN_TOOLTIP);
 		p.add(ln, new RCPosition(4, 1));
 		buttonsRegular.put(ln, "ln");
 		buttonsInverted.put(ln, "e^x");
