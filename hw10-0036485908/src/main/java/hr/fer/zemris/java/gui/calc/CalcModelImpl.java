@@ -46,6 +46,7 @@ public class CalcModelImpl implements CalcModel {
 		validateValue(value);
 
 		screen = String.valueOf(value);
+		notifyObservers();
 	}
 
 	private void validateValue(double value) {
@@ -60,13 +61,24 @@ public class CalcModelImpl implements CalcModel {
 	@Override
 	public void clear() {
 		screen = null;
+		notifyObservers();
+	}
+	
+	public void clearWithoutNotifying() {
+		screen = null;
 	}
 
 	@Override
 	public void clearAll() {
-		clear();
 		activeOperand = null;
 		pendingOperation = null;
+		clear();
+	}
+	
+	public void clearAllWithoutNotifying() {
+		activeOperand = null;
+		pendingOperation = null;
+		clearWithoutNotifying();
 	}
 
 	@Override
@@ -76,7 +88,7 @@ public class CalcModelImpl implements CalcModel {
 		}
 
 		screen = String.valueOf(Double.parseDouble(screen) * -1);
-
+		notifyObservers();
 	}
 
 	@Override
@@ -85,6 +97,7 @@ public class CalcModelImpl implements CalcModel {
 			return;
 		}
 		screen = (screen == null) ? "0" + String.valueOf(".") : screen + String.valueOf(".");
+		notifyObservers();
 	}
 
 	@Override
@@ -135,6 +148,10 @@ public class CalcModelImpl implements CalcModel {
 	@Override
 	public void clearActiveOperand() {
 		activeOperand = null;
+	}
+	
+	public void clearPendingOperation() {
+		pendingOperation = null;
 	}
 
 	@Override
