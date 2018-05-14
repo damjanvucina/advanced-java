@@ -3,6 +3,8 @@ package hr.fer.zemris.java.gui.calc;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -31,6 +33,9 @@ public class Calculator extends JFrame {
 	private static final Color BORDER_COLOR = Color.BLACK;
 	private static final Color BUTTON_COLOR = Color.decode("#4C8DAD");
 	private static final DoubleBinaryOperator NO_INVERTED_OPERATION = null;
+	private static final Font BUTTON_FONT = new Font("ARIAL", Font.BOLD, 20);
+	private static final Font SCREEN_FONT = new Font("ARIAL", Font.BOLD, 30);
+	private static final Dimension MINIMUM_SIZE = new Dimension(500, 500);
 
 	private CalcModelImpl model;
 	private Screen screen;
@@ -46,7 +51,8 @@ public class Calculator extends JFrame {
 		stack = new Stack<>();
 
 		setLocation(50, 50);
-		setSize(600, 600);
+		setSize(800, 400);
+		setMinimumSize(MINIMUM_SIZE);
 		setTitle("CASIO fx-991ES PLUS");
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -56,13 +62,13 @@ public class Calculator extends JFrame {
 	private void initGUI() {
 		Container cp = getContentPane();
 		JPanel p = new JPanel(new CalcLayout(5));
-
+		
 		p = fillPanel(p);
 		createCalculatorGUI(p);
 
 		cp.add(p);
 	}
-
+	
 	private JPanel fillPanel(JPanel p) {
 		screen = new Screen("0");
 		p.add(screen, new RCPosition(1, 1));
@@ -317,6 +323,7 @@ public class Calculator extends JFrame {
 				currentLabel.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 2));
 				currentLabel.setOpaque(true);
 				currentLabel.setBackground(SCREEN_COLOR);
+				currentLabel.setFont(SCREEN_FONT);
 
 			} else if (component instanceof JButton) {
 				JButton currentButton = (JButton) component;
@@ -324,14 +331,17 @@ public class Calculator extends JFrame {
 				currentButton.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 2));
 				currentButton.setOpaque(true);
 				currentButton.setBackground(BUTTON_COLOR);
+				currentButton.setFont(BUTTON_FONT);
 
 			} else {
 				JCheckBox currentCheckbox = (JCheckBox) component;
 				currentCheckbox.setBackground(BUTTON_COLOR);
 				currentCheckbox.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 2));
 				currentCheckbox.setBorderPainted(true);
+				currentCheckbox.setFont(BUTTON_FONT);
 			}
 		}
+			
 	}
 
 	public static void main(String[] args) {

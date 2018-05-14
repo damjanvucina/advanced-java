@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.gui.calc;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleBinaryOperator;
@@ -10,12 +11,13 @@ public class CalcModelImpl implements CalcModel {
 
 	private String screen;
 	private String activeOperand;
-	@SuppressWarnings("unused")
 	private DoubleBinaryOperator pendingOperation;
 	private List<CalcValueListener> observers;
+	DecimalFormat decimalFormat;
 
 	public CalcModelImpl() {
 		observers = new ArrayList<>();
+		decimalFormat = new DecimalFormat("#.##########");
 	}
 
 	@Override
@@ -45,7 +47,8 @@ public class CalcModelImpl implements CalcModel {
 	public void setValue(double value) {
 		validateValue(value);
 
-		screen = String.valueOf(value);
+		//screen = String.valueOf(value);
+		screen = decimalFormat.format(value);
 		notifyObservers();
 	}
 
@@ -181,7 +184,6 @@ public class CalcModelImpl implements CalcModel {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private void notifyObservers() {
 		if (observers == null) {
 			return;
@@ -191,9 +193,4 @@ public class CalcModelImpl implements CalcModel {
 			listener.valueChanged(this);
 		}
 	}
-
-	public static void main(String[] args) {
-		System.out.println(String.valueOf(0.0302));
-	}
-
 }
