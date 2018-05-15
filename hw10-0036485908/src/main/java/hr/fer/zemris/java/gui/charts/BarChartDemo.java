@@ -3,6 +3,7 @@ package hr.fer.zemris.java.gui.charts;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -33,6 +34,7 @@ public class BarChartDemo extends JFrame {
 	public BarChartDemo(Path path, BarChart chart) {
 		setLocation(50, 50);
 		setSize(700, 700);
+		setMinimumSize(new Dimension(350, 350));
 		setTitle("BarChart Demonstration");
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		initGUI(path, chart);
@@ -43,7 +45,7 @@ public class BarChartDemo extends JFrame {
 		cp.setLayout(new BorderLayout());
 		cp.setBackground(Color.WHITE);
 		
-		JLabel pathLabel = new JLabel(path.toString());
+		JLabel pathLabel = new JLabel("Data loaded from: " + path.toString());
 		pathLabel.setHorizontalAlignment(JLabel.CENTER);
 		pathLabel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
 		cp.add(pathLabel, NORTH);

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 
@@ -18,7 +19,6 @@ public class BarChartComponent extends JComponent {
 	private static final Font DESCRIPTION_FONT = new Font("Arial", Font.PLAIN, 18);
 	private static final Font COORDINATES_FONT = new Font("Arial", Font.BOLD, 15);
 	private static final Color GRID_COLOR = Color.decode("#f4b8a1");
-	private static final Color BAR_COLOR = Color.decode("#e2583d");
 
 	private BarChart chart;
 	private Graphics2D g2d;
@@ -26,15 +26,11 @@ public class BarChartComponent extends JComponent {
 	private XYValue point00;
 	private XYValue point01;
 	private XYValue point10;
+	@SuppressWarnings("unused")
 	private XYValue point11;
 
 	public BarChartComponent(BarChart chart) {
 		this.chart = chart;
-
-		initGui();
-	}
-
-	private void initGui() {
 	}
 
 	@Override
@@ -43,6 +39,7 @@ public class BarChartComponent extends JComponent {
 
 		g2d = (Graphics2D) g;
 		g2d.setFont(DESCRIPTION_FONT);
+
 		intializeGraphEndPoints();
 
 		drawVerticalGridBarsAndXCoordinates();
@@ -50,10 +47,27 @@ public class BarChartComponent extends JComponent {
 
 		drawYAxis();
 		drawXAxis();
+		drawAxesArrows();
 
 		drawXAxisDescription();
 		drawYAxisDescription();
 	}
+	
+	//@formatter:off
+	private void drawAxesArrows() {
+		
+		g2d.setColor(Color.GRAY);
+		g2d.fillPolygon(new Polygon(
+						new int[] { point01.getX(), point01.getX(), point01.getX() + ZERO_GAP },
+						new int[] { point01.getY() + ZERO_GAP, point01.getY() - ZERO_GAP, point01.getY()}, 3));
+		
+		g2d.fillPolygon(new Polygon(
+				new int[] { point10.getX() - ZERO_GAP, point10.getX() + ZERO_GAP, point10.getX()},
+				new int[] { point10.getY(), point10.getY(), point10.getY() - ZERO_GAP}, 3));
+		
+		g2d.setColor(Color.BLACK);
+	}
+	//@formatter:on
 
 	private void intializeGraphEndPoints() {
 		int x1 = 2 * AXIS_BIG_GAP + AXIS_SMALL_GAP + g2d.getFontMetrics(DESCRIPTION_FONT).getAscent() - ZERO_GAP;
@@ -87,19 +101,19 @@ public class BarChartComponent extends JComponent {
 
 		drawYCoordinate(point00.getX(), point00.getY() - (numOfSpaces) * barLength,
 				String.valueOf(yCoordinate + (numOfSpaces) * chart.getGapY()));
-		
+
 		g2d.setColor(Color.BLACK);
 	}
 
 	private void drawYCoordinate(int x, int y, String yCoordinate) {
 		int textlength = g2d.getFontMetrics().stringWidth(yCoordinate);
 		int textAscent = g2d.getFontMetrics().getAscent();
-		
+
 		g2d.setFont(COORDINATES_FONT);
 		g2d.setColor(Color.black);
-		
-		g2d.drawString(yCoordinate, x - textlength - ZERO_GAP, y + textAscent/2);
-		
+
+		g2d.drawString(yCoordinate, x - textlength - ZERO_GAP, y + textAscent / 2);
+
 		g2d.setColor(GRID_COLOR);
 		g2d.setFont(DESCRIPTION_FONT);
 	}
@@ -198,17 +212,16 @@ public class BarChartComponent extends JComponent {
 		int YAxisDescriptionLength = g2d.getFontMetrics(DESCRIPTION_FONT).stringWidth(chart.getyDescription());
 		int ascent = g2d.getFontMetrics(DESCRIPTION_FONT).getAscent();
 
-		g2d.drawString(chart.getyDescription(), - (getHeight()/2 + YAxisDescriptionLength/2), AXIS_BIG_GAP + ascent);
+		g2d.drawString(chart.getyDescription(), - ((calculateXYDistance(point00, point10))/2 + YAxisDescriptionLength), AXIS_SMALL_GAP + ascent);
+		
 		g2d.setTransform(defaultAt);
 	}
 
 	private void drawXAxisDescription() {
-		AffineTransform at = new AffineTransform();
-
 		int XAxisDescriptionLength = g2d.getFontMetrics(DESCRIPTION_FONT).stringWidth(chart.getxDescription());
-
+		
 		g2d.drawString(chart.getxDescription(),
-				getWidth() / 2 - XAxisDescriptionLength / 2,
+				point01.getX() - (point01.getX() - point00.getX())/2 - XAxisDescriptionLength / 2,
 				getHeight() - AXIS_BIG_GAP);
 	}
 	//@formatter:on
