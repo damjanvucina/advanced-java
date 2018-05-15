@@ -16,9 +16,11 @@ public class BarChartComponent extends JComponent {
 	private static final int AXIS_SMALL_GAP = 10;
 	private static final int AXIS_BIG_GAP = 20;
 	private static final int ZERO_GAP = 5;
+	private static final int SHADE_GAP = 8;
 	private static final Font DESCRIPTION_FONT = new Font("Arial", Font.PLAIN, 18);
 	private static final Font COORDINATES_FONT = new Font("Arial", Font.BOLD, 15);
 	private static final Color GRID_COLOR = Color.decode("#f4b8a1");
+	private static final Color SHADE_COLOR = Color.decode("#f2e2de");
 
 	private BarChart chart;
 	private Graphics2D g2d;
@@ -52,7 +54,7 @@ public class BarChartComponent extends JComponent {
 		drawXAxisDescription();
 		drawYAxisDescription();
 	}
-	
+
 	//@formatter:off
 	private void drawAxesArrows() {
 		
@@ -148,6 +150,11 @@ public class BarChartComponent extends JComponent {
 		int height = calculateXYDistance(bar00, bar10);
 
 		g2d.fillRect(bar00.getX(), bar00.getY() - height / 2 + ZERO_GAP, width, height / 2 - ZERO_GAP);
+
+		g2d.setColor(SHADE_COLOR);
+		g2d.fillRect(bar01.getX(), bar01.getY() - height / 2 + SHADE_GAP, ZERO_GAP, height / 2 - ZERO_GAP - SHADE_GAP);
+		g2d.setColor(GRID_COLOR);
+
 		drawBarSeparator(bar01, bar11);
 		g2d.setColor(Color.BLACK);
 		drawXCoordinate(bar00, bar01, String.valueOf(xCoordinate));
