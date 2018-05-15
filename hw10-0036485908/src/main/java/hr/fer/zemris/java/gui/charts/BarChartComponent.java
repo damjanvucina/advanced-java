@@ -51,14 +51,15 @@ public class BarChartComponent extends JComponent {
 
 		intializeGraphEndPoints();
 
-		drawYAxis(g2d);
-		drawXAxis(g2d);
+		drawYAxis();
+		drawXAxis();
 
-		drawVerticalGridLines(g2d);
-		drawHorizontalGridLines(g2d);
+		drawVerticalGridLines();
+		drawHorizontalGridLines();
 
-		drawXAxisDescription(g2d);
-		drawYAxisDescription(g2d);
+
+		drawXAxisDescription();
+		drawYAxisDescription();
 	}
 
 	private void intializeGraphEndPoints() {
@@ -75,22 +76,21 @@ public class BarChartComponent extends JComponent {
 		point11 = new XYValue(x2, y3);
 	}
 
-	private void drawHorizontalGridLines(Graphics2D g2d2) {
+	private void drawHorizontalGridLines() {
 		int numOfSpaces = (chart.getMaxY() - chart.getMinY()) / chart.getGapY();
-
-		int barLength = (int) Math.hypot(point00.getX() - point01.getX(), point00.getY() - point01.getY())
+		int barLength = (int) Math.hypot(point00.getX() - point10.getX(), point00.getY() - point10.getY())
 				/ numOfSpaces;
 
 		g2d.setColor(BAR_COLOR);
 		for (int i = 1; i <= numOfSpaces; i++) {
-			g2d.drawLine(point00.getX(), point00.getY() - i * barLength + ZERO_GAP, point10.getX(),
-					point10.getY() - i * barLength);
+			g2d.drawLine(point00.getX(), point00.getY() - i * barLength + ZERO_GAP, point01.getX(),
+					point01.getY() - i * barLength + ZERO_GAP);
 		}
 
 		g2d.setColor(Color.BLACK);
 	}
 
-	private void drawVerticalGridLines(Graphics2D g2d) {
+	private void drawVerticalGridLines() {
 		int numOfBars = chart.getValues().size();
 		int barLength = (int) Math.hypot(point00.getX() - point01.getX(), point00.getY() - point01.getY()) / numOfBars;
 
@@ -103,7 +103,7 @@ public class BarChartComponent extends JComponent {
 	}
 
 	//	//@formatter:on
-	private void drawXAxis(Graphics2D g2d) {
+	private void drawXAxis() {
 		Stroke defaultStroke = g2d.getStroke();
 		g2d.setStroke(new BasicStroke(2));
 		g2d.setColor(Color.GRAY);
@@ -113,7 +113,7 @@ public class BarChartComponent extends JComponent {
 		g2d.setStroke(defaultStroke);
 	}
 
-	private void drawYAxis(Graphics2D g2d) {
+	private void drawYAxis() {
 		Stroke defaultStroke = g2d.getStroke();
 		g2d.setStroke(new BasicStroke(2));
 		g2d.setColor(Color.GRAY);
@@ -124,7 +124,7 @@ public class BarChartComponent extends JComponent {
 	}
 
 	//@formatter:off
-	private void drawYAxisDescription(Graphics2D g2d) {
+	private void drawYAxisDescription() {
 		AffineTransform defaultAt = g2d.getTransform();
 		AffineTransform at = new AffineTransform();
 		at.rotate(-Math.PI / 2);
@@ -137,7 +137,7 @@ public class BarChartComponent extends JComponent {
 		g2d.setTransform(defaultAt);
 	}
 
-	private void drawXAxisDescription(Graphics2D g2d) {
+	private void drawXAxisDescription() {
 		AffineTransform at = new AffineTransform();
 
 		int XAxisDescriptionLength = g2d.getFontMetrics(DESCRIPTION_FONT).stringWidth(chart.getxDescription());

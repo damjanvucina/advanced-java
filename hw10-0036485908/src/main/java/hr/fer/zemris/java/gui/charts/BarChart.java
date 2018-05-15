@@ -61,7 +61,7 @@ public class BarChart {
 			maxY++;
 		}
 
-		return gapY;
+		return maxY;
 	}
 
 	public static void main(String[] args) {
