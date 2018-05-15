@@ -20,7 +20,7 @@ public class CalcModelTest {
 	public void setup() {
 		model = newCalcModel();
 	}
-
+	
 	@Test
 	public void valueOfNewModel() {
 		assertEquals(0.0, model.getValue(), 1E-10);

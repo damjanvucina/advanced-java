@@ -45,7 +45,7 @@ public class BarChartComponent extends JComponent {
 		intializeGraphEndPoints();
 
 		drawVerticalGridBarsAndXCoordinates();
-		drawHorizontalGrid();
+		drawHorizontalGridAndYCoordinates();
 
 		drawYAxis();
 		drawXAxis();
@@ -85,7 +85,7 @@ public class BarChartComponent extends JComponent {
 		point11 = new XYValue(x2, y3);
 	}
 
-	private void drawHorizontalGrid() {
+	private void drawHorizontalGridAndYCoordinates() {
 		int numOfSpaces = (chart.getMaxY() - chart.getMinY()) / chart.getGapY();
 		int barLength = (int) Math.hypot(point00.getX() - point10.getX(), point00.getY() - point10.getY())
 				/ numOfSpaces;

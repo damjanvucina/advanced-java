@@ -169,9 +169,9 @@ public class CalcLayout implements LayoutManager2 {
 
 		int componentWidthAbs = componentDimension.width;
 		int componentHeightAbs = componentDimension.height;
-
-		int componentWidth = componentWidthAbs * factorize(container, (cont) -> cont.getWidth(), (dim) -> dim.width);
-		int componentHeight = componentHeightAbs * factorize(container, (cont) -> cont.getHeight(), (dim) -> dim.height);
+		
+		int componentWidth = (int) (componentWidthAbs * factorize(container, (cont) -> cont.getWidth(), (dim) -> dim.getWidth()));
+		int componentHeight = (int) (componentHeightAbs * factorize(container, (cont) -> cont.getHeight(), (dim) -> dim.getHeight()));
 
 		int componentWidthFactor = componentWidth + gap;
 		int componentHeightFactor = componentHeight + gap;
@@ -199,9 +199,9 @@ public class CalcLayout implements LayoutManager2 {
 	}
 
 	//@formatter:off
-	private int factorize(Container container,
+	private double factorize(Container container,
 						  Function<Container, Integer> contAction,
-			              Function<Dimension, Integer> dimAction) {
+			              Function<Dimension, Double> dimAction) {
 		
 		return contAction.apply(container) / dimAction.apply(preferredLayoutSize(container));
 	}

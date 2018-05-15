@@ -375,7 +375,7 @@ public class Calculator extends JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			JFrame frame = new Calculator();
-			// frame.pack();
+			frame.pack();
 			frame.setVisible(true);
 		});
 	}
