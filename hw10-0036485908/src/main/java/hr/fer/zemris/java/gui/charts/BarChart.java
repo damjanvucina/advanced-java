@@ -17,8 +17,16 @@ public class BarChart {
 		this.xDescription = xDescription;
 		this.yDescription = yDescription;
 		this.minY = minY;
-		this.maxY = maxY;
+		this.maxY = validateMax(minY, maxY, gapY);
 		this.gapY = gapY;
+	}
+
+	private int validateMax(int minY, int maxY, int gapY) {
+		while ((maxY - minY) % gapY != 0) {
+			maxY++;
+		}
+
+		return gapY;
 	}
 
 	public static void main(String[] args) {
