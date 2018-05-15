@@ -3,19 +3,13 @@ package hr.fer.zemris.java.gui.charts;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import javax.swing.JComponent;
 
-import hr.fer.zemris.java.gui.layouts.RCPosition;
 
 public class BarChartComponent extends JComponent {
 	private static final long serialVersionUID = 1L;
@@ -24,7 +18,8 @@ public class BarChartComponent extends JComponent {
 	private static final int ZERO_GAP = 3;
 	private static final Font DESCRIPTION_FONT = new Font("Arial", Font.PLAIN, 20);
 	private static final Font COORDINATES_FONT = new Font("Arial", Font.PLAIN, 15);
-	private static final Color BAR_COLOR = Color.decode("#f4b8a1");
+	private static final Color GRID_COLOR = Color.decode("#f4b8a1");
+	private static final Color BAR_COLOR = Color.decode("#e2583d");
 
 	private BarChart chart;
 	private Graphics2D g2d;
@@ -51,12 +46,11 @@ public class BarChartComponent extends JComponent {
 
 		intializeGraphEndPoints();
 
+		drawVerticalGridBarsAndNumbers();
+		drawHorizontalGrid();
+		
 		drawYAxis();
 		drawXAxis();
-
-		drawVerticalGridLines();
-		drawHorizontalGridLines();
-
 
 		drawXAxisDescription();
 		drawYAxisDescription();
@@ -76,30 +70,69 @@ public class BarChartComponent extends JComponent {
 		point11 = new XYValue(x2, y3);
 	}
 
-	private void drawHorizontalGridLines() {
+	private void drawHorizontalGrid() {
 		int numOfSpaces = (chart.getMaxY() - chart.getMinY()) / chart.getGapY();
 		int barLength = (int) Math.hypot(point00.getX() - point10.getX(), point00.getY() - point10.getY())
 				/ numOfSpaces;
 
-		g2d.setColor(BAR_COLOR);
+		g2d.setColor(GRID_COLOR);
 		for (int i = 1; i <= numOfSpaces; i++) {
 			g2d.drawLine(point00.getX(), point00.getY() - i * barLength + ZERO_GAP, point01.getX(),
 					point01.getY() - i * barLength + ZERO_GAP);
+
 		}
 
 		g2d.setColor(Color.BLACK);
 	}
 
-	private void drawVerticalGridLines() {
+	private void drawVerticalGridBarsAndNumbers() {
 		int numOfBars = chart.getValues().size();
 		int barLength = (int) Math.hypot(point00.getX() - point01.getX(), point00.getY() - point01.getY()) / numOfBars;
+		XYValue bar00 = point00;
 
-		g2d.setColor(BAR_COLOR);
+		g2d.setColor(GRID_COLOR);
 		for (int i = 1; i <= numOfBars; i++) {
+
+			bar00 = drawBar(bar00, new XYValue(point00.getX() + i * barLength, point00.getY() + 0),
+					chart.getValues().get(i - 1).getY());
+			
 			g2d.drawLine(point00.getX() + i * barLength, point00.getY() + ZERO_GAP, point10.getX() + i * barLength,
 					point10.getY());
+
 		}
 		g2d.setColor(Color.BLACK);
+	}
+
+	private XYValue drawBar(XYValue bar00, XYValue bar01, int value) {
+		int numOfSpaces = (chart.getMaxY() - chart.getMinY()) / chart.getGapY();
+		int barLength = (int) Math.hypot(point00.getX() - point10.getX(), point00.getY() - point10.getY())
+				/ numOfSpaces;
+
+		XYValue bar10 = new XYValue(bar00.getX(), bar00.getY() - value * barLength);
+		XYValue bar11 = new XYValue(bar01.getX(), bar01.getY() - value * barLength);
+
+		int width = calculateXYDistance(bar00, bar01);
+		int height = calculateXYDistance(bar00, bar10);
+		
+		g2d.fillRect(bar00.getX(), bar00.getY() - height/2 + ZERO_GAP, width, height/2 - ZERO_GAP);
+		drawBarSeparator(bar01,bar11);
+
+		return bar01;
+	}
+
+	private void drawBarSeparator(XYValue bar01, XYValue bar11) {
+		Stroke defaultStroke = g2d.getStroke();
+		g2d.setStroke(new BasicStroke(2));
+		g2d.setColor(Color.WHITE);
+
+		g2d.drawLine(bar01.getX(), bar01.getY(), bar11.getX(), bar11.getY());
+		
+		g2d.setColor(GRID_COLOR);
+		g2d.setStroke(defaultStroke);
+	}
+
+	private int calculateXYDistance(XYValue bar00, XYValue bar01) {
+		return (int) Math.hypot(bar00.getX() - bar01.getX(), bar00.getY() - bar01.getY());
 	}
 
 	//	//@formatter:on
