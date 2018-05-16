@@ -7,7 +7,6 @@ import java.awt.Insets;
 import java.awt.LayoutManager2;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 import static java.lang.Math.max;
 
@@ -117,6 +116,7 @@ public class CalcLayout implements LayoutManager2 {
 	private Dimension calculateLayoutSize(Container container, Dimension componentSize) {
 		int componentWidth = componentSize.width;
 		int componentHeight = componentSize.height;
+		
 		int insetsWidth = container.getInsets().left + container.getInsets().right;
 		int insetsHeight = container.getInsets().top + container.getInsets().bottom;
 
@@ -151,7 +151,7 @@ public class CalcLayout implements LayoutManager2 {
 
 		return new Dimension(currentWidth, currentHeight);
 	}
-	
+
 	private boolean isCalcScreen(RCPosition position) {
 		return CALC_SCREEEN.equals(position);
 	}
@@ -165,49 +165,41 @@ public class CalcLayout implements LayoutManager2 {
 		components.remove(component);
 	}
 
+	//@formatter:off
 	@Override
 	public void layoutContainer(Container container) {
-		Dimension componentDimension = calculateComponentSize((component) -> component.getPreferredSize());
+		Insets insets = container.getInsets();
 
-		int componentWidthAbs = componentDimension.width;
-		int componentHeightAbs = componentDimension.height;
+		int widthInsets = insets.left + insets.right;
+		int heightInsets = insets.top + insets.bottom;
 
-		int componentWidth = (int) (componentWidthAbs
-				* factorize(container, (cont) -> cont.getWidth(), (dim) -> dim.getWidth()));
-		int componentHeight = (int) (componentHeightAbs
-				* factorize(container, (cont) -> cont.getHeight(), (dim) -> dim.getHeight()));
+		int widthGaps = (NUM_OF_COL_GAPS + 2) * gap;
+		int heightGaps = (NUM_OF_ROW_GAPS + 2) * gap;
 
-		int componentWidthFactor = componentWidth + gap;
-		int componentHeightFactor = componentHeight + gap;
+		int buttonWidth = (container.getWidth() - widthInsets - widthGaps) / NUM_OF_COLS;
+		int screenWidth = buttonWidth * CALC_SCREEN_WIDTH_FACTOR + gap * CALC_GAPS;
+		int buttonHeight = (container.getHeight() - heightInsets - heightGaps) / NUM_OF_ROWS;
 
 		for (Map.Entry<Component, RCPosition> entry : components.entrySet()) {
 			Component currentComponent = entry.getKey();
 			RCPosition currentPosition = entry.getValue();
 
-			//@formatter:off
+			int xCoordinate = insets.left +
+							  currentPosition.getColumn() * gap + 
+							  (currentPosition.getColumn() - 1) * buttonWidth;
+			
+			int yCoordinate = insets.top + 
+							  currentPosition.getRow() * gap +
+							  (currentPosition.getRow() - 1) * buttonHeight;
+
 			if (!currentPosition.equals(CALC_SCREEEN)) {
-				currentComponent.setBounds((currentPosition.getColumn() - 1) * componentWidthFactor,
-										   (currentPosition.getRow() - 1) * componentHeightFactor, 
-										   componentWidth,
-										   componentHeight);
-				
+				currentComponent.setBounds(xCoordinate, yCoordinate, buttonWidth, buttonHeight);
 
 			} else {
-				currentComponent.setBounds(0,
-										   0,
-										   componentWidth * CALC_SCREEN_WIDTH_FACTOR + CALC_GAPS * gap,
-										   componentHeight);
+				currentComponent.setBounds(xCoordinate, yCoordinate, screenWidth, buttonHeight);
 			}
-			//@formatter:on
 		}
-	}
-		
-	//@formatter:off
-	private double factorize(Container container,
-						  Function<Container, Integer> contAction,
-			              Function<Dimension, Double> dimAction) {
-		
-		return contAction.apply(container) / dimAction.apply(preferredLayoutSize(container));
+
 	}
 	//@formatter:on
 

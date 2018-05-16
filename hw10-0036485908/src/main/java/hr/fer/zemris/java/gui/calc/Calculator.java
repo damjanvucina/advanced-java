@@ -32,18 +32,20 @@ public class Calculator extends JFrame {
 	private static final Color SCREEN_COLOR = Color.ORANGE;
 	private static final Color BORDER_COLOR = Color.BLACK;
 	private static final Color BUTTON_COLOR = Color.decode("#4C8DAD");
+	
 	private static final DoubleBinaryOperator NO_INVERTED_OPERATION = null;
 	private static final Font BUTTON_FONT = new Font("ARIAL", Font.BOLD, 20);
 	private static final Font SCREEN_FONT = new Font("ARIAL", Font.BOLD, 30);
 	private static final Dimension MINIMUM_SIZE = new Dimension(500, 500);
+	
 	private static final String CLR_TOOLTIP = "Clears current entry";
 	private static final String RES_TOOLTIP = "Restarts calculator";
 	private static final String PUSH_TOOLTIP = "Pushes current entry to the stack";
 	private static final String POP_TOOLTIP = "Pops last pushed entry from the stack";
 	private static final String INV_TOOLTIP = "Displays advanced math functions";
 	private static final String RECIPROCAL_TOOLTIP = "Calculates reciprocal value of current entry";
-	private static final String LOG_TOOLTIP = "Calculates 10 base logarithm";
-	private static final String LN_TOOLTIP = "Calculates e base logarithm";
+	private static final String LOG_TOOLTIP = "Calculates 10 base logarithm / 10 base power";
+	private static final String LN_TOOLTIP = "Calculates e base logarithm / e base power";
 	private static final String POWER_TOOLTIP = "Calculates n-th power/root of current entry";
 	private static final String SWAP_SIGN_TOOLTIP = "Changes arithmetic sign";
 	private static final String SIN_TOOLTIP = "Calculates sine/inverse sine of current entry";
@@ -187,7 +189,7 @@ public class Calculator extends JFrame {
 		power.setToolTipText(POWER_TOOLTIP);
 		p.add(power, new RCPosition(5, 1));
 		buttonsRegular.put(power, "x^n");
-		buttonsInverted.put(power, "x^/n");
+		buttonsInverted.put(power, "x^1/n");
 	}
 
 	private void addUnaryButtons(JPanel p) {
