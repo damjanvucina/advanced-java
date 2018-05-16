@@ -4,6 +4,7 @@ import static java.lang.Math.sqrt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
@@ -20,11 +21,16 @@ public class PrimListModel implements ListModel<Integer> {
 	}
 	@Override
 	public void addListDataListener(ListDataListener l) {
+		Objects.requireNonNull(l, "Listener cannot be null");
+		
 		listeners.add(l);
 	}
 
 	@Override
 	public Integer getElementAt(int index) {
+		if(index < 0 || index > getSize() -1) {
+			throw new IllegalArgumentException("Invalid index, was:" + index);
+		}
 		return primes.get(index);
 	}
 
@@ -35,6 +41,8 @@ public class PrimListModel implements ListModel<Integer> {
 
 	@Override
 	public void removeListDataListener(ListDataListener l) {
+		Objects.requireNonNull(l, "Listener cannot be null");
+		
 		listeners.remove(l);
 	}
 
@@ -59,7 +67,11 @@ public class PrimListModel implements ListModel<Integer> {
 
 	}
 	
-	private boolean isPrime(int number) {
+	public boolean isPrime(int number) {
+		if(number < 1) {
+			throw new IllegalArgumentException("Number cannot be lesser than one.");
+		}
+		
 		if (number != 2 && number % 2 == 0) {
 			return false;
 		}
