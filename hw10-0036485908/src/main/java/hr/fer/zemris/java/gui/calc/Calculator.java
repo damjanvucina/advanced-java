@@ -27,39 +27,103 @@ import hr.fer.zemris.java.gui.layouts.RCPosition;
 import static java.lang.Math.PI;
 import static java.lang.Math.E;
 
+/**
+ * The class representing a calculator window. It provides user with standard
+ * mathematical operations such as addition, subtraction, multiplication and
+ * division as well as advenced operations such as trigonometry and logarithmic
+ * operations. Details of operations are given as button tooltips.
+ * 
+ * @author Damjan Vučina
+ */
 public class Calculator extends JFrame {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+
+	/** The Constant SCREEN_COLOR. */
 	private static final Color SCREEN_COLOR = Color.ORANGE;
+
+	/** The Constant BORDER_COLOR. */
 	private static final Color BORDER_COLOR = Color.BLACK;
+
+	/** The Constant BUTTON_COLOR. */
 	private static final Color BUTTON_COLOR = Color.decode("#4C8DAD");
-	
+
+	/** The Constant NO_INVERTED_OPERATION. */
 	private static final DoubleBinaryOperator NO_INVERTED_OPERATION = null;
+
+	/** The Constant BUTTON_FONT. */
 	private static final Font BUTTON_FONT = new Font("ARIAL", Font.BOLD, 20);
+
+	/** The Constant SCREEN_FONT. */
 	private static final Font SCREEN_FONT = new Font("ARIAL", Font.BOLD, 30);
+
+	/** The Constant MINIMUM_SIZE. */
 	private static final Dimension MINIMUM_SIZE = new Dimension(500, 500);
-	
+
+	/** The Constant CLR_TOOLTIP. */
 	private static final String CLR_TOOLTIP = "Clears current entry";
+
+	/** The Constant RES_TOOLTIP. */
 	private static final String RES_TOOLTIP = "Restarts calculator";
+
+	/** The Constant PUSH_TOOLTIP. */
 	private static final String PUSH_TOOLTIP = "Pushes current entry to the stack";
+
+	/** The Constant POP_TOOLTIP. */
 	private static final String POP_TOOLTIP = "Pops last pushed entry from the stack";
+
+	/** The Constant INV_TOOLTIP. */
 	private static final String INV_TOOLTIP = "Displays advanced math functions";
+
+	/** The Constant RECIPROCAL_TOOLTIP. */
 	private static final String RECIPROCAL_TOOLTIP = "Calculates reciprocal value of current entry";
+
+	/** The Constant LOG_TOOLTIP. */
 	private static final String LOG_TOOLTIP = "Calculates 10 base logarithm / 10 base power";
+
+	/** The Constant LN_TOOLTIP. */
 	private static final String LN_TOOLTIP = "Calculates e base logarithm / e base power";
+
+	/** The Constant POWER_TOOLTIP. */
 	private static final String POWER_TOOLTIP = "Calculates n-th power/root of current entry";
+
+	/** The Constant SWAP_SIGN_TOOLTIP. */
 	private static final String SWAP_SIGN_TOOLTIP = "Changes arithmetic sign";
+
+	/** The Constant SIN_TOOLTIP. */
 	private static final String SIN_TOOLTIP = "Calculates sine/inverse sine of current entry";
+
+	/** The Constant COS_TOOLTIP. */
 	private static final String COS_TOOLTIP = "Calculates cosine/inverse cosine of current entry";
+
+	/** The Constant TAN_TOOLTIP. */
 	private static final String TAN_TOOLTIP = "Calculates tangent/inverse tangent of current entry";
+
+	/** The Constant CTG_TOOLTIP. */
 	private static final String CTG_TOOLTIP = "Calculates cotangent/inverse cotangent of current entry";
 
+	/** The model used for processing. */
 	private CalcModelImpl model;
+
+	/** The screen of the calculator. */
 	private Screen screen;
+
+	/** The flag stating that advanced mathematical functions are displayed. */
 	private boolean invertedTicked;
+
+	/** The map used for transforming the text on the multiple purpose buttons. */
 	private Map<JButton, String> buttonsRegular;
+
+	/** The map used for transforming the text on the multiple purpose buttons. */
 	private Map<JButton, String> buttonsInverted;
+
+	/** The stack. */
 	private Stack<Double> stack;
 
+	/**
+	 * Instantiates a new calculator.
+	 */
 	public Calculator() {
 		model = new CalcModelImpl();
 		buttonsRegular = new HashMap<>();
@@ -75,6 +139,9 @@ public class Calculator extends JFrame {
 		initGUI();
 	}
 
+	/**
+	 * Initializes the GUI of this calculator.
+	 */
 	private void initGUI() {
 		Container cp = getContentPane();
 		JPanel p = new JPanel(new CalcLayout(5));
@@ -85,6 +152,13 @@ public class Calculator extends JFrame {
 		cp.add(p);
 	}
 
+	/**
+	 * Fills the calculator panel.
+	 *
+	 * @param p
+	 *            the p
+	 * @return the j panel
+	 */
 	private JPanel fillPanel(JPanel p) {
 		screen = new Screen("0");
 		p.add(screen, new RCPosition(1, 1));
@@ -100,6 +174,12 @@ public class Calculator extends JFrame {
 		return p;
 	}
 
+	/**
+	 * Adds the special buttons to the calculator and defines their functionalities.
+	 *
+	 * @param p
+	 *            the p
+	 */
 	private void addSpecialButtons(JPanel p) {
 		JCheckBox invCheckBox = new JCheckBox("Inv");
 		invCheckBox.setToolTipText(INV_TOOLTIP);
@@ -157,6 +237,9 @@ public class Calculator extends JFrame {
 		p.add(signSwapper, new RCPosition(5, 4));
 	}
 
+	/**
+	 * Inverts dual buttons names.
+	 */
 	private void invertDualButtonsNames() {
 		if (invertedTicked == false) {
 			invertedTicked = true;
@@ -169,6 +252,12 @@ public class Calculator extends JFrame {
 		revalidate();
 	}
 
+	/**
+	 * Adds the binary buttons to the calculator and defines their functionalities.
+	 *
+	 * @param p
+	 *            the p
+	 */
 	private void addBinaryButtons(JPanel p) {
 		BinaryButton addition = new BinaryButton("+", (x, y) -> x + y, NO_INVERTED_OPERATION);
 		p.add(addition, new RCPosition(5, 6));
@@ -192,6 +281,12 @@ public class Calculator extends JFrame {
 		buttonsInverted.put(power, "x^1/n");
 	}
 
+	/**
+	 * Adds the unary buttons to the calculator and defines their functionalities.
+	 *
+	 * @param p
+	 *            the p
+	 */
 	private void addUnaryButtons(JPanel p) {
 		UnaryButton sin = new UnaryButton("sin", Math::sin, Math::asin);
 		sin.setToolTipText(SIN_TOOLTIP);
@@ -230,6 +325,12 @@ public class Calculator extends JFrame {
 		buttonsInverted.put(ln, "e^x");
 	}
 
+	/**
+	 * Adds the digit buttons to the calculator.
+	 *
+	 * @param p
+	 *            the p
+	 */
 	private void addDigitButtons(JPanel p) {
 		p.add(new DigitButton("0"), new RCPosition(5, 3));
 		p.add(new DigitButton("1"), new RCPosition(4, 3));
@@ -243,12 +344,33 @@ public class Calculator extends JFrame {
 		p.add(new DigitButton("9"), new RCPosition(2, 5));
 	}
 
+	/**
+	 * The Class BinaryButton.
+	 */
 	private class BinaryButton extends JButton implements ActionListener {
+
+		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 1L;
+
+		/** The value. */
 		String value;
+
+		/** The operation. */
 		DoubleBinaryOperator operation;
+
+		/** The inverted operation. */
 		DoubleBinaryOperator invertedOperation;
 
+		/**
+		 * Instantiates a new binary button.
+		 *
+		 * @param value
+		 *            the value of the button
+		 * @param operation
+		 *            the operation it performs
+		 * @param invertedOperation
+		 *            the inverted operation it performs
+		 */
 		public BinaryButton(String value, DoubleBinaryOperator operation, DoubleBinaryOperator invertedOperation) {
 			this.value = value;
 			this.operation = operation;
@@ -257,6 +379,9 @@ public class Calculator extends JFrame {
 			addActionListener(this);
 		}
 
+		/**
+		 * Method invoked when an calculator action occurs.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			try {
@@ -289,6 +414,15 @@ public class Calculator extends JFrame {
 			}
 		}
 
+		/**
+		 * Performs successive calculation which occurs when mathematical operators are
+		 * given without equal symbol.
+		 *
+		 * @param model
+		 *            the model
+		 * @param value
+		 *            the value
+		 */
 		private void performSuccesiveCalculation(CalcModelImpl model, double value) {
 			model.setActiveOperand(value);
 
@@ -302,13 +436,34 @@ public class Calculator extends JFrame {
 		}
 	}
 
+	/**
+	 * The Class UnaryButton.
+	 */
 	private class UnaryButton extends JButton implements ActionListener {
+
+		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 1L;
+
+		/** The value of the button. */
 		@SuppressWarnings("unused")
 		String value;
+
+		/** The regular operation. */
 		DoubleUnaryOperator regular;
+
+		/** The inverted operation. */
 		DoubleUnaryOperator inverted;
 
+		/**
+		 * Instantiates a new unary button.
+		 *
+		 * @param value
+		 *            the value
+		 * @param regular
+		 *            the regular operation
+		 * @param inverted
+		 *            the inverted operation
+		 */
 		public UnaryButton(String value, DoubleUnaryOperator regular, DoubleUnaryOperator inverted) {
 			this.value = value;
 			this.regular = regular;
@@ -317,6 +472,9 @@ public class Calculator extends JFrame {
 			setText(value);
 		}
 
+		/**
+		 * Method invoked when an calculator unary button action occurs.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			CalcModelImpl model = Calculator.this.model;
@@ -335,16 +493,32 @@ public class Calculator extends JFrame {
 
 	}
 
+	/**
+	 * The Class DigitButton.
+	 */
 	private class DigitButton extends JButton implements ActionListener {
+
+		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 1L;
+
+		/** The value of the button. */
 		int value;
 
+		/**
+		 * Instantiates a new digit button.
+		 *
+		 * @param value
+		 *            the value of the button
+		 */
 		public DigitButton(String value) {
 			this.value = Integer.parseInt(value);
 			addActionListener(this);
 			setText(value);
 		}
 
+		/**
+		 * Method invoked when an calculator digit button action occurs.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			try {
@@ -356,14 +530,29 @@ public class Calculator extends JFrame {
 
 	}
 
+	/**
+	 * The Class Screen.
+	 */
 	private class Screen extends JLabel implements CalcValueListener {
+
+		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 1L;
 
+		/**
+		 * Instantiates a new screen.
+		 *
+		 * @param text
+		 *            the text on the scren
+		 */
 		public Screen(String text) {
 			this.setText(text);
 			model.addCalcValueListener(this);
 		}
 
+		/**
+		 * Observer pattern is used in this implementation and screen is observer. This
+		 * method is invoked so screen can update itself.
+		 */
 		@Override
 		public void valueChanged(CalcModel model) {
 			this.setText(model.toString());
@@ -371,6 +560,12 @@ public class Calculator extends JFrame {
 
 	}
 
+	/**
+	 * Creates the calculator GUI.
+	 *
+	 * @param p
+	 *            the p
+	 */
 	private void createCalculatorGUI(JPanel p) {
 		for (Component component : p.getComponents()) {
 			if (component instanceof JLabel) {
@@ -400,10 +595,22 @@ public class Calculator extends JFrame {
 
 	}
 
+	/**
+	 * Shows warning message.
+	 *
+	 * @param message
+	 *            the message
+	 */
 	public void showWarningMessage(String message) {
 		JOptionPane.showMessageDialog(this, message, "Invalid operation", JOptionPane.WARNING_MESSAGE);
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			JFrame frame = new Calculator();

@@ -2,7 +2,7 @@ package hr.fer.zemris.java.gui.layouts;
 
 /**
  * The class that represents the exception which is thrown whenever the format
- * of the calculator input is not in compliance with the specified format.
+ * of the layout is not in compliance with the specified format.
  * 
  * @author Damjan Vučina
  */
