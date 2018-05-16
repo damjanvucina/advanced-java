@@ -24,13 +24,38 @@ import javax.swing.WindowConstants;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.CENTER;
 
+/**
+ * Demonstration class used for the purpose of opening the document given via
+ * command line argument, reading its data and drawing a BarChart based on the
+ * data read.
+ * 
+ * @author Damjan Vučina
+ */
 public class BarChartDemo extends JFrame {
+
+	/** The Constant WHITESPACE. */
 	private static final String WHITESPACE = " ";
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+
+	/** The Constant DATA_START. */
 	private static final int DATA_START = 0;
+
+	/** The Constant DATA_END. */
 	private static final int DATA_END = 6;
+
+	/** The Constant XYVALUE_VALIDATOR. */
 	private static final String XYVALUE_VALIDATOR = "(\\d+,\\d+\\s?)+";
 
+	/**
+	 * Instantiates a new bar chart demo.
+	 *
+	 * @param path
+	 *            the path to the file containing the data to be drawn
+	 * @param chart
+	 *            the chart
+	 */
 	public BarChartDemo(Path path, BarChart chart) {
 		setLocation(50, 50);
 		setSize(700, 700);
@@ -40,19 +65,33 @@ public class BarChartDemo extends JFrame {
 		initGUI(path, chart);
 	}
 
+	/**
+	 * Initializes the GUI of this BarChart.
+	 *
+	 * @param path
+	 *            the path to the file containing the data to be drawn
+	 * @param chart
+	 *            the chart
+	 */
 	private void initGUI(Path path, BarChart chart) {
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
 		cp.setBackground(Color.WHITE);
-		
+
 		JLabel pathLabel = new JLabel("Data loaded from: " + path.toString());
 		pathLabel.setHorizontalAlignment(JLabel.CENTER);
 		pathLabel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
 		cp.add(pathLabel, NORTH);
-		
+
 		cp.add(new BarChartComponent(chart), CENTER);
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			throw new IllegalArgumentException("Invalid number of arguments, was: " + args.length);
