@@ -76,13 +76,13 @@ public class Calculator extends JFrame {
 	private void initGUI() {
 		Container cp = getContentPane();
 		JPanel p = new JPanel(new CalcLayout(5));
-		
+
 		p = fillPanel(p);
 		createCalculatorGUI(p);
 
 		cp.add(p);
 	}
-	
+
 	private JPanel fillPanel(JPanel p) {
 		screen = new Screen("0");
 		p.add(screen, new RCPosition(1, 1));
@@ -126,15 +126,23 @@ public class Calculator extends JFrame {
 				model.setValue(stack.pop());
 
 			} else {
-				JOptionPane.showMessageDialog(this, "Cannot pop from empty stack.", "Empty stack",
-						JOptionPane.WARNING_MESSAGE);
+				showWarningMessage("Cannot pop from empty stack.");
 			}
 		});
 		p.add(pop, new RCPosition(4, 7));
 
 		JButton reciprocal = new JButton("1/x");
 		reciprocal.setToolTipText(RECIPROCAL_TOOLTIP);
-		reciprocal.addActionListener(l -> model.setValue(1 / model.getValue()));
+
+		reciprocal.addActionListener(l -> {
+			if (model.getValue() == 0) {
+				showWarningMessage("Cannot divide by zero.");
+			} else {
+				model.setValue(1 / model.getValue());
+			}
+
+		});
+
 		p.add(reciprocal, new RCPosition(2, 1));
 
 		JButton point = new JButton(".");
@@ -213,7 +221,7 @@ public class Calculator extends JFrame {
 		buttonsRegular.put(log, "log");
 		buttonsInverted.put(log, "10^x");
 
-		UnaryButton ln = new UnaryButton("ln", x -> Math.log(x), x -> Math.pow(E, x));
+		UnaryButton ln = new UnaryButton("ln", x -> x = Math.log(x), x -> Math.pow(E, x));
 		ln.setToolTipText(LN_TOOLTIP);
 		p.add(ln, new RCPosition(4, 1));
 		buttonsRegular.put(ln, "ln");
@@ -249,23 +257,33 @@ public class Calculator extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			CalcModelImpl model = Calculator.this.model;
-			double currentNumber = Calculator.this.model.getValue();
+			try {
+				CalcModelImpl model = Calculator.this.model;
+				double currentNumber = Calculator.this.model.getValue();
 
-			if (!model.isActiveOperandSet()) {
-				performSuccesiveCalculation(model, currentNumber);
+				if (!model.isActiveOperandSet()) {
+					performSuccesiveCalculation(model, currentNumber);
 
-			} else {
+				} else {
 				//@formatter:off
 				double result = model.getPendingBinaryOperation()
 									 .applyAsDouble(model.getActiveOperand(), currentNumber);
 				//@formatter:on
-				model.setValue(result);
-				performSuccesiveCalculation(model, result);
-			}
 
-			if (this.value.equals("=")) {
-				model.clearAllWithoutNotifying();
+					try {
+						model.setValue(result);
+						performSuccesiveCalculation(model, result);
+					} catch (CalculatorException e) {
+						showWarningMessage(e.getMessage());
+					}
+
+				}
+
+				if (this.value.equals("=")) {
+					model.clearAllWithoutNotifying();
+				}
+			} catch (CalculatorException e) {
+				showWarningMessage(e.getMessage());
 			}
 		}
 
@@ -302,10 +320,14 @@ public class Calculator extends JFrame {
 			CalcModelImpl model = Calculator.this.model;
 			double currentNumber = Calculator.this.model.getValue();
 
-			if (invertedTicked == false) {
-				model.setValue(regular.applyAsDouble(currentNumber));
-			} else {
-				model.setValue(inverted.applyAsDouble(currentNumber));
+			try {
+				if (invertedTicked == false) {
+					model.setValue(regular.applyAsDouble(currentNumber));
+				} else {
+					model.setValue(inverted.applyAsDouble(currentNumber));
+				}
+			} catch (CalculatorException e) {
+				showWarningMessage(e.getMessage());
 			}
 		}
 
@@ -323,7 +345,11 @@ public class Calculator extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			Calculator.this.model.insertDigit(value);
+			try {
+				Calculator.this.model.insertDigit(value);
+			} catch (CalculatorException e) {
+				showWarningMessage(e.getMessage());
+			}
 		}
 
 	}
@@ -369,7 +395,11 @@ public class Calculator extends JFrame {
 				currentCheckbox.setFont(BUTTON_FONT);
 			}
 		}
-			
+
+	}
+
+	public void showWarningMessage(String message) {
+		JOptionPane.showMessageDialog(this, message, "Invalid operation", JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static void main(String[] args) {
