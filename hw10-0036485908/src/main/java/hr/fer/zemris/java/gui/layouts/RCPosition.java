@@ -3,41 +3,49 @@ package hr.fer.zemris.java.gui.layouts;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class RCPosition.
+ * The class that is used for the purpose of defining a coordinate position (row
+ * and column), making for easier drawing of the components in calculator and
+ * chart classes.
+ * 
+ * @author Damjan Vučina
  */
 public class RCPosition {
-	
+
 	/** The Constant RCPOSITION_VALIDATOR. */
 	private static final String RCPOSITION_VALIDATOR = "(\\d){1},(\\d){1}";
-	
+
 	/** The Constant WHITESPACE. */
 	private static final String WHITESPACE = " ";
-	
+
 	/** The Constant EMPTY_STRING. */
 	private static final String EMPTY_STRING = "";
-	
+
 	/** The Constant EXTRACT_ROW. */
 	private static final int EXTRACT_ROW = 1;
-	
+
 	/** The Constant EXTRACT_COL. */
 	private static final int EXTRACT_COL = 2;
 
-	/** The row. */
+	/** The row of the component. */
 	private int row;
-	
-	/** The column. */
+
+	/** The column of the component. */
 	private int column;
-	
-	/** The pattern. */
+
+	/**
+	 * The pattern used for determining whether the string format of the RCPosition
+	 * is in compliance with the specified format.
+	 */
 	private static Pattern pattern = Pattern.compile(RCPOSITION_VALIDATOR);;
 
 	/**
 	 * Instantiates a new RC position.
 	 *
-	 * @param row the row
-	 * @param column the column
+	 * @param row
+	 *            the row of the component
+	 * @param column
+	 *            the column of the component
 	 */
 	public RCPosition(int row, int column) {
 		this.row = row;
@@ -45,25 +53,27 @@ public class RCPosition {
 	}
 
 	/**
-	 * Gets the row.
+	 * Gets the row of the component.
 	 *
-	 * @return the row
+	 * @return the row of the component
 	 */
 	public int getRow() {
 		return row;
 	}
 
 	/**
-	 * Gets the column.
+	 * Gets the column of the component.
 	 *
-	 * @return the column
+	 * @return the column of the component
 	 */
 	public int getColumn() {
 		return column;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * Checks if two instances of RCPosition class are equal by calculating their
+	 * hash. Two instances of RCPosition class are considered equal if they have
+	 * identical row and column attributes.
 	 */
 	@Override
 	public int hashCode() {
@@ -74,8 +84,10 @@ public class RCPosition {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * Checks if two instances of RCPosition class are equal. Two instances of
+	 * RCPosition class are considered equal if they have identical row and column
+	 * attributes.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -94,10 +106,15 @@ public class RCPosition {
 	}
 
 	/**
-	 * Extract RC position.
+	 * Extracts RC position from string format which is in compliance with the
+	 * specified format.
 	 *
-	 * @param position the position
+	 * @param position
+	 *            the string representation of the RCPosition
 	 * @return the RC position
+	 * @throws CalcLayoutException
+	 *             if position is null or position is empty string or invalid String
+	 *             representation of RCPosition is given
 	 */
 	public static RCPosition extractRCPosition(String position) {
 		if (position == null) {
@@ -120,11 +137,4 @@ public class RCPosition {
 							  Integer.parseInt(matcher.group(EXTRACT_COL)));
 		//@formatter:on
 	}
-
-//	public static void main(String[] args) {
-//		RCPosition position = extractRCPosition(" 1 , 2");
-//		System.out.println(position.getRow());
-//		System.out.println(position.getColumn());
-//	}
-
 }

@@ -15,10 +15,19 @@ import javax.swing.WindowConstants;
 import hr.fer.zemris.java.gui.layouts.CalcLayout;
 import hr.fer.zemris.java.gui.layouts.RCPosition;
 
+/**
+ * Demonstration class used for the purpose of testing the CalcLayout class.
+ * @author Damjan Vučina
+ */
 @SuppressWarnings("unused")
 public class Demo2 extends JFrame {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new Demonstration window.
+	 */
 	public Demo2() {
 		setLocation(20, 50);
 		setSize(600, 600);
@@ -30,6 +39,9 @@ public class Demo2 extends JFrame {
 	}
 
 
+	/**
+	 * Initializes the GUI of this demonstration class and defines RCPositions via their String representations.
+	 */
 	private void initGUI() {
 		Container cp = getContentPane();
 		
@@ -53,6 +65,11 @@ public class Demo2 extends JFrame {
 	}
 
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		
 		SwingUtilities.invokeLater(() -> {
