@@ -3,9 +3,11 @@ package hr.fer.zemris.java.gui.layouts;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.LayoutManager2;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import static java.lang.Math.max;
 
@@ -34,10 +36,10 @@ public class CalcLayout implements LayoutManager2 {
 	Map<Component, RCPosition> components;
 
 	public CalcLayout(int gap) {
-		if(gap < 0) {
+		if (gap < 0) {
 			throw new CalcLayoutException("Gap cannot be set to a value less than zero, was: " + gap);
 		}
-		
+
 		this.gap = gap;
 		components = new HashMap<>();
 	}
@@ -149,7 +151,7 @@ public class CalcLayout implements LayoutManager2 {
 
 		return new Dimension(currentWidth, currentHeight);
 	}
-
+	
 	private boolean isCalcScreen(RCPosition position) {
 		return CALC_SCREEEN.equals(position);
 	}
@@ -169,9 +171,11 @@ public class CalcLayout implements LayoutManager2 {
 
 		int componentWidthAbs = componentDimension.width;
 		int componentHeightAbs = componentDimension.height;
-		
-		int componentWidth = (int) (componentWidthAbs * factorize(container, (cont) -> cont.getWidth(), (dim) -> dim.getWidth()));
-		int componentHeight = (int) (componentHeightAbs * factorize(container, (cont) -> cont.getHeight(), (dim) -> dim.getHeight()));
+
+		int componentWidth = (int) (componentWidthAbs
+				* factorize(container, (cont) -> cont.getWidth(), (dim) -> dim.getWidth()));
+		int componentHeight = (int) (componentHeightAbs
+				* factorize(container, (cont) -> cont.getHeight(), (dim) -> dim.getHeight()));
 
 		int componentWidthFactor = componentWidth + gap;
 		int componentHeightFactor = componentHeight + gap;
@@ -197,7 +201,7 @@ public class CalcLayout implements LayoutManager2 {
 			//@formatter:on
 		}
 	}
-
+		
 	//@formatter:off
 	private double factorize(Container container,
 						  Function<Container, Integer> contAction,
