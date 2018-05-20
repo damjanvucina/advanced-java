@@ -11,7 +11,9 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
 //@formatter:off
 public class DefaultMultipleDocumentModel extends JTabbedPane 
@@ -28,17 +30,20 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 
 	public DefaultMultipleDocumentModel() {
 		documents = new ArrayList<>();
+		listeners = new ArrayList<>();
 	}
 
 	@Override
 	public SingleDocumentModel createNewDocument() {
-		SingleDocumentModel newDocument = new DefaultSingleDocumentModel(null, UNTITLED);
+		SingleDocumentModel newDocument = new DefaultSingleDocumentModel(null, "");
 
 		documents.add(newDocument);
 		notifyListeners(listener -> listener.documentAdded(newDocument));
 
 		currentDocument = newDocument;
 		notifyListeners(listener -> listener.currentDocumentChanged(documents.get(documents.size() - 2), newDocument));
+
+		createNewTab(newDocument);
 
 		return newDocument;
 	}
@@ -57,7 +62,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 
 		if (loadedDocument == null) {
 			if (!Files.isReadable(path)) {
-				JOptionPane.showMessageDialog(this, "Cannot r document" + path, "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Cannot read document" + path, "Error", JOptionPane.ERROR_MESSAGE);
 				return null;
 			}
 
@@ -69,16 +74,25 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 				return null;
 			}
 
-			loadedDocument = new DefaultSingleDocumentModel(path, bytes.toString());
+			loadedDocument = new DefaultSingleDocumentModel(path, new String(bytes, StandardCharsets.UTF_8));
 
 			documents.add(loadedDocument);
 			notifyListeners(listener -> listener.documentAdded(documents.get(documents.size() - 1)));
+
+			createNewTab(loadedDocument);
 		}
 
 		currentDocument = loadedDocument;
 		notifyListeners(listener -> listener.currentDocumentChanged(oldDocument, currentDocument));
-
 		return loadedDocument;
+	}
+
+	private void createNewTab(SingleDocumentModel document) {
+		JTextArea tab = document.getTextComponent();
+		tab.setToolTipText((document.getFilePath() == null) ? UNTITLED : String.valueOf(document.getFilePath()));
+		String title = (document.getFilePath() == null) ? UNTITLED : String.valueOf(document.getFilePath().getFileName());
+
+		addTab(title, new JScrollPane(tab));
 	}
 
 	private SingleDocumentModel acquireDocument(Path path) {
@@ -99,6 +113,12 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 
 	@Override
 	public void saveDocument(SingleDocumentModel model, Path newPath) {
+		Objects.requireNonNull(model, "Given model cannot be null");
+
+		if (acquireDocument(newPath) != null) {
+			throw new IllegalArgumentException("Specified file is already opened.");
+		}
+
 		byte[] bytes = model.getTextComponent().getText().getBytes(StandardCharsets.UTF_8);
 		Path savePath = (newPath == null) ? model.getFilePath() : newPath;
 
