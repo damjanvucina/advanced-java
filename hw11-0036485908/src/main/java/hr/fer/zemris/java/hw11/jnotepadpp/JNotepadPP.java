@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CreateNewDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.OpenDocumentAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveAsDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveDocumentAction;
 
 public class JNotepadPP extends JFrame {
@@ -20,6 +21,7 @@ public class JNotepadPP extends JFrame {
 	private OpenDocumentAction openDocumentAction;
 	private CreateNewDocumentAction createNewDocumentAction;
 	private SaveDocumentAction saveDocumentAction;
+	private SaveAsDocumentAction saveAsDocumentAction;
 	
 	private DefaultMultipleDocumentModel model;
 
@@ -57,13 +59,14 @@ public class JNotepadPP extends JFrame {
 		openDocumentAction = new OpenDocumentAction(this, model);
 		createNewDocumentAction = new CreateNewDocumentAction(this, model);
 		saveDocumentAction = new SaveDocumentAction(this, model);
+		saveAsDocumentAction = new SaveAsDocumentAction(this, model);
 	}
 
 	private void createActions() {
 		createNewDocumentAction.putValue(Action.NAME, "New");
 		openDocumentAction.putValue(Action.NAME, "Open");
 		saveDocumentAction.putValue(Action.NAME, "Save");
-
+		saveAsDocumentAction.putValue(Action.NAME, "Save As");
 	}
 
 	private void createMenus(MultipleDocumentModel model) {
@@ -74,6 +77,7 @@ public class JNotepadPP extends JFrame {
 		fileMenu.add(createNewDocumentAction);
 		fileMenu.add(openDocumentAction);
 		fileMenu.add(saveDocumentAction);
+		fileMenu.add(saveAsDocumentAction);
 
 		this.setJMenuBar(menuBar);
 	}
