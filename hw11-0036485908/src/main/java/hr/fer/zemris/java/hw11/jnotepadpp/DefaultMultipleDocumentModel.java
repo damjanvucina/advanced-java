@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.hw11.jnotepadpp;
 
+import java.awt.Component;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -139,6 +140,8 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 
 		documents.remove(model);
 		notifyListeners(listener -> listener.documentRemoved(model));
+		
+		removeTabAt(documents.indexOf(model));
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.CloseTabAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CreateNewDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.OpenDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveAsDocumentAction;
@@ -22,6 +23,7 @@ public class JNotepadPP extends JFrame {
 	private CreateNewDocumentAction createNewDocumentAction;
 	private SaveDocumentAction saveDocumentAction;
 	private SaveAsDocumentAction saveAsDocumentAction;
+	private CloseTabAction closeTabAction;
 	
 	private DefaultMultipleDocumentModel model;
 
@@ -60,6 +62,7 @@ public class JNotepadPP extends JFrame {
 		createNewDocumentAction = new CreateNewDocumentAction(this, model);
 		saveDocumentAction = new SaveDocumentAction(this, model);
 		saveAsDocumentAction = new SaveAsDocumentAction(this, model);
+		closeTabAction = new CloseTabAction(this, model);
 	}
 
 	private void createActions() {
@@ -67,6 +70,7 @@ public class JNotepadPP extends JFrame {
 		openDocumentAction.putValue(Action.NAME, "Open");
 		saveDocumentAction.putValue(Action.NAME, "Save");
 		saveAsDocumentAction.putValue(Action.NAME, "Save As");
+		closeTabAction.putValue(Action.NAME, "Close");
 	}
 
 	private void createMenus(MultipleDocumentModel model) {
@@ -78,6 +82,7 @@ public class JNotepadPP extends JFrame {
 		fileMenu.add(openDocumentAction);
 		fileMenu.add(saveDocumentAction);
 		fileMenu.add(saveAsDocumentAction);
+		fileMenu.add(closeTabAction);
 
 		this.setJMenuBar(menuBar);
 	}
