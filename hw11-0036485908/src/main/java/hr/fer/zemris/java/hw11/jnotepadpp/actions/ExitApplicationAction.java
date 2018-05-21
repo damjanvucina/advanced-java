@@ -29,16 +29,18 @@ public class ExitApplicationAction extends AbstractAction {
 			if (model.getDocument(i).isModified()) {
 				defaultModel.setSelectedIndex(i);
 				saveResult = JOptionPane.showConfirmDialog(window, "Do you want to save file before closing?",
-						"File not saved", JOptionPane.YES_NO_OPTION);
+						"File not saved", JOptionPane.YES_NO_CANCEL_OPTION);
 
-				if (saveResult == JOptionPane.YES_OPTION) {
+				if (saveResult == JOptionPane.CANCEL_OPTION) {
+					return;
+					
+				} else if (saveResult == JOptionPane.YES_OPTION) {
 					window.getSaveAsDocumentAction().actionPerformed(null);
 				}
 
 			}
 		}
-
-		System.exit(0);
+		window.dispose();
 	}
 
 }

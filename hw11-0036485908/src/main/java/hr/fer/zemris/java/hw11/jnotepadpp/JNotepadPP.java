@@ -3,8 +3,11 @@ package hr.fer.zemris.java.hw11.jnotepadpp;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -15,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.AvailableActionValidator;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CloseTabAction;
@@ -45,16 +50,22 @@ public class JNotepadPP extends JFrame {
 	private CutTextAction cutTextAction;
 	private ShowStatsAction showStatsAction;
 	private AvailableActionValidator availableActionValidator;
-	
+
 	private DefaultMultipleDocumentModel model;
 	private JPanel panel;
 
 	public JNotepadPP() {
 		setSize(600, 600);
 		setLocation(50, 50);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		initGui();
+
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				exitApplicationAction.actionPerformed(null);
+			}
+		});
 	}
 
 	private void initGui() {
@@ -67,6 +78,17 @@ public class JNotepadPP extends JFrame {
 
 		model = new DefaultMultipleDocumentModel();
 		panel.add(model, BorderLayout.CENTER);
+		model.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int indexOfSelectedTab = ((DefaultMultipleDocumentModel) e.getSource()).getSelectedIndex();
+				Path filePath = model.getDocument(indexOfSelectedTab).getFilePath();
+				String title = (filePath == null) ? UNTITLED : String.valueOf(filePath);
+
+				setTitle(title + TITLE_SEPARATOR + DEFAULT_TITLE);
+			}
+		});
 
 		initializeActions();
 		setUpActions();
@@ -74,56 +96,56 @@ public class JNotepadPP extends JFrame {
 		createMenus();
 		createActions();
 		createToolbars();
-		
+
 		availableActionValidator.actionPerformed(null);
 	}
-	
+
 	private void setUpActions() {
 		openDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
 		openDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
 		openDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Opens existing file.");
 		openDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("open.png"));
-		
+
 		createNewDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
 		createNewDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_N);
 		createNewDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Creates a new blank file.");
 		createNewDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("new.png"));
-		
+
 		saveDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
 		saveDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
 		saveDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Saves existing file.");
 		saveDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("save.png"));
-		
+
 		saveAsDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt S"));
 		saveAsDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
 		saveAsDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Saves file to new location.");
 		saveAsDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("saveas.png"));
-		
+
 		closeTabAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control W"));
 		closeTabAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
 		closeTabAction.putValue(Action.SHORT_DESCRIPTION, "Closes current tab.");
 		closeTabAction.putValue(Action.SMALL_ICON, acquireIcon("close.png"));
-		
+
 		exitApplicationAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt F4"));
 		exitApplicationAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_E);
 		exitApplicationAction.putValue(Action.SHORT_DESCRIPTION, "Closes application.");
 		exitApplicationAction.putValue(Action.SMALL_ICON, acquireIcon("exit.png"));
-		
+
 		copyTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));
 		copyTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
 		copyTextAction.putValue(Action.SHORT_DESCRIPTION, "Copies current selection.");
 		copyTextAction.putValue(Action.SMALL_ICON, acquireIcon("copy.png"));
-		
+
 		pasteTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
 		pasteTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
 		pasteTextAction.putValue(Action.SHORT_DESCRIPTION, "Pastes from clipboard.");
 		pasteTextAction.putValue(Action.SMALL_ICON, acquireIcon("paste.png"));
-		
+
 		cutTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
 		cutTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
 		cutTextAction.putValue(Action.SHORT_DESCRIPTION, "Cuts current selection.");
 		cutTextAction.putValue(Action.SMALL_ICON, acquireIcon("cut.png"));
-		
+
 		showStatsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
 		showStatsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
 		showStatsAction.putValue(Action.SHORT_DESCRIPTION, "Shows current document statistics.");
@@ -133,20 +155,20 @@ public class JNotepadPP extends JFrame {
 	public ImageIcon acquireIcon(String iconName) {
 		StringBuilder sb = new StringBuilder("icons");
 		sb.append("/").append(iconName);
-		
+
 		InputStream is = this.getClass().getResourceAsStream(sb.toString());
-		
-		if(is == null) {
+
+		if (is == null) {
 			throw new IllegalArgumentException("Cannot access icon " + sb.toString());
 		}
-		
+
 		byte[] bytes = null;
 		try {
 			bytes = is.readAllBytes();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return new ImageIcon(bytes);
 	}
 
@@ -157,7 +179,7 @@ public class JNotepadPP extends JFrame {
 	public AvailableActionValidator getAvailableActionValidator() {
 		return availableActionValidator;
 	}
-	
+
 	public OpenDocumentAction getOpenDocumentAction() {
 		return openDocumentAction;
 	}
@@ -251,11 +273,11 @@ public class JNotepadPP extends JFrame {
 
 		this.setJMenuBar(menuBar);
 	}
-	
+
 	private void createToolbars() {
 		JToolBar toolBar = new JToolBar("Tools");
 		toolBar.setFloatable(true);
-		
+
 		toolBar.add(createNewDocumentAction);
 		toolBar.add(openDocumentAction);
 		toolBar.addSeparator();
