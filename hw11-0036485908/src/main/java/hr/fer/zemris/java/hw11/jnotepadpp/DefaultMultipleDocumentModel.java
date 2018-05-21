@@ -24,14 +24,26 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 	public static final String UNTITLED = "Untitled";
 
 	private static final long serialVersionUID = 1L;
-	List<SingleDocumentModel> documents;
-	List<MultipleDocumentListener> listeners;
-	SingleDocumentModel currentDocument;
+	private List<SingleDocumentModel> documents;
+	private List<MultipleDocumentListener> listeners;
+	private SingleDocumentModel currentDocument;
+	private String clipboard;
+	
 
 	public DefaultMultipleDocumentModel() {
 		documents = new ArrayList<>();
 		listeners = new ArrayList<>();
 	}
+	
+	public String getClipboard() {
+		return clipboard;
+	}
+
+	public void setClipboard(String clipboard) {
+		this.clipboard = clipboard;
+	}
+
+
 
 	@Override
 	public SingleDocumentModel createNewDocument() {
@@ -102,6 +114,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 		}
 		
 		setSelectedComponent(scrollPane);
+		
 	}
 
 	private SingleDocumentModel acquireDocument(Path path) {

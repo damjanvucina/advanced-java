@@ -11,9 +11,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CloseTabAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.CopyTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CreateNewDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.ExitApplicationAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.OpenDocumentAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.PasteTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveAsDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveDocumentAction;
 
@@ -26,6 +28,8 @@ public class JNotepadPP extends JFrame {
 	private SaveAsDocumentAction saveAsDocumentAction;
 	private CloseTabAction closeTabAction;
 	private ExitApplicationAction exitApplicationAction;
+	private CopyTextAction copyTextAction;
+	private PasteTextAction pasteTextAction;
 	
 	private DefaultMultipleDocumentModel model;
 
@@ -66,6 +70,8 @@ public class JNotepadPP extends JFrame {
 		saveAsDocumentAction = new SaveAsDocumentAction(this, model);
 		closeTabAction = new CloseTabAction(this, model);
 		exitApplicationAction = new ExitApplicationAction(this, model);
+		copyTextAction = new CopyTextAction(this, model);
+		pasteTextAction = new PasteTextAction(this, model);
 	}
 
 	private void createActions() {
@@ -75,6 +81,8 @@ public class JNotepadPP extends JFrame {
 		saveAsDocumentAction.putValue(Action.NAME, "Save As");
 		closeTabAction.putValue(Action.NAME, "Close");
 		exitApplicationAction.putValue(Action.NAME, "Exit");
+		copyTextAction.putValue(Action.NAME, "Copy");
+		pasteTextAction.putValue(Action.NAME, "Paste");
 	}
 
 	private void createMenus(MultipleDocumentModel model) {
@@ -90,6 +98,11 @@ public class JNotepadPP extends JFrame {
 		fileMenu.addSeparator();
 		fileMenu.add(closeTabAction);
 		fileMenu.add(exitApplicationAction);
+		
+		JMenu editMenu = new JMenu("Edit");
+		menuBar.add(editMenu);
+		editMenu.add(copyTextAction);
+		editMenu.add(pasteTextAction);
 
 		this.setJMenuBar(menuBar);
 	}
