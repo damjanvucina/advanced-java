@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CloseTabAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CopyTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CreateNewDocumentAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.CutTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.ExitApplicationAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.OpenDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.PasteTextAction;
@@ -30,6 +31,7 @@ public class JNotepadPP extends JFrame {
 	private ExitApplicationAction exitApplicationAction;
 	private CopyTextAction copyTextAction;
 	private PasteTextAction pasteTextAction;
+	private CutTextAction cutTextAction;
 	
 	private DefaultMultipleDocumentModel model;
 
@@ -62,6 +64,12 @@ public class JNotepadPP extends JFrame {
 		
 		createActions();
 	}
+	
+	
+
+	public CopyTextAction getCopyTextAction() {
+		return copyTextAction;
+	}
 
 	private void initializeActions() {
 		openDocumentAction = new OpenDocumentAction(this, model);
@@ -72,6 +80,7 @@ public class JNotepadPP extends JFrame {
 		exitApplicationAction = new ExitApplicationAction(this, model);
 		copyTextAction = new CopyTextAction(this, model);
 		pasteTextAction = new PasteTextAction(this, model);
+		cutTextAction = new CutTextAction(this, model);
 	}
 
 	private void createActions() {
@@ -83,6 +92,7 @@ public class JNotepadPP extends JFrame {
 		exitApplicationAction.putValue(Action.NAME, "Exit");
 		copyTextAction.putValue(Action.NAME, "Copy");
 		pasteTextAction.putValue(Action.NAME, "Paste");
+		cutTextAction.putValue(Action.NAME, "Cut");
 	}
 
 	private void createMenus(MultipleDocumentModel model) {
@@ -103,6 +113,7 @@ public class JNotepadPP extends JFrame {
 		menuBar.add(editMenu);
 		editMenu.add(copyTextAction);
 		editMenu.add(pasteTextAction);
+		editMenu.add(cutTextAction);
 
 		this.setJMenuBar(menuBar);
 	}
