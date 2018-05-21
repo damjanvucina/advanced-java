@@ -25,6 +25,8 @@ public class CloseTabAction extends AbstractAction{
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
 		
 		model.closeDocument(model.getDocument(indexOfSelectedTab));
+		
+		window.getAvailableActionValidator().actionPerformed(e);
 	}
 
 }

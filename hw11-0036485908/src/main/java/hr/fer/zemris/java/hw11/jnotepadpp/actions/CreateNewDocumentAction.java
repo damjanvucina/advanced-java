@@ -21,6 +21,8 @@ public class CreateNewDocumentAction extends AbstractAction{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		model.createNewDocument();
+		
+		window.getAvailableActionValidator().actionPerformed(e);
 	}
 
 }

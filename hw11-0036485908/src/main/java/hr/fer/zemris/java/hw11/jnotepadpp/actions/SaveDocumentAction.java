@@ -23,5 +23,7 @@ public class SaveDocumentAction extends AbstractAction {
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
 
 		model.saveDocument(model.getDocument(indexOfSelectedTab), null);
+		
+		window.getAvailableActionValidator().actionPerformed(e);
 	}
 }

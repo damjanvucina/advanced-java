@@ -42,6 +42,8 @@ public class OpenDocumentAction extends AbstractAction {
 		}
 		
 		model.loadDocument(filePath);
+		
+		window.getAvailableActionValidator().actionPerformed(e);
 	}
 
 }

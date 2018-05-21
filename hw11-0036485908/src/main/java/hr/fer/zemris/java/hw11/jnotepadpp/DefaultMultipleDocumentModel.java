@@ -28,13 +28,12 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 	private List<MultipleDocumentListener> listeners;
 	private SingleDocumentModel currentDocument;
 	private String clipboard;
-	
 
 	public DefaultMultipleDocumentModel() {
 		documents = new ArrayList<>();
 		listeners = new ArrayList<>();
 	}
-	
+
 	public String getClipboard() {
 		return clipboard;
 	}
@@ -43,11 +42,9 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 		this.clipboard = clipboard;
 	}
 
-
-
 	@Override
 	public SingleDocumentModel createNewDocument() {
-		SingleDocumentModel newDocument = new DefaultSingleDocumentModel(null, "");
+		SingleDocumentModel newDocument = new DefaultSingleDocumentModel(null, null);
 
 		documents.add(newDocument);
 		notifyListeners(listener -> listener.documentAdded(newDocument));
@@ -103,18 +100,18 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 
 	private void createNewTab(SingleDocumentModel document) {
 		JTextArea tab = document.getTextComponent();
-		
+
 		String title = (document.getFilePath() == null) ? UNTITLED
 				: String.valueOf(document.getFilePath().getFileName());
 
 		JScrollPane scrollPane = new JScrollPane(tab);
 		addTab(title, scrollPane);
-		if(document.getFilePath() != null) {
+		if (document.getFilePath() != null) {
 			setToolTipTextAt(documents.indexOf(document), String.valueOf(document.getFilePath()));
 		}
-		
+
 		setSelectedComponent(scrollPane);
-		
+
 	}
 
 	private SingleDocumentModel acquireDocument(Path path) {

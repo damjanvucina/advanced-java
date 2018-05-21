@@ -3,6 +3,7 @@ package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -25,6 +26,11 @@ public class PasteTextAction extends AbstractAction{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(model.getCurrentDocument() == null) {
+			JOptionPane.showMessageDialog(window, "Document not found.", "Paste error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		JTextArea editor = model.getCurrentDocument().getTextComponent();
 		Document document = editor.getDocument();
 		String clipboard = ((DefaultMultipleDocumentModel) model).getClipboard();

@@ -59,6 +59,8 @@ public class SaveAsDocumentAction extends AbstractAction {
 		tab.setToolTipText(String.valueOf(model.getCurrentDocument().getFilePath()));
 		String title = (String.valueOf(model.getCurrentDocument().getFilePath().getFileName()));
 		((DefaultMultipleDocumentModel) model).setTitleAt(indexOfSelectedTab, title);
+		
+		window.getAvailableActionValidator().actionPerformed(e);
 	}
 
 }

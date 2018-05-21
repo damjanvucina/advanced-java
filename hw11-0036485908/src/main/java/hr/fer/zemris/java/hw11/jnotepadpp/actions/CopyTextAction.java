@@ -25,13 +25,18 @@ public class CopyTextAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(model.getCurrentDocument() == null) {
+			JOptionPane.showMessageDialog(window, "Document not found.", "Copy error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		JTextArea editor = model.getCurrentDocument().getTextComponent();
 		Document document = editor.getDocument();
 		
 		int selectionLength = Math.abs(editor.getCaret().getDot() - editor.getCaret().getMark());	
 		int offset=0;
 		if (selectionLength == 0) {
-			JOptionPane.showMessageDialog(window, "Text selectio not found.", "Copy error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(window, "Text selection not found.", "Copy error", JOptionPane.ERROR_MESSAGE);
 			return;
 			
 		} else {
