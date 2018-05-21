@@ -1,6 +1,7 @@
 package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 
 import java.awt.event.ActionEvent;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.swing.AbstractAction;
@@ -29,9 +30,22 @@ public class SaveAsDocumentAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		JFileChooser jfc = new JFileChooser();
 		jfc.setDialogTitle("Save document");
-		if (jfc.showSaveDialog(window) != JFileChooser.APPROVE_OPTION) {
+		int dialogResult = jfc.showSaveDialog(window);
+		
+		if (dialogResult == JFileChooser.CANCEL_OPTION) {
 			JOptionPane.showMessageDialog(window, "Saving canceled", "Info", JOptionPane.INFORMATION_MESSAGE);
 			return;
+
+		} else if (dialogResult == JFileChooser.APPROVE_OPTION) {
+			
+			int overwriteResult = 0;
+			if (Files.exists(jfc.getSelectedFile().toPath())) {
+				overwriteResult = JOptionPane.showConfirmDialog(jfc, "File already exists. Do you want to overwrite it?",
+						"File exists", JOptionPane.YES_NO_OPTION);
+				if (overwriteResult == JOptionPane.NO_OPTION) {
+					return;
+				}
+			}
 		}
 
 		Path savePath = jfc.getSelectedFile().toPath();
