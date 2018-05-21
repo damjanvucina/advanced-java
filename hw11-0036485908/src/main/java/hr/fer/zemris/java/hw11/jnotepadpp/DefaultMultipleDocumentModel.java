@@ -83,7 +83,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 		} else {
 			setSelectedIndex(documents.indexOf(loadedDocument));
 		}
-		
+
 		currentDocument = loadedDocument;
 		notifyListeners(listener -> listener.currentDocumentChanged(oldDocument, currentDocument));
 		return loadedDocument;
@@ -91,11 +91,16 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 
 	private void createNewTab(SingleDocumentModel document) {
 		JTextArea tab = document.getTextComponent();
-		tab.setToolTipText((document.getFilePath() == null) ? UNTITLED : String.valueOf(document.getFilePath()));
-		String title = (document.getFilePath() == null) ? UNTITLED : String.valueOf(document.getFilePath().getFileName());
 		
+		String title = (document.getFilePath() == null) ? UNTITLED
+				: String.valueOf(document.getFilePath().getFileName());
+
 		JScrollPane scrollPane = new JScrollPane(tab);
 		addTab(title, scrollPane);
+		if(document.getFilePath() != null) {
+			setToolTipTextAt(documents.indexOf(document), String.valueOf(document.getFilePath()));
+		}
+		
 		setSelectedComponent(scrollPane);
 	}
 
@@ -135,19 +140,19 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 
 		if (newPath != null) {
 			model.setFilePath(newPath);
+			setToolTipTextAt(documents.indexOf(model), String.valueOf(model.getFilePath()));
 		}
 	}
 
 	@Override
 	public void closeDocument(SingleDocumentModel model) {
 		Objects.requireNonNull(model, "Cannot close null document");
-		
+
 		int removedIndex = documents.indexOf(model);
 		documents.remove(removedIndex);
 		notifyListeners(listener -> listener.documentRemoved(model));
-		
+
 		removeTabAt(removedIndex);
-		
 	}
 
 	@Override
