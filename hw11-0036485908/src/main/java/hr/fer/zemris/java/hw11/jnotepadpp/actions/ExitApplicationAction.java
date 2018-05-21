@@ -20,6 +20,10 @@ public class ExitApplicationAction extends AbstractAction{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		for(int i = 0, length = model.getNumberOfDocuments(); i < length; i++) {
+			window.getCloseTabAction().closeTab(i);
+		}
+		
 		System.exit(0);
 	}
 

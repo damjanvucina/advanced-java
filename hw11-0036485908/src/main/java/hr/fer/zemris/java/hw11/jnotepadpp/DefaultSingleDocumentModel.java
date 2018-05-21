@@ -25,6 +25,10 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 		textComponent = new JTextArea(text);
 	}
 
+	public String getText() {
+		return text;
+	}
+
 	@Override
 	public Path getFilePath() {
 		return filePath;
