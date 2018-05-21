@@ -19,6 +19,7 @@ import hr.fer.zemris.java.hw11.jnotepadpp.actions.OpenDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.PasteTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveAsDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveDocumentAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.ShowStatsAction;
 
 public class JNotepadPP extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -32,6 +33,7 @@ public class JNotepadPP extends JFrame {
 	private CopyTextAction copyTextAction;
 	private PasteTextAction pasteTextAction;
 	private CutTextAction cutTextAction;
+	private ShowStatsAction showStatsAction;
 	
 	private DefaultMultipleDocumentModel model;
 
@@ -81,6 +83,7 @@ public class JNotepadPP extends JFrame {
 		copyTextAction = new CopyTextAction(this, model);
 		pasteTextAction = new PasteTextAction(this, model);
 		cutTextAction = new CutTextAction(this, model);
+		showStatsAction = new ShowStatsAction(this, model);
 	}
 
 	private void createActions() {
@@ -93,6 +96,7 @@ public class JNotepadPP extends JFrame {
 		copyTextAction.putValue(Action.NAME, "Copy");
 		pasteTextAction.putValue(Action.NAME, "Paste");
 		cutTextAction.putValue(Action.NAME, "Cut");
+		showStatsAction.putValue(Action.NAME, "Show Stats");
 	}
 
 	private void createMenus(MultipleDocumentModel model) {
@@ -114,6 +118,10 @@ public class JNotepadPP extends JFrame {
 		editMenu.add(copyTextAction);
 		editMenu.add(pasteTextAction);
 		editMenu.add(cutTextAction);
+		
+		JMenu helpMenu = new JMenu("Help");
+		menuBar.add(helpMenu);
+		helpMenu.add(showStatsAction);
 
 		this.setJMenuBar(menuBar);
 	}
