@@ -1,6 +1,7 @@
 package hr.fer.zemris.java.hw11.jnotepadpp.actions;
 
 import java.awt.event.ActionEvent;
+import static hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP.UNTITLED;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -51,20 +52,19 @@ public class SaveAsDocumentAction extends AbstractAction {
 		Path savePath = jfc.getSelectedFile().toPath();
 
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
-
 		model.saveDocument(model.getDocument(indexOfSelectedTab), savePath);
 
 		JTextArea tab = (JTextArea) ((JScrollPane) ((DefaultMultipleDocumentModel) model).getSelectedComponent())
 				.getViewport().getView();
 		tab.setToolTipText(String.valueOf(model.getCurrentDocument().getFilePath()));
-		String title = (String.valueOf(model.getCurrentDocument().getFilePath().getFileName()));
+		String title = (model.getCurrentDocument().getFilePath() == null) ? UNTITLED : (String.valueOf(model.getCurrentDocument().getFilePath().getFileName()));
 		((DefaultMultipleDocumentModel) model).setTitleAt(indexOfSelectedTab, title);
 		
 		window.getAvailableActionValidator().actionPerformed(e);
 		
 
 		DefaultMultipleDocumentModel defaultModel = ((DefaultMultipleDocumentModel) model);
-		defaultModel.setIconAt(defaultModel.getDocuments().indexOf(defaultModel.getCurrentDocument()), window.acquireIcon("saved.png"));
+		defaultModel.setIconAt(indexOfSelectedTab, window.acquireIcon("saved.png"));
 		
 	}
 

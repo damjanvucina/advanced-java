@@ -24,11 +24,6 @@ public class CloseTabAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
 
-		closeTab(indexOfSelectedTab);
-		
-	}
-
-	public void closeTab(int indexOfSelectedTab) {
 		int saveResult;
 		if (model.getDocument(indexOfSelectedTab).isModified()) {
 			saveResult = JOptionPane.showConfirmDialog(window, "Do you want to save file before closing?",
@@ -42,6 +37,4 @@ public class CloseTabAction extends AbstractAction {
 
 		window.getAvailableActionValidator().actionPerformed(null);
 	}
-	
-
 }
