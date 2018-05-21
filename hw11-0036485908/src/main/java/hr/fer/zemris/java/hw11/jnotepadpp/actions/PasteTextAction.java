@@ -31,6 +31,12 @@ public class PasteTextAction extends AbstractAction{
 			return;
 		}
 		
+		if (((DefaultMultipleDocumentModel) model).getClipboard() == null) {
+			JOptionPane.showMessageDialog(window, "Clipboard empty.", "Paste error", JOptionPane.ERROR_MESSAGE);
+			return;
+			
+		}
+		
 		JTextArea editor = model.getCurrentDocument().getTextComponent();
 		Document document = editor.getDocument();
 		String clipboard = ((DefaultMultipleDocumentModel) model).getClipboard();

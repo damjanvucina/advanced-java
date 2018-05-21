@@ -25,5 +25,8 @@ public class SaveDocumentAction extends AbstractAction {
 		model.saveDocument(model.getDocument(indexOfSelectedTab), null);
 		
 		window.getAvailableActionValidator().actionPerformed(e);
+		
+		DefaultMultipleDocumentModel defaultModel = ((DefaultMultipleDocumentModel) model);
+		defaultModel.setIconAt(defaultModel.getDocuments().indexOf(defaultModel.getCurrentDocument()), window.acquireIcon("saved.png"));
 	}
 }

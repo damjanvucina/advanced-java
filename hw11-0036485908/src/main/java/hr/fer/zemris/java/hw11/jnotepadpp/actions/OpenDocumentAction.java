@@ -9,6 +9,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import hr.fer.zemris.java.hw11.jnotepadpp.DefaultMultipleDocumentModel;
 import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.MultipleDocumentModel;
 
@@ -42,6 +43,9 @@ public class OpenDocumentAction extends AbstractAction {
 		}
 		
 		model.loadDocument(filePath);
+		
+		DefaultMultipleDocumentModel defaultModel = ((DefaultMultipleDocumentModel) model);
+		defaultModel.setIconAt(defaultModel.getDocuments().indexOf(defaultModel.getCurrentDocument()), window.acquireIcon("saved.png"));
 		
 		window.getAvailableActionValidator().actionPerformed(e);
 	}

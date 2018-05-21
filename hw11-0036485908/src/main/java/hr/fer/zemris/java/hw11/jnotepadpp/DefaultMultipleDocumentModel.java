@@ -1,5 +1,7 @@
 package hr.fer.zemris.java.hw11.jnotepadpp;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,6 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -38,6 +41,10 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 		return clipboard;
 	}
 
+	public List<SingleDocumentModel> getDocuments() {
+		return documents;
+	}
+
 	public void setClipboard(String clipboard) {
 		this.clipboard = clipboard;
 	}
@@ -53,6 +60,9 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 		notifyListeners(listener -> listener.currentDocumentChanged(documents.get(documents.size() - 2), newDocument));
 
 		createNewTab(newDocument);
+
+		newDocument.getTextComponent().getDocument().addDocumentListener(
+				new IconListener(this, documents.indexOf(newDocument), acquireIcon("notsaved.png"), newDocument));
 
 		return newDocument;
 	}
@@ -84,9 +94,14 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 			}
 
 			loadedDocument = new DefaultSingleDocumentModel(path, new String(bytes, StandardCharsets.UTF_8));
+			
+			
 
 			documents.add(loadedDocument);
 			notifyListeners(listener -> listener.documentAdded(documents.get(documents.size() - 1)));
+			
+			loadedDocument.getTextComponent().getDocument().addDocumentListener(
+					new IconListener(this, documents.indexOf(loadedDocument), acquireIcon("notsaved.png"), loadedDocument));
 
 			createNewTab(loadedDocument);
 		} else {
@@ -148,6 +163,8 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 			System.out.println("Error saving file.");
 		}
 
+		model.setModified(false);
+		
 		if (newPath != null) {
 			model.setFilePath(newPath);
 			setToolTipTextAt(documents.indexOf(model), String.valueOf(model.getFilePath()));
@@ -210,6 +227,26 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 
 			return documents.get(index++);
 		}
+	}
+
+	private ImageIcon acquireIcon(String iconName) {
+		StringBuilder sb = new StringBuilder("icons");
+		sb.append("/").append(iconName);
+
+		InputStream is = this.getClass().getResourceAsStream(sb.toString());
+
+		if (is == null) {
+			throw new IllegalArgumentException("Cannot access icon " + sb.toString());
+		}
+
+		byte[] bytes = null;
+		try {
+			bytes = is.readAllBytes();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return new ImageIcon(bytes);
 	}
 
 }
