@@ -37,7 +37,8 @@ public class PasteTextAction extends AbstractAction{
 			
 		}
 		
-		JTextArea editor = model.getCurrentDocument().getTextComponent();
+		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
+		JTextArea editor = model.getDocument(indexOfSelectedTab).getTextComponent();
 		Document document = editor.getDocument();
 		String clipboard = ((DefaultMultipleDocumentModel) model).getClipboard();
 		

@@ -30,7 +30,8 @@ public class CopyTextAction extends AbstractAction {
 			return;
 		}
 		
-		JTextArea editor = model.getCurrentDocument().getTextComponent();
+		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
+		JTextArea editor = model.getDocument(indexOfSelectedTab).getTextComponent();
 		Document document = editor.getDocument();
 		
 		int selectionLength = Math.abs(editor.getCaret().getDot() - editor.getCaret().getMark());	

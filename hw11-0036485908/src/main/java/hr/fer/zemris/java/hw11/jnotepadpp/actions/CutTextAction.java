@@ -8,6 +8,7 @@ import javax.swing.JTextArea;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+import hr.fer.zemris.java.hw11.jnotepadpp.DefaultMultipleDocumentModel;
 import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.MultipleDocumentModel;
 
@@ -31,7 +32,8 @@ public class CutTextAction extends AbstractAction {
 		
 		window.getCopyTextAction().actionPerformed(e);
 
-		JTextArea editor = model.getCurrentDocument().getTextComponent();
+		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
+		JTextArea editor = model.getDocument(indexOfSelectedTab).getTextComponent();
 		Document document = editor.getDocument();
 
 		int selectionLength = Math.abs(editor.getCaret().getDot() - editor.getCaret().getMark());
