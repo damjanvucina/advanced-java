@@ -1,6 +1,5 @@
 package hr.fer.zemris.java.hw11.jnotepadpp;
 
-import java.awt.Component;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,8 +80,10 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 			notifyListeners(listener -> listener.documentAdded(documents.get(documents.size() - 1)));
 
 			createNewTab(loadedDocument);
+		} else {
+			setSelectedIndex(documents.indexOf(loadedDocument));
 		}
-
+		
 		currentDocument = loadedDocument;
 		notifyListeners(listener -> listener.currentDocumentChanged(oldDocument, currentDocument));
 		return loadedDocument;
@@ -92,13 +93,16 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 		JTextArea tab = document.getTextComponent();
 		tab.setToolTipText((document.getFilePath() == null) ? UNTITLED : String.valueOf(document.getFilePath()));
 		String title = (document.getFilePath() == null) ? UNTITLED : String.valueOf(document.getFilePath().getFileName());
-
-		addTab(title, new JScrollPane(tab));
+		
+		JScrollPane scrollPane = new JScrollPane(tab);
+		addTab(title, scrollPane);
+		setSelectedComponent(scrollPane);
 	}
 
 	private SingleDocumentModel acquireDocument(Path path) {
 		for (SingleDocumentModel document : documents) {
-			if (document.getFilePath().equals(path)) {
+			Path currentPath = document.getFilePath();
+			if (currentPath != null && currentPath.equals(path)) {
 				return document;
 			}
 		}
@@ -137,11 +141,13 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 	@Override
 	public void closeDocument(SingleDocumentModel model) {
 		Objects.requireNonNull(model, "Cannot close null document");
-
-		documents.remove(model);
+		
+		int removedIndex = documents.indexOf(model);
+		documents.remove(removedIndex);
 		notifyListeners(listener -> listener.documentRemoved(model));
 		
-		removeTabAt(documents.indexOf(model));
+		removeTabAt(removedIndex);
+		
 	}
 
 	@Override
