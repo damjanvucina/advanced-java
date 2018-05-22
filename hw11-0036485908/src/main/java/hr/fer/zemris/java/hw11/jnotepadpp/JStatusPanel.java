@@ -139,7 +139,10 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 	}
 
 	private void updateEditorInfo(DefaultSingleDocumentModel defaultModel) {
-		
+		if (defaultModel.getText() != null) {
+			int lineNumber = defaultModel.getText().split("\n").length;
+			lnLabel.setText(LN_LABEL_DEFAULT + String.valueOf(lineNumber));
+		}
 	}
 
 	private void updateCurrentLength(DefaultSingleDocumentModel defaultModel) {

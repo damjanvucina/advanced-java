@@ -58,11 +58,11 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 
 			private void updateEditorLength(DocumentEvent e) {
 				currentLength = e.getDocument().getLength();
-//				try {
-//					text = e.getDocument().getText(0, currentLength-1);
-//				} catch (BadLocationException e1) {
-//					e1.printStackTrace();
-//				}
+				try {
+					text = e.getDocument().getText(0, currentLength);
+				} catch (BadLocationException e1) {
+					e1.printStackTrace();
+				}
 				notifyListeners(listener -> listener.documentModifyStatusUpdated(DefaultSingleDocumentModel.this));
 			}
 		});
