@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 public class JStatusPanel extends JPanel implements SingleDocumentListener{
@@ -23,6 +24,8 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 	public static final String COL_LABEL_DEFAULT = "Col: ";
 	public static final String SEL_LABEL_DEFAULT = "Sel: ";
 
+	private DefaultMultipleDocumentModel model;
+	
 	private JLabel lengthLabel;
 	private JLabel lnLabel;
 	private JLabel colLabel;
@@ -30,9 +33,10 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 	private JPanel editorInfoPanel;
 	private Clock clock;
 
-	public JStatusPanel(LayoutManager layout) {
+	public JStatusPanel(DefaultMultipleDocumentModel model, LayoutManager layout) {
 		setLayout(layout);
 
+		this.model = model;
 		lnLabel = new JLabel();
 		colLabel = new JLabel();
 		selLabel = new JLabel();
@@ -125,9 +129,22 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 
 	@Override
 	public void documentModifyStatusUpdated(SingleDocumentModel model) {
-		int currentLength = ((DefaultSingleDocumentModel) model).getCurrentLength();
-		lengthLabel.setText(LENGTH_LABEL_DEFAULT + String.valueOf(currentLength));
+		DefaultSingleDocumentModel defaultModel = (DefaultSingleDocumentModel) model;
+		
+		updateCurrentLength(defaultModel);
+		
+		updateEditorInfo(defaultModel);
+		
 		repaint();
+	}
+
+	private void updateEditorInfo(DefaultSingleDocumentModel defaultModel) {
+		
+	}
+
+	private void updateCurrentLength(DefaultSingleDocumentModel defaultModel) {
+		int currentLength = defaultModel.getCurrentLength();
+		lengthLabel.setText(LENGTH_LABEL_DEFAULT + String.valueOf(currentLength));
 	}
 
 	@Override

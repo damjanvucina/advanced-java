@@ -34,6 +34,7 @@ public class CloseTabAction extends AbstractAction {
 			}
 		}
 		
+		model.getDocument(indexOfSelectedTab);
 		model.closeDocument(model.getDocument(indexOfSelectedTab));
 
 		window.getAvailableActionValidator().actionPerformed(null);

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
 
 import javax.swing.JTextArea;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 
 public class DefaultSingleDocumentModel implements SingleDocumentModel {
 
@@ -18,7 +20,12 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 	private JTextArea textComponent;
 	private List<SingleDocumentListener> listeners;
 	private boolean modified;
+	
 	private int currentLength;
+	private int dot;
+	private int mark;
+	private int selectionLength;
+	private int offset;
 
 	public DefaultSingleDocumentModel(Path path, String text) {
 		this.filePath = path;
@@ -51,9 +58,55 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 
 			private void updateEditorLength(DocumentEvent e) {
 				currentLength = e.getDocument().getLength();
+//				try {
+//					text = e.getDocument().getText(0, currentLength-1);
+//				} catch (BadLocationException e1) {
+//					e1.printStackTrace();
+//				}
 				notifyListeners(listener -> listener.documentModifyStatusUpdated(DefaultSingleDocumentModel.this));
 			}
 		});
+		
+		textComponent.addCaretListener(new CaretListener() {
+			
+			@Override
+			public void caretUpdate(CaretEvent e) {
+				dot = e.getDot();
+				mark = e.getMark();
+				selectionLength = Math.abs(e.getDot() - e.getMark());
+				offset = Math.min(e.getDot(), e.getMark());
+				
+				notifyListeners(listener -> listener.documentModifyStatusUpdated(DefaultSingleDocumentModel.this));
+			}
+		});
+	}
+	
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	public int getDot() {
+		return dot;
+	}
+
+	public int getSelectionLength() {
+		return selectionLength;
+	}
+
+	public void setCurrentLength(int currentLength) {
+		this.currentLength = currentLength;
+	}
+
+	public void setDot(int dot) {
+		this.dot = dot;
+	}
+
+	public void setSelectionLength(int selectionLength) {
+		this.selectionLength = selectionLength;
 	}
 
 	public String getText() {

@@ -78,19 +78,28 @@ public class JNotepadPP extends JFrame {
 		cp.setLayout(new BorderLayout());
 
 		panel = new JPanel(new BorderLayout());
-		statusPanel = new JStatusPanel(new GridLayout(1, 3));
+		statusPanel = new JStatusPanel(model, new GridLayout(1, 3));
 
 		cp.add(panel, BorderLayout.CENTER);
 		cp.add(statusPanel, BorderLayout.SOUTH);
 
 		model = new DefaultMultipleDocumentModel();
 		panel.add(model, BorderLayout.CENTER);
+		
+
+		initializeActions();
+		setUpActions();
+
+		createMenus();
+		createActions();
+		createToolbars();
+		statusPanel.setUp();
+		
 		model.addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				int indexOfSelectedTab = ((DefaultMultipleDocumentModel) e.getSource()).getSelectedIndex();
-				
 				model.getCurrentDocument().addSingleDocumentListener(statusPanel);
 				String title = null;
 				if (((DefaultMultipleDocumentModel) model).getNumberOfDocuments() > 0) {
@@ -104,17 +113,11 @@ public class JNotepadPP extends JFrame {
 
 				setTitle(title + TITLE_SEPARATOR + DEFAULT_TITLE);
 				
-				statusPanel.documentModifyStatusUpdated(model.getDocument(indexOfSelectedTab));
+				if(model.getNumberOfDocuments() > 0) {
+					statusPanel.documentModifyStatusUpdated(model.getDocument(indexOfSelectedTab));
+				}
 			}
 		});
-
-		initializeActions();
-		setUpActions();
-
-		createMenus();
-		createActions();
-		createToolbars();
-		statusPanel.setUp();
 		
 		availableActionValidator.actionPerformed(null);
 	}

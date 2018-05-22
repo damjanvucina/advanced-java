@@ -94,7 +94,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 			}
 
 			loadedDocument = new DefaultSingleDocumentModel(path, new String(bytes, StandardCharsets.UTF_8));
-			
+			currentDocument = loadedDocument;
 			
 
 			documents.add(loadedDocument);
@@ -108,7 +108,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 			setSelectedIndex(documents.indexOf(loadedDocument));
 		}
 
-		currentDocument = loadedDocument;
+		//currentDocument = loadedDocument;
 		notifyListeners(listener -> listener.currentDocumentChanged(oldDocument, currentDocument));
 		return loadedDocument;
 	}
@@ -178,7 +178,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane
 		int removedIndex = documents.indexOf(model);
 		documents.remove(removedIndex);
 		notifyListeners(listener -> listener.documentRemoved(model));
-
+		
 		removeTabAt(removedIndex);
 	}
 
