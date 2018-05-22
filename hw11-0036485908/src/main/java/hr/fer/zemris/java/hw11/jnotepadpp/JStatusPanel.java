@@ -142,6 +142,10 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 		if (defaultModel.getText() != null) {
 			int lineNumber = defaultModel.getText().split("\n").length;
 			lnLabel.setText(LN_LABEL_DEFAULT + String.valueOf(lineNumber));
+			
+			String caretLine = defaultModel.getText().substring(0, defaultModel.getDot());
+			int caretLineNewLine = caretLine.lastIndexOf("\n");
+			colLabel.setText(COL_LABEL_DEFAULT + String.valueOf(defaultModel.getDot() - caretLineNewLine)); 
 		}
 	}
 
