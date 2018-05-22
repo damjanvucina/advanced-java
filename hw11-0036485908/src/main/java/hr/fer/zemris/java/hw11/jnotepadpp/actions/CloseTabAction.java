@@ -33,8 +33,10 @@ public class CloseTabAction extends AbstractAction {
 				window.getSaveAsDocumentAction().actionPerformed(null);
 			}
 		}
+		
 		model.closeDocument(model.getDocument(indexOfSelectedTab));
 
 		window.getAvailableActionValidator().actionPerformed(null);
+		
 	}
 }

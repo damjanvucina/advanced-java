@@ -4,9 +4,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.MultipleDocumentModel;
-import static hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP.DEFAULT_TITLE;
-import static hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP.UNTITLED;
-import static hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP.TITLE_SEPARATOR;
 
 public class AvailableActionValidator extends AbstractAction {
 	private static final long serialVersionUID = 1L;
@@ -23,19 +20,6 @@ public class AvailableActionValidator extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		validateActions();
 
-		validateWindowTitle();
-	}
-
-	private void validateWindowTitle() {
-		if (model.getNumberOfDocuments() == 0) {
-			window.setTitle(DEFAULT_TITLE);
-
-		} else if (model.getCurrentDocument().getFilePath() == null) {
-			window.setTitle(UNTITLED + TITLE_SEPARATOR + DEFAULT_TITLE);
-
-		} else {
-			window.setTitle(model.getCurrentDocument().getFilePath().getFileName() + TITLE_SEPARATOR + DEFAULT_TITLE);
-		}
 	}
 
 	private void validateActions() {

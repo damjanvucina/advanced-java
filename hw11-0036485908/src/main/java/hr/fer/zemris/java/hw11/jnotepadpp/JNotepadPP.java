@@ -1,7 +1,9 @@
 package hr.fer.zemris.java.hw11.jnotepadpp;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -10,8 +12,10 @@ import java.io.InputStream;
 import java.nio.file.Path;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -38,6 +42,10 @@ public class JNotepadPP extends JFrame {
 	public static final String DEFAULT_TITLE = "JNotepad++";
 	public static final String UNTITLED = "Untitled";
 	public static final String TITLE_SEPARATOR = " - ";
+	public static final String LENGTH_LABEL_DEFAULT = "length: ";
+	public static final String LN_LABEL_DEFAULT = "Ln: ";
+	public static final String COL_LABEL_DEFAULT = "Col: ";
+	public static final String SEL_LABEL_DEFAULT = "Sel: ";
 
 	private OpenDocumentAction openDocumentAction;
 	private CreateNewDocumentAction createNewDocumentAction;
@@ -53,6 +61,13 @@ public class JNotepadPP extends JFrame {
 
 	private DefaultMultipleDocumentModel model;
 	private JPanel panel;
+
+	private JPanel statusPanel;
+	private JLabel lengthLabel;
+	private JLabel lnLabel;
+	private JLabel colLabel;
+	private JLabel selLabel;
+	private JPanel editorInfoPanel;
 
 	public JNotepadPP() {
 		setSize(600, 600);
@@ -73,8 +88,10 @@ public class JNotepadPP extends JFrame {
 		cp.setLayout(new BorderLayout());
 
 		panel = new JPanel(new BorderLayout());
+		statusPanel = new JPanel(new GridLayout(1, 3));
 
 		cp.add(panel, BorderLayout.CENTER);
+		cp.add(statusPanel, BorderLayout.SOUTH);
 
 		model = new DefaultMultipleDocumentModel();
 		panel.add(model, BorderLayout.CENTER);
@@ -83,10 +100,22 @@ public class JNotepadPP extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				int indexOfSelectedTab = ((DefaultMultipleDocumentModel) e.getSource()).getSelectedIndex();
-				Path filePath = model.getDocument(indexOfSelectedTab).getFilePath();
-				String title = (filePath == null) ? UNTITLED : String.valueOf(filePath);
+
+				String title = null;
+				int editorLength;
+				if (((DefaultMultipleDocumentModel) model).getNumberOfDocuments() > 0) {
+					Path filePath = model.getDocument(indexOfSelectedTab).getFilePath();
+					title = (filePath == null) ? UNTITLED : String.valueOf(filePath);
+					editorLength = model.getDocument(indexOfSelectedTab).getTextComponent().getText().length();
+					
+				} else {
+					title = UNTITLED;
+					editorLength = 0;
+				}
 
 				setTitle(title + TITLE_SEPARATOR + DEFAULT_TITLE);
+
+				lengthLabel.setText(LENGTH_LABEL_DEFAULT + editorLength);
 			}
 		});
 
@@ -96,8 +125,28 @@ public class JNotepadPP extends JFrame {
 		createMenus();
 		createActions();
 		createToolbars();
+		createStatusBar();
 
 		availableActionValidator.actionPerformed(null);
+	}
+
+	private void createStatusBar() {
+		statusPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		lengthLabel = new JLabel(LENGTH_LABEL_DEFAULT + "0");
+		statusPanel.add(lengthLabel, LEFT_ALIGNMENT);
+
+		editorInfoPanel = new JPanel();
+		lnLabel = new JLabel(LN_LABEL_DEFAULT + "0");
+		colLabel = new JLabel(COL_LABEL_DEFAULT + "0");
+		selLabel = new JLabel(SEL_LABEL_DEFAULT + "0");
+		editorInfoPanel.add(lnLabel);
+		editorInfoPanel.add(colLabel);
+		editorInfoPanel.add(selLabel);
+
+		statusPanel.add(editorInfoPanel, CENTER_ALIGNMENT);
+
+		statusPanel.add(new JLabel("dwdwd"), RIGHT_ALIGNMENT);
 	}
 
 	private void setUpActions() {
