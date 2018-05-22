@@ -93,6 +93,10 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 		return dot;
 	}
 
+	public int getMark() {
+		return mark;
+	}
+
 	public int getSelectionLength() {
 		return selectionLength;
 	}
