@@ -8,24 +8,20 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-public class JStatusPanel extends JPanel implements SingleDocumentListener{
+public class JStatusPanel extends JPanel implements SingleDocumentListener {
 	public static final String LENGTH_LABEL_DEFAULT = "length: ";
 	public static final String LN_LABEL_DEFAULT = "Ln: ";
 	public static final String COL_LABEL_DEFAULT = "Col: ";
 	public static final String SEL_LABEL_DEFAULT = "Sel: ";
 
-	private DefaultMultipleDocumentModel model;
-	
 	private JLabel lengthLabel;
 	private JLabel lnLabel;
 	private JLabel colLabel;
@@ -33,10 +29,9 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 	private JPanel editorInfoPanel;
 	private Clock clock;
 
-	public JStatusPanel(DefaultMultipleDocumentModel model, LayoutManager layout) {
+	public JStatusPanel(LayoutManager layout) {
 		setLayout(layout);
 
-		this.model = model;
 		lnLabel = new JLabel();
 		colLabel = new JLabel();
 		selLabel = new JLabel();
@@ -44,7 +39,7 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 	}
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public void turnOffClock() {
 		clock.stop();
 	}
@@ -53,7 +48,8 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		lengthLabel = new JLabel(LENGTH_LABEL_DEFAULT + "0");
-		add(lengthLabel, LEFT_ALIGNMENT);
+		lengthLabel.setHorizontalAlignment(JLabel.LEFT);
+		add(lengthLabel);
 
 		editorInfoPanel = new JPanel();
 		lnLabel = new JLabel(LN_LABEL_DEFAULT + "0");
@@ -62,13 +58,12 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 		editorInfoPanel.add(lnLabel);
 		editorInfoPanel.add(colLabel);
 		editorInfoPanel.add(selLabel);
-
-		add(editorInfoPanel, CENTER_ALIGNMENT);
+		add(editorInfoPanel);
 
 		clock = new Clock();
-		add(clock, RIGHT_ALIGNMENT);
+		add(clock);
 	}
-	
+
 	static class Clock extends JComponent {
 
 		private static final long serialVersionUID = 1L;
@@ -130,11 +125,11 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 	@Override
 	public void documentModifyStatusUpdated(SingleDocumentModel model) {
 		DefaultSingleDocumentModel defaultModel = (DefaultSingleDocumentModel) model;
-		
+
 		updateCurrentLength(defaultModel);
-		
+
 		updateEditorInfo(defaultModel);
-		
+
 		repaint();
 	}
 
@@ -142,14 +137,14 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 		if (defaultModel.getText() != null) {
 			int lineNumber = defaultModel.getText().split("\n").length;
 			lnLabel.setText(LN_LABEL_DEFAULT + String.valueOf(lineNumber));
-			
+
 			String caretLine = defaultModel.getText().substring(0, defaultModel.getDot());
 			int caretLineNewLine = caretLine.lastIndexOf("\n");
-			colLabel.setText(COL_LABEL_DEFAULT + String.valueOf(defaultModel.getDot() - caretLineNewLine)); 
-			
+			colLabel.setText(COL_LABEL_DEFAULT + String.valueOf(defaultModel.getDot() - caretLineNewLine));
+
 			int selectionLength = Math.abs(defaultModel.getDot() - defaultModel.getMark());
-			selLabel.setText(SEL_LABEL_DEFAULT + String.valueOf(selectionLength)); 
-			
+			selLabel.setText(SEL_LABEL_DEFAULT + String.valueOf(selectionLength));
+
 		}
 	}
 

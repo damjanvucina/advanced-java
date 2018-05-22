@@ -25,7 +25,7 @@ public class CopyTextAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(model.getCurrentDocument() == null) {
+		if(model.getNumberOfDocuments() == 0) {
 			JOptionPane.showMessageDialog(window, "Document not found.", "Copy error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}

@@ -78,7 +78,7 @@ public class JNotepadPP extends JFrame {
 		cp.setLayout(new BorderLayout());
 
 		panel = new JPanel(new BorderLayout());
-		statusPanel = new JStatusPanel(model, new GridLayout(1, 3));
+		statusPanel = new JStatusPanel(new GridLayout(1, 3));
 
 		cp.add(panel, BorderLayout.CENTER);
 		cp.add(statusPanel, BorderLayout.SOUTH);

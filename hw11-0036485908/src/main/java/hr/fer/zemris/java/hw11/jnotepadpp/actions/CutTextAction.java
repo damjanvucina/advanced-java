@@ -25,7 +25,7 @@ public class CutTextAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(model.getCurrentDocument() == null) {
+		if(model.getNumberOfDocuments() == 0) {
 			JOptionPane.showMessageDialog(window, "Document not found.", "Cut error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}

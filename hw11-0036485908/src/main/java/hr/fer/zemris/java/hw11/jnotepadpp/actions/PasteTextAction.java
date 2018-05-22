@@ -26,7 +26,7 @@ public class PasteTextAction extends AbstractAction{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(model.getCurrentDocument() == null) {
+		if(model.getNumberOfDocuments() == 0) {
 			JOptionPane.showMessageDialog(window, "Document not found.", "Paste error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
