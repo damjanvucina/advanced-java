@@ -9,7 +9,12 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -32,7 +37,11 @@ import hr.fer.zemris.java.hw11.jnotepadpp.actions.OpenDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.PasteTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveAsDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveDocumentAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.SetLanguageAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.ShowStatsAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.FormLocalizationProvider;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.ILocalizationListener;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationProvider;
 
 public class JNotepadPP extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -51,19 +60,35 @@ public class JNotepadPP extends JFrame {
 	private CutTextAction cutTextAction;
 	private ShowStatsAction showStatsAction;
 	private AvailableActionValidator availableActionValidator;
+	private SetLanguageAction setCroatian;
+	private SetLanguageAction setEnglish;
+	private SetLanguageAction setGerman;
+
+	private FormLocalizationProvider flp;
 
 	private DefaultMultipleDocumentModel model;
 	private JPanel panel;
 
 	private JStatusPanel statusPanel;
+	private JMenu fileMenu;
+	private JMenu editMenu;
+	private JMenu helpMenu;
+	private JMenu languageMenu;
 
 	private int editorLength;
+	private Map<AbstractAction, String> actionMappings;
 
 	public JNotepadPP() {
 		setSize(600, 600);
 		setLocation(50, 50);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		initGui();
+
+		flp = new FormLocalizationProvider(LocalizationProvider.getInstance(), this);
+		addLocalizationListener();
+		
+		actionMappings = new HashMap<>();
+		
 
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -85,7 +110,6 @@ public class JNotepadPP extends JFrame {
 
 		model = new DefaultMultipleDocumentModel();
 		panel.add(model, BorderLayout.CENTER);
-		
 
 		initializeActions();
 		setUpActions();
@@ -94,7 +118,7 @@ public class JNotepadPP extends JFrame {
 		createActions();
 		createToolbars();
 		statusPanel.setUp();
-		
+
 		model.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -112,26 +136,70 @@ public class JNotepadPP extends JFrame {
 				}
 
 				setTitle(title + TITLE_SEPARATOR + DEFAULT_TITLE);
-				
-				if(model.getNumberOfDocuments() > 0) {
+
+				if (model.getNumberOfDocuments() > 0) {
 					statusPanel.documentModifyStatusUpdated(model.getDocument(indexOfSelectedTab));
 				}
 			}
 		});
-		
+
+		initializeActionMappings();
 		availableActionValidator.actionPerformed(null);
 	}
 
+
+
+	private void addLocalizationListener() {
+		flp.addLocalizationListener(new ILocalizationListener() {
+
+			@Override
+			public void localizationChanged() {
+				createNewDocumentAction.putValue(Action.NAME, flp.getString("menuItemNew"));
+				openDocumentAction.putValue(Action.NAME, flp.getString("menuItemOpen"));
+				saveDocumentAction.putValue(Action.NAME, flp.getString("menuItemSave"));
+				saveAsDocumentAction.putValue(Action.NAME, flp.getString("menuItemSaveAs"));
+				closeTabAction.putValue(Action.NAME, flp.getString("menuItemClose"));
+				exitApplicationAction.putValue(Action.NAME, flp.getString("menuItemExit"));
+				copyTextAction.putValue(Action.NAME, flp.getString("menuItemCopy"));
+				pasteTextAction.putValue(Action.NAME, flp.getString("menuItemPaste"));
+				cutTextAction.putValue(Action.NAME, flp.getString("menuItemCut"));
+				showStatsAction.putValue(Action.NAME, flp.getString("menuItemStats"));
+				setCroatian.putValue(Action.NAME, flp.getString("menuItemCroatian"));
+				setEnglish.putValue(Action.NAME, flp.getString("menuItemEnglish"));
+				setGerman.putValue(Action.NAME, flp.getString("menuItemGerman"));
+
+				fileMenu.setText(flp.getString("menuFile"));
+			}
+		});
+	}
+			
+	private void initializeActionMappings() {
+		actionMappings.put(createNewDocumentAction, "menuItemNew");
+		actionMappings.put(openDocumentAction, "menuItemOpen");
+		actionMappings.put(saveDocumentAction, "menuItemSave");
+		actionMappings.put(saveAsDocumentAction, "menuItemSaveAs");
+		actionMappings.put(closeTabAction, "menuItemClose");
+		actionMappings.put(exitApplicationAction, "menuItemExit");
+		actionMappings.put(copyTextAction, "menuItemCopy");
+		actionMappings.put(pasteTextAction, "menuItemPaste");
+		actionMappings.put(cutTextAction, "menuItemCut");
+		actionMappings.put(showStatsAction, "menuItemStats");
+		actionMappings.put(setCroatian, "menuItemCroatian");
+		actionMappings.put(setEnglish, "menuItemEnglish");
+		actionMappings.put(setGerman, "menuItemGerman");
+	}
+	
 	private void setUpActions() {
+		createNewDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
+		createNewDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_N);
+		createNewDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Creates a new blank file.");
+		createNewDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("new.png"));
+		
 		openDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
 		openDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
 		openDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Opens existing file.");
 		openDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("open.png"));
 
-		createNewDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
-		createNewDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_N);
-		createNewDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Creates a new blank file.");
-		createNewDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("new.png"));
 
 		saveDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
 		saveDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
@@ -172,6 +240,22 @@ public class JNotepadPP extends JFrame {
 		showStatsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
 		showStatsAction.putValue(Action.SHORT_DESCRIPTION, "Shows current document statistics.");
 		showStatsAction.putValue(Action.SMALL_ICON, acquireIcon("stats.png"));
+
+		setCroatian.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt C"));
+		setCroatian.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
+		setCroatian.putValue(Action.SHORT_DESCRIPTION, "Sets croatian language");
+		setCroatian.putValue(Action.SMALL_ICON, acquireIcon("croatian.png"));
+
+		setEnglish.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt E"));
+		setEnglish.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_E);
+		setEnglish.putValue(Action.SHORT_DESCRIPTION, "Sets english language");
+		setEnglish.putValue(Action.SMALL_ICON, acquireIcon("english.png"));
+
+		setGerman.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt G"));
+		setGerman.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_G);
+		setGerman.putValue(Action.SHORT_DESCRIPTION, "Sets german language");
+		setGerman.putValue(Action.SMALL_ICON, acquireIcon("deutsch.png"));
+		
 	}
 
 	public ImageIcon acquireIcon(String iconName) {
@@ -249,7 +333,7 @@ public class JNotepadPP extends JFrame {
 	public void setEditorLength(int editorLength) {
 		this.editorLength = editorLength;
 	}
-	
+
 	public JStatusPanel getStatusPanel() {
 		return statusPanel;
 	}
@@ -266,6 +350,9 @@ public class JNotepadPP extends JFrame {
 		cutTextAction = new CutTextAction(this, model);
 		showStatsAction = new ShowStatsAction(this, model);
 		availableActionValidator = new AvailableActionValidator(this, model);
+		setCroatian = new SetLanguageAction("hr");
+		setEnglish = new SetLanguageAction("en");
+		setGerman = new SetLanguageAction("de");
 	}
 
 	private void createActions() {
@@ -279,12 +366,15 @@ public class JNotepadPP extends JFrame {
 		pasteTextAction.putValue(Action.NAME, "Paste");
 		cutTextAction.putValue(Action.NAME, "Cut");
 		showStatsAction.putValue(Action.NAME, "Show Stats");
+		setCroatian.putValue(Action.NAME, "Croatian");
+		setEnglish.putValue(Action.NAME, "English");
+		setGerman.putValue(Action.NAME, "German");
 	}
 
 	private void createMenus() {
 		JMenuBar menuBar = new JMenuBar();
 
-		JMenu fileMenu = new JMenu("File");
+		fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
 		fileMenu.add(createNewDocumentAction);
 		fileMenu.add(openDocumentAction);
@@ -295,15 +385,21 @@ public class JNotepadPP extends JFrame {
 		fileMenu.add(closeTabAction);
 		fileMenu.add(exitApplicationAction);
 
-		JMenu editMenu = new JMenu("Edit");
+		editMenu = new JMenu("Edit");
 		menuBar.add(editMenu);
 		editMenu.add(copyTextAction);
 		editMenu.add(pasteTextAction);
 		editMenu.add(cutTextAction);
 
-		JMenu helpMenu = new JMenu("Help");
+		helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
 		helpMenu.add(showStatsAction);
+
+		languageMenu = new JMenu("Languages");
+		menuBar.add(languageMenu);
+		languageMenu.add(setCroatian);
+		languageMenu.add(setEnglish);
+		languageMenu.add(setGerman);
 
 		this.setJMenuBar(menuBar);
 	}
@@ -327,6 +423,20 @@ public class JNotepadPP extends JFrame {
 		toolBar.addSeparator();
 		toolBar.add(showStatsAction);
 		panel.add(toolBar, BorderLayout.NORTH);
+	}
+
+	public static class ActionLanguagePack {
+		String name;
+		String keyStroke;
+		String keyEvent;
+		String description;
+		
+		public ActionLanguagePack(String name, String keyStroke, String keyEvent, String description) {
+			this.name = name;
+			this.keyStroke = keyStroke;
+			this.keyEvent = keyEvent;
+			this.description = description;
+		}
 	}
 
 	public static void main(String[] args) {
