@@ -40,6 +40,7 @@ public class ExitApplicationAction extends AbstractAction {
 
 			}
 		}
+		window.getStatusPanel().turnOffClock();
 		window.dispose();
 	}
 

@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 
 import javax.swing.JTextArea;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class DefaultSingleDocumentModel implements SingleDocumentModel {
 
@@ -15,6 +18,7 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 	private JTextArea textComponent;
 	private List<SingleDocumentListener> listeners;
 	private boolean modified;
+	private int currentLength;
 
 	public DefaultSingleDocumentModel(Path path, String text) {
 		this.filePath = path;
@@ -23,6 +27,28 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 		listeners = new ArrayList<>();
 
 		textComponent = new JTextArea(text);
+		textComponent.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				updateEditorLength(e);
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				updateEditorLength(e);
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				updateEditorLength(e);
+			}
+
+			private void updateEditorLength(DocumentEvent e) {
+				currentLength = e.getDocument().getLength();
+				notifyListeners(listener -> listener.documentModifyStatusUpdated(DefaultSingleDocumentModel.this));
+			}
+		});
 	}
 
 	public String getText() {
@@ -50,6 +76,10 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 	@Override
 	public boolean isModified() {
 		return modified == true;
+	}
+
+	public int getCurrentLength() {
+		return currentLength;
 	}
 
 	@Override
