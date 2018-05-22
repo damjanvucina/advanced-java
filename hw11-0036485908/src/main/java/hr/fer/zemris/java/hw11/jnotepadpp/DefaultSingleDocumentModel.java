@@ -23,22 +23,27 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 	public DefaultSingleDocumentModel(Path path, String text) {
 		this.filePath = path;
 		this.text = text;
+		this.currentLength = (text == null) ? 0 : text.length();
 
 		listeners = new ArrayList<>();
 
 		textComponent = new JTextArea(text);
+		addDocumentAndCaretListeners(textComponent);
+
+	}
+
+	private void addDocumentAndCaretListeners(JTextArea textComponent) {
 		textComponent.getDocument().addDocumentListener(new DocumentListener() {
-			
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				updateEditorLength(e);
 			}
-			
+
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				updateEditorLength(e);
 			}
-			
+
 			@Override
 			public void changedUpdate(DocumentEvent e) {
 				updateEditorLength(e);

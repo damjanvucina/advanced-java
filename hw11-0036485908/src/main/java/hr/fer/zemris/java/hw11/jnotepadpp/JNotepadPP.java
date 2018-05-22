@@ -92,7 +92,6 @@ public class JNotepadPP extends JFrame {
 				int indexOfSelectedTab = ((DefaultMultipleDocumentModel) e.getSource()).getSelectedIndex();
 				
 				model.getCurrentDocument().addSingleDocumentListener(statusPanel);
-
 				String title = null;
 				if (((DefaultMultipleDocumentModel) model).getNumberOfDocuments() > 0) {
 					Path filePath = model.getDocument(indexOfSelectedTab).getFilePath();

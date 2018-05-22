@@ -80,7 +80,7 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener{
 			Thread t = new Thread(() -> {
 				while (true) {
 					try {
-						Thread.sleep(500);
+						Thread.sleep(1000);
 					} catch (Exception ex) {
 					}
 					if (stopRequested)
