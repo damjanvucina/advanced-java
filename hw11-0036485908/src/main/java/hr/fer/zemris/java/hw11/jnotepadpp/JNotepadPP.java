@@ -225,6 +225,12 @@ public class JNotepadPP extends JFrame {
 		actionMappings.put(setCroatian, "menuItemCroatian");
 		actionMappings.put(setEnglish, "menuItemEnglish");
 		actionMappings.put(setGerman, "menuItemGerman");
+		actionMappings.put(toUpperCaseAction, "menuItemUppercase");
+		actionMappings.put(toLowerCaseAction, "menuItemLowercase");
+		actionMappings.put(invertCaseAction, "menuItemInvertCase");
+		actionMappings.put(sortAscendingAction, "menuItemAscending");
+		actionMappings.put(sortDescendingAction, "menuItemDescending");
+		actionMappings.put(uniqueAction, "menuItemUnique");
 	}
 	
 	private void initializeMenuMappings() {
@@ -233,6 +239,9 @@ public class JNotepadPP extends JFrame {
 		menuMappings.put(helpMenu, "menuHelp");
 		menuMappings.put(fileMenu, "menuFile");
 		menuMappings.put(languageMenu, "menuLanguage");
+		menuMappings.put(toolsMenu, "menuTools");
+		menuMappings.put(changeCaseMenu, "menuChangeCase");
+		menuMappings.put(sortMenu, "menuSort");
 	}
 	
 	private void initializeLabelMappings() {
