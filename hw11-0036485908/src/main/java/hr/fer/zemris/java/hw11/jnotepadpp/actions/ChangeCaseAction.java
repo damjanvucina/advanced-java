@@ -32,7 +32,6 @@ public class ChangeCaseAction extends AbstractAction implements SingleDocumentLi
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("triggered");
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
 		JTextArea editor = model.getDocument(indexOfSelectedTab).getTextComponent();
 		Document document = editor.getDocument();
@@ -47,6 +46,7 @@ public class ChangeCaseAction extends AbstractAction implements SingleDocumentLi
 			offset = Math.min(editor.getCaret().getDot(), editor.getCaret().getMark());
 		}
 		
+		
 		char[] text = null;
 		try {
 			text = document.getText(offset, selectionLength).toCharArray();
@@ -55,7 +55,7 @@ public class ChangeCaseAction extends AbstractAction implements SingleDocumentLi
 			e1.printStackTrace();
 		}
 		
-		for(int i = 0; i < offset; i++) {
+		for(int i = 0; i < selectionLength; i++) {
 			text[i] = format.apply(text[i]);
 		}
 
