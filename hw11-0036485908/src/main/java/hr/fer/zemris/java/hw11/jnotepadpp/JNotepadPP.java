@@ -26,6 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.AvailableActionValidator;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.ChangeCaseAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CloseTabAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CopyTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CreateNewDocumentAction;
@@ -63,7 +64,10 @@ public class JNotepadPP extends JFrame {
 	private SetLanguageAction setCroatian;
 	private SetLanguageAction setEnglish;
 	private SetLanguageAction setGerman;
-
+	private ChangeCaseAction toUpperCase;
+	private ChangeCaseAction toLowerCase;
+	private ChangeCaseAction invertCase;
+	
 	private FormLocalizationProvider flp;
 
 	private DefaultMultipleDocumentModel model;
@@ -74,6 +78,8 @@ public class JNotepadPP extends JFrame {
 	private JMenu editMenu;
 	private JMenu helpMenu;
 	private JMenu languageMenu;
+	private JMenu toolsMenu;
+	private JMenu changeCaseMenu;
 
 	private int editorLength;
 	
@@ -131,6 +137,9 @@ public class JNotepadPP extends JFrame {
 			public void stateChanged(ChangeEvent e) {
 				int indexOfSelectedTab = ((DefaultMultipleDocumentModel) e.getSource()).getSelectedIndex();
 				model.getCurrentDocument().addSingleDocumentListener(statusPanel);
+				model.getCurrentDocument().addSingleDocumentListener(toUpperCase);
+				model.getCurrentDocument().addSingleDocumentListener(toLowerCase);
+				model.getCurrentDocument().addSingleDocumentListener(invertCase);
 				String title = null;
 				if (((DefaultMultipleDocumentModel) model).getNumberOfDocuments() > 0) {
 					Path filePath = model.getDocument(indexOfSelectedTab).getFilePath();
@@ -146,6 +155,7 @@ public class JNotepadPP extends JFrame {
 				if (model.getNumberOfDocuments() > 0) {
 					statusPanel.documentModifyStatusUpdated(model.getDocument(indexOfSelectedTab));
 				}
+				
 			}
 		});
 
@@ -238,6 +248,9 @@ public class JNotepadPP extends JFrame {
 		setCroatian.putValue(Action.SMALL_ICON, acquireIcon("croatian.png"));
 		setEnglish.putValue(Action.SMALL_ICON, acquireIcon("english.png"));
 		setGerman.putValue(Action.SMALL_ICON, acquireIcon("deutsch.png"));
+		toUpperCase.putValue(Action.SMALL_ICON, acquireIcon("uppercase.png"));
+		toLowerCase.putValue(Action.SMALL_ICON, acquireIcon("lowercase.png"));
+		invertCase.putValue(Action.SMALL_ICON, acquireIcon("invertcase.png"));
 		
 	}
 
@@ -320,6 +333,18 @@ public class JNotepadPP extends JFrame {
 	public JStatusPanel getStatusPanel() {
 		return statusPanel;
 	}
+	
+	public ChangeCaseAction getToUpperCase() {
+		return toUpperCase;
+	}
+
+	public ChangeCaseAction getToLowerCase() {
+		return toLowerCase;
+	}
+
+	public ChangeCaseAction getInvertCase() {
+		return invertCase;
+	}
 
 	private void initializeActions() {
 		openDocumentAction = new OpenDocumentAction(this, model);
@@ -336,6 +361,15 @@ public class JNotepadPP extends JFrame {
 		setCroatian = new SetLanguageAction("hr");
 		setEnglish = new SetLanguageAction("en");
 		setGerman = new SetLanguageAction("de");
+		toUpperCase = new ChangeCaseAction(this, model, c -> Character.toUpperCase(c));
+		toLowerCase = new ChangeCaseAction(this, model, c -> Character.toLowerCase(c));
+		invertCase = new ChangeCaseAction(this, model, c ->  {
+			if (Character.isUpperCase(c)){
+				return Character.toLowerCase(c);
+			} else {
+				return Character.toUpperCase(c);
+			}
+		});
 	}
 
 	private void createActions() {
@@ -352,6 +386,13 @@ public class JNotepadPP extends JFrame {
 		setCroatian.putValue(Action.NAME, "Croatian");
 		setEnglish.putValue(Action.NAME, "English");
 		setGerman.putValue(Action.NAME, "German");
+		toUpperCase.putValue(Action.NAME, "To Upper Case");
+		toLowerCase.putValue(Action.NAME, "To Lower Case");
+		invertCase.putValue(Action.NAME, "Invert Case");
+		
+		toUpperCase.setEnabled(false);
+		toLowerCase.setEnabled(false);
+		invertCase.setEnabled(false);
 	}
 
 	private void createMenus() {
@@ -373,16 +414,24 @@ public class JNotepadPP extends JFrame {
 		editMenu.add(copyTextAction);
 		editMenu.add(pasteTextAction);
 		editMenu.add(cutTextAction);
-
-		helpMenu = new JMenu("Help");
-		menuBar.add(helpMenu);
-		helpMenu.add(showStatsAction);
-
+		
 		languageMenu = new JMenu("Languages");
 		menuBar.add(languageMenu);
 		languageMenu.add(setCroatian);
 		languageMenu.add(setEnglish);
 		languageMenu.add(setGerman);
+		
+		toolsMenu = new JMenu("Tools");
+		menuBar.add(toolsMenu);
+		changeCaseMenu = new JMenu("Change Case");
+		toolsMenu.add(changeCaseMenu);
+		changeCaseMenu.add(toUpperCase);
+		changeCaseMenu.add(toLowerCase);
+		changeCaseMenu.add(invertCase);
+		
+		helpMenu = new JMenu("Help");
+		menuBar.add(helpMenu);
+		helpMenu.add(showStatsAction);
 
 		this.setJMenuBar(menuBar);
 	}

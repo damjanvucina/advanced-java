@@ -41,5 +41,7 @@ public class AvailableActionValidator extends AbstractAction {
 		} else {
 			window.getSaveDocumentAction().setEnabled(false);
 		}
+		
+
 	}
 }

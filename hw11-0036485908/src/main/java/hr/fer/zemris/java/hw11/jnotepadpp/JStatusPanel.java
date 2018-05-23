@@ -32,6 +32,7 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener {
 	private JPanel editorInfoPanel;
 	private Clock clock;
 	private FormLocalizationProvider flp;
+	private int selectionLength;
 
 	public JStatusPanel(FormLocalizationProvider flp, LayoutManager layout) {
 		setLayout(layout);
@@ -74,6 +75,10 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener {
 
 	public void setSelLabelDefault(String selLabelDefault) {
 		this.selLabelDefault = selLabelDefault;
+	}
+	
+	public int getSelectionLength() {
+		return selectionLength;
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -180,7 +185,7 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener {
 			int caretLineNewLine = caretLine.lastIndexOf("\n");
 			colLabel.setText(flp.getString("colLabel") + String.valueOf(defaultModel.getDot() - caretLineNewLine));
 
-			int selectionLength = Math.abs(defaultModel.getDot() - defaultModel.getMark());
+			selectionLength = Math.abs(defaultModel.getDot() - defaultModel.getMark());
 			selLabel.setText(flp.getString("selLabel") + String.valueOf(selectionLength));
 
 		}
