@@ -377,15 +377,15 @@ public class JNotepadPP extends JFrame {
 	}
 
 	private void initializeActions() {
-		openDocumentAction = new OpenDocumentAction(this, model);
+		openDocumentAction = new OpenDocumentAction(flp, this, model);
 		createNewDocumentAction = new CreateNewDocumentAction(this, model);
 		saveDocumentAction = new SaveDocumentAction(this, model);
-		saveAsDocumentAction = new SaveAsDocumentAction(this, model);
-		closeTabAction = new CloseTabAction(this, model);
-		exitApplicationAction = new ExitApplicationAction(this, model);
-		copyTextAction = new CopyTextAction(this, model);
-		pasteTextAction = new PasteTextAction(this, model);
-		cutTextAction = new CutTextAction(this, model);
+		saveAsDocumentAction = new SaveAsDocumentAction(flp, this, model);
+		closeTabAction = new CloseTabAction(flp, this, model);
+		exitApplicationAction = new ExitApplicationAction(flp, this, model);
+		copyTextAction = new CopyTextAction(flp, this, model);
+		pasteTextAction = new PasteTextAction(flp, this, model);
+		cutTextAction = new CutTextAction(flp, this, model);
 		showStatsAction = new ShowStatsAction(this, model, flp);
 		availableActionValidator = new AvailableActionValidator(this, model);
 		setCroatian = new SetLanguageAction("hr");

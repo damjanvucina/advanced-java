@@ -12,16 +12,19 @@ import javax.swing.JOptionPane;
 import hr.fer.zemris.java.hw11.jnotepadpp.DefaultMultipleDocumentModel;
 import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.MultipleDocumentModel;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.FormLocalizationProvider;
 
 public class OpenDocumentAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 	
-	MultipleDocumentModel model;
-	JNotepadPP window;
+	private MultipleDocumentModel model;
+	private JNotepadPP window;
+	private FormLocalizationProvider flp;
 
-	public OpenDocumentAction(JNotepadPP window, MultipleDocumentModel model) {
+	public OpenDocumentAction(FormLocalizationProvider flp, JNotepadPP window, MultipleDocumentModel model) {
 		this.window = window;
 		this.model = model;
+		this.flp = flp;
 	}
 
 	@Override
@@ -37,7 +40,7 @@ public class OpenDocumentAction extends AbstractAction {
 		Path filePath = fileName.toPath();
 		
 		if(!Files.isReadable(filePath)) {
-			JOptionPane.showMessageDialog(window, "File " + fileName.getAbsolutePath() + " does not exist.",
+			JOptionPane.showMessageDialog(window, fileName.getAbsolutePath() + " " + flp.getString("notExist"),
 			"Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}

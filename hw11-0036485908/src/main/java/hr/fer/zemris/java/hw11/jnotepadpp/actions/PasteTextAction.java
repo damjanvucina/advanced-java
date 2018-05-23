@@ -11,23 +11,26 @@ import javax.swing.text.Document;
 import hr.fer.zemris.java.hw11.jnotepadpp.DefaultMultipleDocumentModel;
 import hr.fer.zemris.java.hw11.jnotepadpp.JNotepadPP;
 import hr.fer.zemris.java.hw11.jnotepadpp.MultipleDocumentModel;
+import hr.fer.zemris.java.hw11.jnotepadpp.local.FormLocalizationProvider;
 
 public class PasteTextAction extends AbstractAction{
 
 	private static final long serialVersionUID = 1L;
 
-	MultipleDocumentModel model;
-	JNotepadPP window;
+	private MultipleDocumentModel model;
+	private JNotepadPP window;
+	private FormLocalizationProvider flp;
 
-	public PasteTextAction(JNotepadPP window, MultipleDocumentModel model) {
+	public PasteTextAction(FormLocalizationProvider flp, JNotepadPP window, MultipleDocumentModel model) {
 		this.window = window;
 		this.model = model;
+		this.flp = flp;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(model.getNumberOfDocuments() == 0) {
-			JOptionPane.showMessageDialog(window, "Document not found.", "Paste error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(window, flp.getString("docNotFound"), flp.getString("pasteError"), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		
