@@ -32,6 +32,7 @@ import hr.fer.zemris.java.hw11.jnotepadpp.actions.CopyTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CreateNewDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.CutTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.ExitApplicationAction;
+import hr.fer.zemris.java.hw11.jnotepadpp.actions.LineSortAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.OpenDocumentAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.PasteTextAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.actions.SaveAsDocumentAction;
@@ -64,9 +65,11 @@ public class JNotepadPP extends JFrame {
 	private SetLanguageAction setCroatian;
 	private SetLanguageAction setEnglish;
 	private SetLanguageAction setGerman;
-	private ChangeCaseAction toUpperCase;
-	private ChangeCaseAction toLowerCase;
-	private ChangeCaseAction invertCase;
+	private ChangeCaseAction toUpperCaseAction;
+	private ChangeCaseAction toLowerCaseAction;
+	private ChangeCaseAction invertCaseAction;
+	private LineSortAction sortAscendingAction;
+	private LineSortAction sortDescendingAction;
 	
 	private FormLocalizationProvider flp;
 
@@ -80,6 +83,7 @@ public class JNotepadPP extends JFrame {
 	private JMenu languageMenu;
 	private JMenu toolsMenu;
 	private JMenu changeCaseMenu;
+	private JMenu sortMenu;
 
 	private int editorLength;
 	
@@ -137,9 +141,11 @@ public class JNotepadPP extends JFrame {
 			public void stateChanged(ChangeEvent e) {
 				int indexOfSelectedTab = ((DefaultMultipleDocumentModel) e.getSource()).getSelectedIndex();
 				model.getCurrentDocument().addSingleDocumentListener(statusPanel);
-				model.getCurrentDocument().addSingleDocumentListener(toUpperCase);
-				model.getCurrentDocument().addSingleDocumentListener(toLowerCase);
-				model.getCurrentDocument().addSingleDocumentListener(invertCase);
+				model.getCurrentDocument().addSingleDocumentListener(toUpperCaseAction);
+				model.getCurrentDocument().addSingleDocumentListener(toLowerCaseAction);
+				model.getCurrentDocument().addSingleDocumentListener(invertCaseAction);
+				model.getCurrentDocument().addSingleDocumentListener(sortAscendingAction);
+				model.getCurrentDocument().addSingleDocumentListener(sortDescendingAction);
 				String title = null;
 				if (((DefaultMultipleDocumentModel) model).getNumberOfDocuments() > 0) {
 					Path filePath = model.getDocument(indexOfSelectedTab).getFilePath();
@@ -248,9 +254,11 @@ public class JNotepadPP extends JFrame {
 		setCroatian.putValue(Action.SMALL_ICON, acquireIcon("croatian.png"));
 		setEnglish.putValue(Action.SMALL_ICON, acquireIcon("english.png"));
 		setGerman.putValue(Action.SMALL_ICON, acquireIcon("deutsch.png"));
-		toUpperCase.putValue(Action.SMALL_ICON, acquireIcon("uppercase.png"));
-		toLowerCase.putValue(Action.SMALL_ICON, acquireIcon("lowercase.png"));
-		invertCase.putValue(Action.SMALL_ICON, acquireIcon("invertcase.png"));
+		toUpperCaseAction.putValue(Action.SMALL_ICON, acquireIcon("uppercase.png"));
+		toLowerCaseAction.putValue(Action.SMALL_ICON, acquireIcon("lowercase.png"));
+		invertCaseAction.putValue(Action.SMALL_ICON, acquireIcon("invertcase.png"));
+		sortAscendingAction.putValue(Action.SMALL_ICON, acquireIcon("ascending.png"));
+		sortDescendingAction.putValue(Action.SMALL_ICON, acquireIcon("descending.png"));
 		
 	}
 
@@ -335,15 +343,15 @@ public class JNotepadPP extends JFrame {
 	}
 	
 	public ChangeCaseAction getToUpperCase() {
-		return toUpperCase;
+		return toUpperCaseAction;
 	}
 
 	public ChangeCaseAction getToLowerCase() {
-		return toLowerCase;
+		return toLowerCaseAction;
 	}
 
 	public ChangeCaseAction getInvertCase() {
-		return invertCase;
+		return invertCaseAction;
 	}
 
 	private void initializeActions() {
@@ -361,15 +369,17 @@ public class JNotepadPP extends JFrame {
 		setCroatian = new SetLanguageAction("hr");
 		setEnglish = new SetLanguageAction("en");
 		setGerman = new SetLanguageAction("de");
-		toUpperCase = new ChangeCaseAction(this, model, c -> Character.toUpperCase(c));
-		toLowerCase = new ChangeCaseAction(this, model, c -> Character.toLowerCase(c));
-		invertCase = new ChangeCaseAction(this, model, c ->  {
+		toUpperCaseAction = new ChangeCaseAction(this, model, c -> Character.toUpperCase(c));
+		toLowerCaseAction = new ChangeCaseAction(this, model, c -> Character.toLowerCase(c));
+		invertCaseAction = new ChangeCaseAction(this, model, c ->  {
 			if (Character.isUpperCase(c)){
 				return Character.toLowerCase(c);
 			} else {
 				return Character.toUpperCase(c);
 			}
 		});
+		sortAscendingAction = new LineSortAction(flp, model, "ascending");
+		sortDescendingAction = new LineSortAction(flp, model, "descending");
 	}
 
 	private void createActions() {
@@ -386,13 +396,19 @@ public class JNotepadPP extends JFrame {
 		setCroatian.putValue(Action.NAME, "Croatian");
 		setEnglish.putValue(Action.NAME, "English");
 		setGerman.putValue(Action.NAME, "German");
-		toUpperCase.putValue(Action.NAME, "To Upper Case");
-		toLowerCase.putValue(Action.NAME, "To Lower Case");
-		invertCase.putValue(Action.NAME, "Invert Case");
+		toUpperCaseAction.putValue(Action.NAME, "To Upper Case");
+		toLowerCaseAction.putValue(Action.NAME, "To Lower Case");
+		invertCaseAction.putValue(Action.NAME, "Invert Case");
 		
-		toUpperCase.setEnabled(false);
-		toLowerCase.setEnabled(false);
-		invertCase.setEnabled(false);
+		toUpperCaseAction.setEnabled(false);
+		toLowerCaseAction.setEnabled(false);
+		invertCaseAction.setEnabled(false);
+		
+		sortAscendingAction.putValue(Action.NAME, "Ascending");
+		sortDescendingAction.putValue(Action.NAME, "Descending");
+		
+		sortAscendingAction.setEnabled(false);
+		sortDescendingAction.setEnabled(false);
 	}
 
 	private void createMenus() {
@@ -425,9 +441,14 @@ public class JNotepadPP extends JFrame {
 		menuBar.add(toolsMenu);
 		changeCaseMenu = new JMenu("Change Case");
 		toolsMenu.add(changeCaseMenu);
-		changeCaseMenu.add(toUpperCase);
-		changeCaseMenu.add(toLowerCase);
-		changeCaseMenu.add(invertCase);
+		changeCaseMenu.add(toUpperCaseAction);
+		changeCaseMenu.add(toLowerCaseAction);
+		changeCaseMenu.add(invertCaseAction);
+		
+		sortMenu = new JMenu("Sort");
+		toolsMenu.add(sortMenu);
+		sortMenu.add(sortAscendingAction);
+		sortMenu.add(sortDescendingAction);
 		
 		helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
@@ -452,6 +473,10 @@ public class JNotepadPP extends JFrame {
 		toolBar.add(copyTextAction);
 		toolBar.add(pasteTextAction);
 		toolBar.add(cutTextAction);
+		toolBar.addSeparator();
+		toolBar.add(toUpperCaseAction);
+		toolBar.add(toLowerCaseAction);
+		toolBar.add(invertCaseAction);
 		toolBar.addSeparator();
 		toolBar.add(showStatsAction);
 		panel.add(toolBar, BorderLayout.NORTH);

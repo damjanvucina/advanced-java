@@ -26,4 +26,9 @@ public class LocalizationProviderBridge extends AbstractLocalizationProvider{
 	public String getString(String key) {
 		return iLocalizationProvider.getString(key);
 	}
+
+	@Override
+	public String getCurrentLanguage() {
+		return iLocalizationProvider.getCurrentLanguage();
+	}
 }
