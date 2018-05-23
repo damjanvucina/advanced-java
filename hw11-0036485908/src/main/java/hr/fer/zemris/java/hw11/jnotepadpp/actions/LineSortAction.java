@@ -4,8 +4,11 @@ import java.awt.event.ActionEvent;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JTextArea;
@@ -22,13 +25,13 @@ import hr.fer.zemris.java.hw11.jnotepadpp.local.FormLocalizationProvider;
 public class LineSortAction extends AbstractAction implements SingleDocumentListener {
 	private static final long serialVersionUID = 1L;
 	private final String ASC = "ascending";
+	private final String DESC = "descending";
 
 	private MultipleDocumentModel model;
 	private String direction;
 	private FormLocalizationProvider flp;
 
-	public LineSortAction(FormLocalizationProvider flp, MultipleDocumentModel model,
-			String direction) {
+	public LineSortAction(FormLocalizationProvider flp, MultipleDocumentModel model, String direction) {
 		this.model = model;
 		this.direction = direction;
 		this.flp = flp;
@@ -39,44 +42,56 @@ public class LineSortAction extends AbstractAction implements SingleDocumentList
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
 		JTextArea editor = model.getDocument(indexOfSelectedTab).getTextComponent();
 		Document document = editor.getDocument();
-
-		int selectionStart = Math.min(editor.getCaret().getDot(), editor.getCaret().getMark());
-		int selectionEnd = Math.max(editor.getCaret().getDot(), editor.getCaret().getMark());
-
-		int linesStart = editor.getText().substring(0, selectionStart).lastIndexOf("\n") + 1;
-		int linesEnd = editor.getText().substring(selectionEnd, editor.getText().length()).indexOf("\n") - 1
-				+ selectionEnd;
-
+		
+		int selectionStartOffset = Math.min(editor.getCaret().getDot(), editor.getCaret().getMark());
+		int selectionLength = Math.abs(editor.getCaret().getDot() - editor.getCaret().getMark());
+		int selectionEndOffset = selectionStartOffset + selectionLength;
+		
+		int lineStartOffset = 0;
+		int lineEndOffset = 0;
+		try {
+			lineStartOffset = editor.getLineStartOffset(editor.getLineOfOffset(selectionStartOffset));
+			lineEndOffset = editor.getLineEndOffset(editor.getLineOfOffset(selectionEndOffset));
+		} catch (BadLocationException e2) {
+			e2.printStackTrace();
+		}
+						
 		String view = null;
 		try {
-			view = document.getText(linesStart, linesEnd - linesStart);
+			view = document.getText(lineStartOffset, lineEndOffset - lineStartOffset);
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
 
-		List<String> viewList = Arrays.asList(view.split("\n"));
+		
+		List<String> viewList = new LinkedList<>(Arrays.asList(view.split("\n")));
 		Locale locale = new Locale(flp.getCurrentLanguage());
 		Collator collator = Collator.getInstance(locale);
 
 		if (ASC.equals(direction)) {
 			Collections.sort(viewList, collator);
-		} else {
+
+		} else if (DESC.equals(direction)) {
 			Collections.sort(viewList, collator.reversed());
+
+		} else {
+			Set<String> set = new LinkedHashSet<>(viewList);
+			viewList.clear();
+			viewList.addAll(set);
 		}
 
 		StringBuilder sb = new StringBuilder(viewList.size());
 		for (String s : viewList) {
 			sb.append(s).append("\n");
 		}
-		sb.delete(sb.lastIndexOf("\n"), sb.length());
 
 		try {
-			document.remove(linesStart, linesEnd - linesStart);
-			document.insertString(linesStart, sb.toString(), null);
+			document.remove(lineStartOffset, lineEndOffset - lineStartOffset);
+			document.insertString(lineStartOffset, sb.toString(), null);
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		setEnabled(false);
 	}
 

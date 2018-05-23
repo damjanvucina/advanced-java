@@ -70,6 +70,7 @@ public class JNotepadPP extends JFrame {
 	private ChangeCaseAction invertCaseAction;
 	private LineSortAction sortAscendingAction;
 	private LineSortAction sortDescendingAction;
+	private LineSortAction uniqueAction;
 	
 	private FormLocalizationProvider flp;
 
@@ -146,6 +147,7 @@ public class JNotepadPP extends JFrame {
 				model.getCurrentDocument().addSingleDocumentListener(invertCaseAction);
 				model.getCurrentDocument().addSingleDocumentListener(sortAscendingAction);
 				model.getCurrentDocument().addSingleDocumentListener(sortDescendingAction);
+				model.getCurrentDocument().addSingleDocumentListener(uniqueAction);
 				String title = null;
 				if (((DefaultMultipleDocumentModel) model).getNumberOfDocuments() > 0) {
 					Path filePath = model.getDocument(indexOfSelectedTab).getFilePath();
@@ -259,7 +261,7 @@ public class JNotepadPP extends JFrame {
 		invertCaseAction.putValue(Action.SMALL_ICON, acquireIcon("invertcase.png"));
 		sortAscendingAction.putValue(Action.SMALL_ICON, acquireIcon("ascending.png"));
 		sortDescendingAction.putValue(Action.SMALL_ICON, acquireIcon("descending.png"));
-		
+		uniqueAction.putValue(Action.SMALL_ICON, acquireIcon("unique.png"));
 	}
 
 	public ImageIcon acquireIcon(String iconName) {
@@ -380,6 +382,7 @@ public class JNotepadPP extends JFrame {
 		});
 		sortAscendingAction = new LineSortAction(flp, model, "ascending");
 		sortDescendingAction = new LineSortAction(flp, model, "descending");
+		uniqueAction = new LineSortAction(flp, model, "unique");
 	}
 
 	private void createActions() {
@@ -406,9 +409,11 @@ public class JNotepadPP extends JFrame {
 		
 		sortAscendingAction.putValue(Action.NAME, "Ascending");
 		sortDescendingAction.putValue(Action.NAME, "Descending");
+		uniqueAction.putValue(Action.NAME, "Unique");
 		
 		sortAscendingAction.setEnabled(false);
 		sortDescendingAction.setEnabled(false);
+		uniqueAction.setEnabled(false);
 	}
 
 	private void createMenus() {
@@ -449,6 +454,7 @@ public class JNotepadPP extends JFrame {
 		toolsMenu.add(sortMenu);
 		sortMenu.add(sortAscendingAction);
 		sortMenu.add(sortDescendingAction);
+		toolsMenu.add(uniqueAction);
 		
 		helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
