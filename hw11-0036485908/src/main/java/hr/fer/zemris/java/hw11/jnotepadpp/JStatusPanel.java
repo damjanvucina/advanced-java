@@ -16,11 +16,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import hr.fer.zemris.java.hw11.jnotepadpp.local.FormLocalizationProvider;
+
 public class JStatusPanel extends JPanel implements SingleDocumentListener {
-	public static final String LENGTH_LABEL_DEFAULT = "length: ";
-	public static final String LN_LABEL_DEFAULT = "Ln: ";
-	public static final String COL_LABEL_DEFAULT = "Col: ";
-	public static final String SEL_LABEL_DEFAULT = "Sel: ";
+	
+	public String lengthLabelDefault = "length: ";
+	public String lnLabelDefault = "Ln: ";
+	public String colLabelDefault = "Col: ";
+	public String selLabelDefault = "Sel: ";
 
 	private JLabel lengthLabel;
 	private JLabel lnLabel;
@@ -28,14 +31,49 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener {
 	private JLabel selLabel;
 	private JPanel editorInfoPanel;
 	private Clock clock;
+	private FormLocalizationProvider flp;
 
-	public JStatusPanel(LayoutManager layout) {
+	public JStatusPanel(FormLocalizationProvider flp, LayoutManager layout) {
 		setLayout(layout);
 
+		this.flp = flp;
 		lnLabel = new JLabel();
 		colLabel = new JLabel();
 		selLabel = new JLabel();
 		editorInfoPanel = new JPanel();
+	}
+
+	
+	public JLabel getLengthLabel() {
+		return lengthLabel;
+	}
+
+	public JLabel getLnLabel() {
+		return lnLabel;
+	}
+
+	public JLabel getColLabel() {
+		return colLabel;
+	}
+
+	public JLabel getSelLabel() {
+		return selLabel;
+	}
+
+	public void setLengthLabelDefault(String lengthLabelDefault) {
+		this.lengthLabelDefault = lengthLabelDefault;
+	}
+
+	public void setLnLabelDefault(String lnLabelDefault) {
+		this.lnLabelDefault = lnLabelDefault;
+	}
+
+	public void setColLabelDefault(String colLabelDefault) {
+		this.colLabelDefault = colLabelDefault;
+	}
+
+	public void setSelLabelDefault(String selLabelDefault) {
+		this.selLabelDefault = selLabelDefault;
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -47,14 +85,14 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener {
 	public void setUp() {
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-		lengthLabel = new JLabel(LENGTH_LABEL_DEFAULT + "0");
+		lengthLabel = new JLabel(lengthLabelDefault + "0");
 		lengthLabel.setHorizontalAlignment(JLabel.LEFT);
 		add(lengthLabel);
 
 		editorInfoPanel = new JPanel();
-		lnLabel = new JLabel(LN_LABEL_DEFAULT + "0");
-		colLabel = new JLabel(COL_LABEL_DEFAULT + "0");
-		selLabel = new JLabel(SEL_LABEL_DEFAULT + "0");
+		lnLabel = new JLabel(lnLabelDefault + "0");
+		colLabel = new JLabel(colLabelDefault + "0");
+		selLabel = new JLabel(selLabelDefault + "0");
 		editorInfoPanel.add(lnLabel);
 		editorInfoPanel.add(colLabel);
 		editorInfoPanel.add(selLabel);
@@ -69,8 +107,8 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener {
 		private static final long serialVersionUID = 1L;
 
 		volatile String currentTime;
-		volatile boolean stopRequested;// kad proces ugasis, ovo ide u true, pa se ugase demonske drtve koje prestanu
-										// radit iako je prozor ugasen, pa ni edt vise nema posla
+		volatile boolean stopRequested;
+										
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
 		public Clock() {
@@ -136,21 +174,21 @@ public class JStatusPanel extends JPanel implements SingleDocumentListener {
 	private void updateEditorInfo(DefaultSingleDocumentModel defaultModel) {
 		if (defaultModel.getText() != null) {
 			int lineNumber = defaultModel.getText().split("\n").length;
-			lnLabel.setText(LN_LABEL_DEFAULT + String.valueOf(lineNumber));
-
+			lnLabel.setText(flp.getString("lnLabel") + String.valueOf(lineNumber));
+			
 			String caretLine = defaultModel.getText().substring(0, defaultModel.getDot());
 			int caretLineNewLine = caretLine.lastIndexOf("\n");
-			colLabel.setText(COL_LABEL_DEFAULT + String.valueOf(defaultModel.getDot() - caretLineNewLine));
+			colLabel.setText(flp.getString("colLabel") + String.valueOf(defaultModel.getDot() - caretLineNewLine));
 
 			int selectionLength = Math.abs(defaultModel.getDot() - defaultModel.getMark());
-			selLabel.setText(SEL_LABEL_DEFAULT + String.valueOf(selectionLength));
+			selLabel.setText(flp.getString("selLabel") + String.valueOf(selectionLength));
 
 		}
 	}
 
 	private void updateCurrentLength(DefaultSingleDocumentModel defaultModel) {
 		int currentLength = defaultModel.getCurrentLength();
-		lengthLabel.setText(LENGTH_LABEL_DEFAULT + String.valueOf(currentLength));
+		lengthLabel.setText(flp.getString("lengthLabel") + String.valueOf(currentLength));
 	}
 
 	@Override

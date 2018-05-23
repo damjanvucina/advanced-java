@@ -3,21 +3,19 @@ package hr.fer.zemris.java.hw11.jnotepadpp;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -42,6 +40,8 @@ import hr.fer.zemris.java.hw11.jnotepadpp.actions.ShowStatsAction;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.FormLocalizationProvider;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.ILocalizationListener;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.LocalizationProvider;
+
+import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
 
 public class JNotepadPP extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -76,26 +76,32 @@ public class JNotepadPP extends JFrame {
 	private JMenu languageMenu;
 
 	private int editorLength;
+	
 	private Map<AbstractAction, String> actionMappings;
+	private Map<JMenu, String> menuMappings;
+	private Map<JLabel, String> labelMappings;
 
 	public JNotepadPP() {
 		setSize(600, 600);
 		setLocation(50, 50);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		initGui();
-
 		flp = new FormLocalizationProvider(LocalizationProvider.getInstance(), this);
-		addLocalizationListener();
 		
 		actionMappings = new HashMap<>();
-		
+		menuMappings = new HashMap<>();
+		labelMappings = new HashMap<>();
+		initGui();
 
+		addLocalizationListener();
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				exitApplicationAction.actionPerformed(null);
 			}
 		});
+		
+		flp.fire();
 	}
 
 	private void initGui() {
@@ -103,7 +109,7 @@ public class JNotepadPP extends JFrame {
 		cp.setLayout(new BorderLayout());
 
 		panel = new JPanel(new BorderLayout());
-		statusPanel = new JStatusPanel(new GridLayout(1, 3));
+		statusPanel = new JStatusPanel(flp, new GridLayout(1, 3));
 
 		cp.add(panel, BorderLayout.CENTER);
 		cp.add(statusPanel, BorderLayout.SOUTH);
@@ -144,31 +150,45 @@ public class JNotepadPP extends JFrame {
 		});
 
 		initializeActionMappings();
+		initializeMenuMappings();
+		initializeLabelMappings();
+		
 		availableActionValidator.actionPerformed(null);
 	}
-
-
 
 	private void addLocalizationListener() {
 		flp.addLocalizationListener(new ILocalizationListener() {
 
 			@Override
 			public void localizationChanged() {
-				createNewDocumentAction.putValue(Action.NAME, flp.getString("menuItemNew"));
-				openDocumentAction.putValue(Action.NAME, flp.getString("menuItemOpen"));
-				saveDocumentAction.putValue(Action.NAME, flp.getString("menuItemSave"));
-				saveAsDocumentAction.putValue(Action.NAME, flp.getString("menuItemSaveAs"));
-				closeTabAction.putValue(Action.NAME, flp.getString("menuItemClose"));
-				exitApplicationAction.putValue(Action.NAME, flp.getString("menuItemExit"));
-				copyTextAction.putValue(Action.NAME, flp.getString("menuItemCopy"));
-				pasteTextAction.putValue(Action.NAME, flp.getString("menuItemPaste"));
-				cutTextAction.putValue(Action.NAME, flp.getString("menuItemCut"));
-				showStatsAction.putValue(Action.NAME, flp.getString("menuItemStats"));
-				setCroatian.putValue(Action.NAME, flp.getString("menuItemCroatian"));
-				setEnglish.putValue(Action.NAME, flp.getString("menuItemEnglish"));
-				setGerman.putValue(Action.NAME, flp.getString("menuItemGerman"));
-
-				fileMenu.setText(flp.getString("menuFile"));
+				
+				for(Map.Entry<AbstractAction, String> entry : actionMappings.entrySet()) {
+					AbstractAction action = entry.getKey();
+					String name = entry.getValue();
+					
+					action.putValue(Action.NAME, flp.getString(name));
+					
+					action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(flp.getString(name + "Accelerator")));
+					
+					char c = flp.getString(name + "Mnemonic").charAt(0);
+					action.putValue(Action.MNEMONIC_KEY, getExtendedKeyCodeForChar(c));
+					
+					action.putValue(Action.SHORT_DESCRIPTION, flp.getString(name + "Desc"));
+				}
+				
+				for(Map.Entry<JMenu, String> entry : menuMappings.entrySet()) {
+					JMenu menu = entry.getKey();
+					String name = entry.getValue();
+					
+					menu.setText(flp.getString(name));
+				}
+				
+				for(Map.Entry<JLabel, String> entry : labelMappings.entrySet()) {
+					JLabel label = entry.getKey();
+					String name = entry.getValue();
+					
+					label.setText(flp.getString(name));
+				}
 			}
 		});
 	}
@@ -189,71 +209,34 @@ public class JNotepadPP extends JFrame {
 		actionMappings.put(setGerman, "menuItemGerman");
 	}
 	
-	private void setUpActions() {
-		createNewDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
-		createNewDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_N);
-		createNewDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Creates a new blank file.");
-		createNewDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("new.png"));
+	private void initializeMenuMappings() {
+		menuMappings.put(fileMenu, "menuFile");
+		menuMappings.put(editMenu, "menuEdit");
+		menuMappings.put(helpMenu, "menuHelp");
+		menuMappings.put(fileMenu, "menuFile");
+		menuMappings.put(languageMenu, "menuLanguage");
+	}
+	
+	private void initializeLabelMappings() {
+		labelMappings.put(statusPanel.getLengthLabel(), "lengthLabel");
+		labelMappings.put(statusPanel.getLnLabel(), "lnLabel");
+		labelMappings.put(statusPanel.getColLabel(), "colLabel");
+		labelMappings.put(statusPanel.getSelLabel(), "selLabel");
+	}
 		
-		openDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
-		openDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
-		openDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Opens existing file.");
+	private void setUpActions() {
+		createNewDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("new.png"));
 		openDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("open.png"));
-
-
-		saveDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
-		saveDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
-		saveDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Saves existing file.");
 		saveDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("save.png"));
-
-		saveAsDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt S"));
-		saveAsDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
-		saveAsDocumentAction.putValue(Action.SHORT_DESCRIPTION, "Saves file to new location.");
 		saveAsDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("saveas.png"));
-
-		closeTabAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control W"));
-		closeTabAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
-		closeTabAction.putValue(Action.SHORT_DESCRIPTION, "Closes current tab.");
 		closeTabAction.putValue(Action.SMALL_ICON, acquireIcon("close.png"));
-
-		exitApplicationAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt F4"));
-		exitApplicationAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_E);
-		exitApplicationAction.putValue(Action.SHORT_DESCRIPTION, "Closes application.");
 		exitApplicationAction.putValue(Action.SMALL_ICON, acquireIcon("exit.png"));
-
-		copyTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));
-		copyTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
-		copyTextAction.putValue(Action.SHORT_DESCRIPTION, "Copies current selection.");
 		copyTextAction.putValue(Action.SMALL_ICON, acquireIcon("copy.png"));
-
-		pasteTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
-		pasteTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
-		pasteTextAction.putValue(Action.SHORT_DESCRIPTION, "Pastes from clipboard.");
 		pasteTextAction.putValue(Action.SMALL_ICON, acquireIcon("paste.png"));
-
-		cutTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
-		cutTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
-		cutTextAction.putValue(Action.SHORT_DESCRIPTION, "Cuts current selection.");
 		cutTextAction.putValue(Action.SMALL_ICON, acquireIcon("cut.png"));
-
-		showStatsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
-		showStatsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
-		showStatsAction.putValue(Action.SHORT_DESCRIPTION, "Shows current document statistics.");
 		showStatsAction.putValue(Action.SMALL_ICON, acquireIcon("stats.png"));
-
-		setCroatian.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt C"));
-		setCroatian.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
-		setCroatian.putValue(Action.SHORT_DESCRIPTION, "Sets croatian language");
 		setCroatian.putValue(Action.SMALL_ICON, acquireIcon("croatian.png"));
-
-		setEnglish.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt E"));
-		setEnglish.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_E);
-		setEnglish.putValue(Action.SHORT_DESCRIPTION, "Sets english language");
 		setEnglish.putValue(Action.SMALL_ICON, acquireIcon("english.png"));
-
-		setGerman.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt G"));
-		setGerman.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_G);
-		setGerman.putValue(Action.SHORT_DESCRIPTION, "Sets german language");
 		setGerman.putValue(Action.SMALL_ICON, acquireIcon("deutsch.png"));
 		
 	}
@@ -348,7 +331,7 @@ public class JNotepadPP extends JFrame {
 		copyTextAction = new CopyTextAction(this, model);
 		pasteTextAction = new PasteTextAction(this, model);
 		cutTextAction = new CutTextAction(this, model);
-		showStatsAction = new ShowStatsAction(this, model);
+		showStatsAction = new ShowStatsAction(this, model, flp);
 		availableActionValidator = new AvailableActionValidator(this, model);
 		setCroatian = new SetLanguageAction("hr");
 		setEnglish = new SetLanguageAction("en");
@@ -442,4 +425,5 @@ public class JNotepadPP extends JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> new JNotepadPP().setVisible(true));
 	}
+	
 }

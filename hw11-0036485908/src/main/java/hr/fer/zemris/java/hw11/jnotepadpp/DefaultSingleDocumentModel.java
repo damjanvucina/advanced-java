@@ -20,7 +20,7 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 	private JTextArea textComponent;
 	private List<SingleDocumentListener> listeners;
 	private boolean modified;
-	
+
 	private int currentLength;
 	private int dot;
 	private int mark;
@@ -40,6 +40,7 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 	}
 
 	private void addDocumentAndCaretListeners(JTextArea textComponent) {
+
 		textComponent.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void removeUpdate(DocumentEvent e) {
@@ -68,19 +69,20 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 		});
 		
 		textComponent.addCaretListener(new CaretListener() {
-			
+
 			@Override
 			public void caretUpdate(CaretEvent e) {
 				dot = e.getDot();
 				mark = e.getMark();
 				selectionLength = Math.abs(e.getDot() - e.getMark());
 				offset = Math.min(e.getDot(), e.getMark());
-				
+
 				notifyListeners(listener -> listener.documentModifyStatusUpdated(DefaultSingleDocumentModel.this));
 			}
 		});
+
 	}
-	
+
 	public int getOffset() {
 		return offset;
 	}
