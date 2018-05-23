@@ -129,12 +129,14 @@ public class JNotepadPP extends JFrame {
 		panel.add(model, BorderLayout.CENTER);
 
 		initializeActions();
-		setUpActions();
+
 
 		createMenus();
-		createActions();
+		setIcons();
+		disableStartActions();
 		createToolbars();
 		statusPanel.setUp();
+		
 
 		model.addChangeListener(new ChangeListener() {
 
@@ -172,6 +174,15 @@ public class JNotepadPP extends JFrame {
 		initializeLabelMappings();
 		
 		availableActionValidator.actionPerformed(null);
+	}
+
+	private void disableStartActions() {
+		toUpperCaseAction.setEnabled(false);
+		toLowerCaseAction.setEnabled(false);
+		invertCaseAction.setEnabled(false);
+		sortAscendingAction.setEnabled(false);
+		sortDescendingAction.setEnabled(false);
+		uniqueAction.setEnabled(false);
 	}
 
 	private void addLocalizationListener() {
@@ -251,7 +262,7 @@ public class JNotepadPP extends JFrame {
 		labelMappings.put(statusPanel.getSelLabel(), "selLabel");
 	}
 		
-	private void setUpActions() {
+	private void setIcons() {
 		createNewDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("new.png"));
 		openDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("open.png"));
 		saveDocumentAction.putValue(Action.SMALL_ICON, acquireIcon("save.png"));
@@ -394,41 +405,10 @@ public class JNotepadPP extends JFrame {
 		uniqueAction = new LineSortAction(flp, model, "unique");
 	}
 
-	private void createActions() {
-		createNewDocumentAction.putValue(Action.NAME, "New");
-		openDocumentAction.putValue(Action.NAME, "Open");
-		saveDocumentAction.putValue(Action.NAME, "Save");
-		saveAsDocumentAction.putValue(Action.NAME, "Save As");
-		closeTabAction.putValue(Action.NAME, "Close");
-		exitApplicationAction.putValue(Action.NAME, "Exit");
-		copyTextAction.putValue(Action.NAME, "Copy");
-		pasteTextAction.putValue(Action.NAME, "Paste");
-		cutTextAction.putValue(Action.NAME, "Cut");
-		showStatsAction.putValue(Action.NAME, "Show Stats");
-		setCroatian.putValue(Action.NAME, "Croatian");
-		setEnglish.putValue(Action.NAME, "English");
-		setGerman.putValue(Action.NAME, "German");
-		toUpperCaseAction.putValue(Action.NAME, "To Upper Case");
-		toLowerCaseAction.putValue(Action.NAME, "To Lower Case");
-		invertCaseAction.putValue(Action.NAME, "Invert Case");
-		
-		toUpperCaseAction.setEnabled(false);
-		toLowerCaseAction.setEnabled(false);
-		invertCaseAction.setEnabled(false);
-		
-		sortAscendingAction.putValue(Action.NAME, "Ascending");
-		sortDescendingAction.putValue(Action.NAME, "Descending");
-		uniqueAction.putValue(Action.NAME, "Unique");
-		
-		sortAscendingAction.setEnabled(false);
-		sortDescendingAction.setEnabled(false);
-		uniqueAction.setEnabled(false);
-	}
-
 	private void createMenus() {
 		JMenuBar menuBar = new JMenuBar();
 
-		fileMenu = new JMenu("File");
+		fileMenu = new JMenu();
 		menuBar.add(fileMenu);
 		fileMenu.add(createNewDocumentAction);
 		fileMenu.add(openDocumentAction);
@@ -439,33 +419,33 @@ public class JNotepadPP extends JFrame {
 		fileMenu.add(closeTabAction);
 		fileMenu.add(exitApplicationAction);
 
-		editMenu = new JMenu("Edit");
+		editMenu = new JMenu();
 		menuBar.add(editMenu);
 		editMenu.add(copyTextAction);
 		editMenu.add(pasteTextAction);
 		editMenu.add(cutTextAction);
 		
-		languageMenu = new JMenu("Languages");
+		languageMenu = new JMenu();
 		menuBar.add(languageMenu);
 		languageMenu.add(setCroatian);
 		languageMenu.add(setEnglish);
 		languageMenu.add(setGerman);
 		
-		toolsMenu = new JMenu("Tools");
+		toolsMenu = new JMenu();
 		menuBar.add(toolsMenu);
-		changeCaseMenu = new JMenu("Change Case");
+		changeCaseMenu = new JMenu();
 		toolsMenu.add(changeCaseMenu);
 		changeCaseMenu.add(toUpperCaseAction);
 		changeCaseMenu.add(toLowerCaseAction);
 		changeCaseMenu.add(invertCaseAction);
 		
-		sortMenu = new JMenu("Sort");
+		sortMenu = new JMenu();
 		toolsMenu.add(sortMenu);
 		sortMenu.add(sortAscendingAction);
 		sortMenu.add(sortDescendingAction);
 		toolsMenu.add(uniqueAction);
 		
-		helpMenu = new JMenu("Help");
+		helpMenu = new JMenu();
 		menuBar.add(helpMenu);
 		helpMenu.add(showStatsAction);
 
@@ -473,7 +453,7 @@ public class JNotepadPP extends JFrame {
 	}
 
 	private void createToolbars() {
-		JToolBar toolBar = new JToolBar("Tools");
+		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(true);
 
 		toolBar.add(createNewDocumentAction);
