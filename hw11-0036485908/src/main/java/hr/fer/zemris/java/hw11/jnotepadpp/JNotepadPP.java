@@ -363,13 +363,16 @@ public class JNotepadPP extends JFrame {
 		setGerman = new SetLanguageAction("de");
 		toUpperCase = new ChangeCaseAction(this, model, c -> Character.toUpperCase(c));
 		toLowerCase = new ChangeCaseAction(this, model, c -> Character.toLowerCase(c));
-		invertCase = new ChangeCaseAction(this, model, c ->  {
-			if (Character.isUpperCase(c)){
-				return Character.toLowerCase(c);
-			} else {
-				return Character.toUpperCase(c);
-			}
-		});
+//		invertCase = new ChangeCaseAction(this, model, c ->  {
+//			if (Character.isUpperCase(c)){
+//				System.out.println("upper to lower");
+//				return Character.toLowerCase(c);
+//			} else {
+//				System.out.println("lower to upper");
+//				return Character.toUpperCase(c);
+//			}
+//		});
+		invertCase = new ChangeCaseAction(this, model, c -> Character.valueOf('X'));
 	}
 
 	private void createActions() {

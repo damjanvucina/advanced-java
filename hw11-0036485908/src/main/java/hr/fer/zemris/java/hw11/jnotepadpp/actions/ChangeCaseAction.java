@@ -32,6 +32,7 @@ public class ChangeCaseAction extends AbstractAction implements SingleDocumentLi
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		System.out.println("triggered");
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
 		JTextArea editor = model.getDocument(indexOfSelectedTab).getTextComponent();
 		Document document = editor.getDocument();
