@@ -30,7 +30,7 @@ public class ElementOperator extends Element {
 	 *
 	 * @return the symbol's string representation.
 	 */
-	private String getSymbol() {
+	public String getSymbol() {
 		return symbol;
 	}
 

@@ -26,7 +26,7 @@ public class ElementConstantInteger extends Element {
 	 *
 	 * @return the value
 	 */
-	private int getValue() {
+	public int getValue() {
 		return value;
 	}
 	

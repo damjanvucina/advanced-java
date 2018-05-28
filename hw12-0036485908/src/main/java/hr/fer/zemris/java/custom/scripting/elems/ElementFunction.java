@@ -31,7 +31,7 @@ public class ElementFunction extends Element {
 	 *
 	 * @return the name
 	 */
-	private String getName() {
+	public String getName() {
 		return name;
 	}
 
