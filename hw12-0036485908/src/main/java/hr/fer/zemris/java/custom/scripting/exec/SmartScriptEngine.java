@@ -2,6 +2,7 @@ package hr.fer.zemris.java.custom.scripting.exec;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -77,11 +78,11 @@ public class SmartScriptEngine {
 
 				} else if (currentElement instanceof ElementVariable) {
 					String variableName = ((ElementVariable) currentElement).getName();
-					temporary.push(multistack.peek(variableName));
+					temporary.push(multistack.peek(variableName).getValue());
 
 				} else if (currentElement instanceof ElementOperator) {
-					ValueWrapper first = (ValueWrapper) temporary.pop();
-					ValueWrapper second = (ValueWrapper) temporary.pop();
+					ValueWrapper first = new ValueWrapper(temporary.pop());
+					ValueWrapper second = new ValueWrapper(temporary.pop());
 
 					ValueWrapper result = calculateResult(first, second, (ElementOperator) currentElement);
 
@@ -89,6 +90,18 @@ public class SmartScriptEngine {
 				} else if (currentElement instanceof ElementFunction) {
 					performFunction((ElementFunction) currentElement, temporary);
 				}
+			}
+			
+			Collections.reverse(temporary);
+			while(!temporary.isEmpty()) {
+				Object value = temporary.pop();
+				
+				try {
+					requestContext.write(String.valueOf(value));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 			}
 
 		}
@@ -214,36 +227,43 @@ public class SmartScriptEngine {
 		}
 
 		private void performDecfmt(Stack<Object> temporary) {
-			DecimalFormat decimalFormat = (DecimalFormat) temporary.pop();
+			String pattern = (String) temporary.pop();
+			DecimalFormat decimalFormat = new DecimalFormat(pattern);
 			ValueWrapper wrapper = (ValueWrapper) temporary.pop();
 
 			temporary.push(decimalFormat.format(wrapper.getValue()));
 		}
 
 		private void performSin(Stack<Object> temporary) {
-			ValueWrapper wrapper = (ValueWrapper) temporary.pop();
-			double result = sin((Double) wrapper.getValue());
+			Object value = temporary.pop();
+			double result;
+			
+			if(value instanceof Integer) {
+				result = sin(toRadians((Integer) value));
+			} else {
+				result = sin(toRadians((Double) value));
+			}
 
-			temporary.push(new ValueWrapper(toRadians(result)));
+			temporary.push(new ValueWrapper(result));
 		}
 
 		private ValueWrapper calculateResult(ValueWrapper first, ValueWrapper second, ElementOperator operator) {
 			switch (operator.getSymbol()) {
 
 			case "+":
-				first.add(second);
+				first.add(second.getValue());
 				break;
 
 			case "-":
-				first.subtract(second);
+				first.subtract(second.getValue());
 				break;
 
 			case "*":
-				first.multiply(second);
+				first.multiply(second.getValue());
 				break;
 
 			case "/":
-				first.divide(second);
+				first.divide(second.getValue());
 				break;
 
 			default:

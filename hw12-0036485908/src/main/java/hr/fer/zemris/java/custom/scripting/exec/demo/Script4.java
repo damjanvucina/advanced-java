@@ -14,22 +14,25 @@ import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
 import hr.fer.zemris.java.webserver.RequestContext;
 import hr.fer.zemris.java.webserver.RequestContext.RCCookie;
 
-public class Script1 {
+public class Script4 {
 
 	public static void main(String[] args) {
+		//String documentBody = readFromDisk("fibonacci.smscr");
 		String documentBody = null;
 		try {
-			documentBody = new String(Files.readAllBytes((Paths.get("./src/main/resources/osnovni.smscr"))),
+			documentBody = new String(Files.readAllBytes((Paths.get("./src/main/resources/fibonacci.smscr"))),
 					StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Map<String, String> parameters = new HashMap<String, String>();
-		Map<String, String> persistentParameters = new HashMap<String, String>();
+		Map<String,String> parameters = new HashMap<String, String>();
+		Map<String,String> persistentParameters = new HashMap<String, String>();
 		List<RCCookie> cookies = new ArrayList<RequestContext.RCCookie>();
 		// create engine and execute it
-		new SmartScriptEngine(new SmartScriptParser(documentBody).getDocumentNode(),
-				new RequestContext(System.out, parameters, persistentParameters, cookies)).execute();
+		new SmartScriptEngine(
+		new SmartScriptParser(documentBody).getDocumentNode(),
+		new RequestContext(System.out, parameters, persistentParameters, cookies)
+		).execute();
 	}
 
 }

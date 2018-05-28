@@ -14,12 +14,13 @@ import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
 import hr.fer.zemris.java.webserver.RequestContext;
 import hr.fer.zemris.java.webserver.RequestContext.RCCookie;
 
-public class Script1 {
+public class Script2 {
 
 	public static void main(String[] args) {
+		// String documentBody = readFromDisk("zbrajanje.smscr");
 		String documentBody = null;
 		try {
-			documentBody = new String(Files.readAllBytes((Paths.get("./src/main/resources/osnovni.smscr"))),
+			documentBody = new String(Files.readAllBytes((Paths.get("./src/main/resources/zbrajanje.smscr"))),
 					StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -27,6 +28,8 @@ public class Script1 {
 		Map<String, String> parameters = new HashMap<String, String>();
 		Map<String, String> persistentParameters = new HashMap<String, String>();
 		List<RCCookie> cookies = new ArrayList<RequestContext.RCCookie>();
+		parameters.put("a", "4");
+		parameters.put("b", "2");
 		// create engine and execute it
 		new SmartScriptEngine(new SmartScriptParser(documentBody).getDocumentNode(),
 				new RequestContext(System.out, parameters, persistentParameters, cookies)).execute();
