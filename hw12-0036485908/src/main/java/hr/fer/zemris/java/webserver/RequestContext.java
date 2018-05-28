@@ -45,6 +45,8 @@ public class RequestContext {
 		this.persistentParameters = (parameters != null) ? persistentParameters : new HashMap<>();
 		this.outputCookies = (parameters != null) ? outputCookies : new ArrayList<>();
 		
+		this.temporaryParameters = new HashMap<>();
+		
 		encoding = DEFAULT_ENCODING;
 		statusCode = DEFAULT_STATUS_CODE;
 		statusText = DEFAULT_STATUS_TEXT;

@@ -171,14 +171,14 @@ public class SmartScriptEngine {
 			Object name = temporary.pop();
 			Object value = temporary.pop();
 
-			requestContext.setTemporaryParameter((String) name, (String) value);
+			requestContext.setTemporaryParameter(String.valueOf(name), String.valueOf(value));
 		}
 
 		private void performTParamGet(Stack<Object> temporary) {
 			Object defValue = temporary.pop();
 			Object name = temporary.pop();
 
-			Object value = requestContext.getPersistentParameter((String) name);
+			Object value = requestContext.getTemporaryParameter((String) name);
 			temporary.push(value == null ? defValue : value);
 		}
 
@@ -191,7 +191,7 @@ public class SmartScriptEngine {
 			Object name = temporary.pop();
 			Object value = temporary.pop();
 
-			requestContext.setPersistentParameter((String) name, (String) value);
+			requestContext.setPersistentParameter((String) name,  String.valueOf(value));
 		}
 
 		private void performPParamGet(Stack<Object> temporary) {
@@ -279,6 +279,8 @@ public class SmartScriptEngine {
 				Node currentNode = node.getChild(i);
 				currentNode.accept(this);
 			}
+			
+			System.out.println();
 		}
 
 	};

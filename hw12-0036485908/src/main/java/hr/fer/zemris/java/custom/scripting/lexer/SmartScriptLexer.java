@@ -210,7 +210,7 @@ public class SmartScriptLexer {
 
 		if (data[currentIndex] == '\"') {
 			currentIndex++;
-			return new SmartScriptToken(SmartScriptTokenType.STRING, sb.toString());
+			return new SmartScriptToken(SmartScriptTokenType.STRING, sb.toString().replace("\\n", "\n").replace("\\r", "\r"));
 		} else {
 			throw new SmartScriptLexerException("String was not properly closed.");
 		}
