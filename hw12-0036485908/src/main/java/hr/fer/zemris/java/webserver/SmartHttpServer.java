@@ -28,15 +28,15 @@ import java.util.stream.Stream;
 import hr.fer.zemris.java.webserver.RequestContext.RCCookie;
 
 public class SmartHttpServer {
-	private static final String ADDRESS_PROPERTY = "address";
-	private static final String DOMAIN_NAME_PROPERTY = "domainName";
-	private static final String PORT_PROPERTY = "port";
-	private static final String WORKER_THREADS_PROPERTY = "workerThreads";
-	private static final String DOCUMENT_ROOT_PROPERTY = "documentRoot";
-	private static final String TIMEOUT_PROPERTY = "timeout";
+	private static final String ADDRESS_PROPERTY = "server.address";
+	private static final String DOMAIN_NAME_PROPERTY = "server.domainName";
+	private static final String PORT_PROPERTY = "server.port";
+	private static final String WORKER_THREADS_PROPERTY = "server.workerThreads";
+	private static final String DOCUMENT_ROOT_PROPERTY = "server.documentRoot";
+	private static final String TIMEOUT_PROPERTY = "session.timeout";
 
-	private static final String MIME_CONFIG_PROPERTY = "mimeConfig";
-	private static final String WORKERS_CONFIG_PROPERTY = "workers";
+	private static final String MIME_CONFIG_PROPERTY = "server.mimeConfig";
+	private static final String WORKERS_CONFIG_PROPERTY = "server.workers";
 
 	private static final String HOST_REGEX = "(\\w+):(\\d+)";
 
@@ -92,12 +92,11 @@ public class SmartHttpServer {
 		domainName = properties.getProperty(DOMAIN_NAME_PROPERTY);
 		port = Integer.parseInt(properties.getProperty(PORT_PROPERTY));
 		workerThreads = Integer.parseInt(properties.getProperty(WORKER_THREADS_PROPERTY));
-		documentRoot = Paths.get(properties.getProperty(properties.getProperty(DOCUMENT_ROOT_PROPERTY)));
+		documentRoot = Paths.get(properties.getProperty(DOCUMENT_ROOT_PROPERTY));
 		sessionTimeout = Integer.parseInt(properties.getProperty(TIMEOUT_PROPERTY));
 
-		mimeConfig = String.valueOf(Paths.get(properties.getProperty(properties.getProperty(MIME_CONFIG_PROPERTY))));
-		workersConfig = String
-				.valueOf(Paths.get(properties.getProperty(properties.getProperty(WORKERS_CONFIG_PROPERTY))));
+		mimeConfig = String.valueOf(Paths.get(properties.getProperty(MIME_CONFIG_PROPERTY)));
+		workersConfig = String.valueOf(Paths.get(properties.getProperty(WORKERS_CONFIG_PROPERTY)));
 	}
 
 	protected synchronized void start() {
@@ -116,6 +115,11 @@ public class SmartHttpServer {
 		// … shutdown threadpool …
 		serverThread.interrupt();
 		threadPool.shutdown();
+	}
+
+	public static void main(String[] args) {
+		SmartHttpServer server = new SmartHttpServer("config/server.properties");
+		server.start();
 	}
 
 	protected class ServerThread extends Thread {
