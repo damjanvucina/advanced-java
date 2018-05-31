@@ -45,6 +45,8 @@ public class SmartHttpServer {
 	private static final String DEFAULT_MIME_TYPE = "application/octet-stream";
 
 	private static final String ECHO_FQCN = "hr.fer.zemris.java.webserver.workers.EchoParams";
+	private static final String CIRCLE_FQCN = "hr.fer.zemris.java.webserver.workers.CircleWorker";
+	private static final String HELLO_FQCN = "hr.fer.zemris.java.webserver.workers.HelloWorker";
 
 	private String address;
 	private String domainName;
@@ -60,6 +62,7 @@ public class SmartHttpServer {
 	private String workersConfig;
 
 	private Map<String, IWebWorker> workersMap = new HashMap<>();
+	private Map<String, IWebWorker> workerNameMap = new HashMap<>();
 
 	public SmartHttpServer(String configFileName) {
 		Properties properties = new Properties();
@@ -72,6 +75,7 @@ public class SmartHttpServer {
 
 		properties = loadProperties(properties, workersConfig);
 		setUpWorkers(properties);
+		setUpNameWorkers();
 	}
 
 	private Properties loadProperties(Properties properties, String fileName) {
@@ -87,6 +91,25 @@ public class SmartHttpServer {
 		}
 
 		return properties;
+	}
+
+	private void setUpNameWorkers() {
+		try {
+			workerNameMap.put("HelloWorker", workersMap.get("/hello"));
+			workerNameMap.put("CircleWorker", workersMap.get("/cw"));
+			Class<?> referenceToClass = this.getClass().getClassLoader().loadClass(ECHO_FQCN);
+
+			Object newObject = referenceToClass.newInstance();
+			IWebWorker iww = (IWebWorker) newObject;
+
+			workerNameMap.put("EchoParams", iww);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void setUpWorkers(Properties properties) {
@@ -387,12 +410,14 @@ public class SmartHttpServer {
 					return;
 				}
 
-				if (path.startsWith("/ext/EchoParams")) {
-					Class<?> referenceToClass = this.getClass().getClassLoader().loadClass(ECHO_FQCN);
-					Object newObject = referenceToClass.newInstance();
-					IWebWorker iww = (IWebWorker) newObject;
-					iww.processRequest(acquireContext());
-					return;
+				if (path.startsWith("/ext/")) {
+					String workerName = path.substring(5);// "/ext/".length()=5
+					IWebWorker currentWorker = workerNameMap.get(workerName);
+					if(currentWorker != null) {
+						
+						currentWorker.processRequest(acquireContext());
+						return;
+					}
 				}
 
 				if (workersMap.containsKey("/" + resolvedReqPath.getFileName())) {
