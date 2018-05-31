@@ -13,7 +13,7 @@ public class EchoParams implements IWebWorker {
 		context.setMimeType("text/html");
 		try {
 			context.write(
-					"<html><body><table style=\"border: 1px solid black; border-collapse : collapse;\"");
+					"<html><body><table style=\"border: 1px solid black; border-collapse : collapse;\">");
 			
 			context.write("<tr><th style=\"border: 1px solid black ;\">Key</th><th style=\"border: 1px solid black ;\">Value</th></tr>");
 

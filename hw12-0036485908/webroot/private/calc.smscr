@@ -1,0 +1,42 @@
+{$= "text/html" @setMimeType $}
+<html>
+<head>
+	<title>Zbrajanje</title>
+</head>
+
+<body>
+	<h1>Zbrajanje</h1>
+<table style="border: 1px solid black; border-collapse : collapse;">
+
+<tr>
+	<td style="border: 1px solid black ;">
+		a
+	</td>
+
+	<td style="border: 1px solid black ;">
+		{$= "a" "1" @tparamGet $}
+	</td>
+</tr>
+<tr>
+	<td style="border: 1px solid black ;">
+		b
+	</td>
+
+	<td style="border: 1px solid black ;">
+		{$= "b" "1" @tparamGet $}
+	</td>
+</tr>
+<tr>
+	<td style="border: 1px solid black ;">
+		a+b
+	</td>
+
+	<td style="border: 1px solid black ;">
+		{$= "zbroj" "1" @tparamGet $}
+	</td>
+</tr>
+
+</table>
+</body>
+
+</html>

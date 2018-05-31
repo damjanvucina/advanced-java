@@ -458,7 +458,7 @@ public class SmartHttpServer {
 
 		private RequestContext acquireContext() {
 			if (context == null) {
-				context = new RequestContext(ostream, params, permParams, outputCookies);
+				context = new RequestContext(ostream, params, permParams, outputCookies, tempParams, this);
 			}
 
 			return context;

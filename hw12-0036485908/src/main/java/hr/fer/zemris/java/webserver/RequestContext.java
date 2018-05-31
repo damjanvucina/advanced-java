@@ -68,7 +68,7 @@ public class RequestContext {
 			Map<String,String> temporaryParameters, 
 			IDispatcher dispatcher) {
 			
-			this(outputStream, temporaryParameters, persistentParameters, outputCookies);
+			this(outputStream, parameters, persistentParameters, outputCookies);
 			this.dispatcher = dispatcher;
 			this.temporaryParameters = temporaryParameters;
 	}
