@@ -44,6 +44,8 @@ public class SmartHttpServer {
 
 	private static final String DEFAULT_MIME_TYPE = "application/octet-stream";
 
+	private static final String ECHO_FQCN = "hr.fer.zemris.java.webserver.workers.EchoParams";
+
 	private String address;
 	private String domainName;
 	private int port;
@@ -253,7 +255,7 @@ public class SmartHttpServer {
 					path = requestedPath.substring(0, pathParamSeparator);
 					paramString = requestedPath.substring(pathParamSeparator + 1);
 					parseParameters(paramString);
-					
+
 				} else {
 					path = requestedPath;
 				}
@@ -377,25 +379,32 @@ public class SmartHttpServer {
 
 		public void internalDispatchRequest(String path, boolean directCall) throws Exception {
 			try {
-				
+
 				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
 						.toAbsolutePath();
 				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
 					sendError(403, "Forbidden.");
 					return;
 				}
-				
-				
+
+				if (path.startsWith("/ext/EchoParams")) {
+					Class<?> referenceToClass = this.getClass().getClassLoader().loadClass(ECHO_FQCN);
+					Object newObject = referenceToClass.newInstance();
+					IWebWorker iww = (IWebWorker) newObject;
+					iww.processRequest(acquireContext());
+					return;
+				}
+
 				if (workersMap.containsKey("/" + resolvedReqPath.getFileName())) {
 					workersMap.get("/" + resolvedReqPath.getFileName()).processRequest(acquireContext());
 					return;
 				}
-				
+
 				if (!Files.isRegularFile(resolvedReqPath) && !Files.isReadable(resolvedReqPath)) {
 					sendError(404, "File not found.");
 					return;
 				}
-				
+
 				int extensionsSeparatorIndex = String.valueOf(resolvedReqPath).lastIndexOf(".");
 				String fileExtension = String.valueOf(resolvedReqPath).substring(extensionsSeparatorIndex + 1);
 				String mimeValue = mimeTypes.get(fileExtension);
