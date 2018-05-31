@@ -31,6 +31,12 @@ public class RequestContext {
 
 	private boolean headerGenerated;
 
+	private IDispatcher dispatcher;
+
+	public IDispatcher getDispatcher() {
+		return dispatcher;
+	}
+
 	//@formatter:off
 	public RequestContext(
 			OutputStream outputStream, 
@@ -52,6 +58,19 @@ public class RequestContext {
 		statusText = DEFAULT_STATUS_TEXT;
 		mimeType = DEFAULT_MIME_TYPE;
 		
+	}
+	
+	public RequestContext(
+			OutputStream outputStream, 
+			Map<String,String> parameters, 
+			Map<String,String> persistentParameters, 
+			List<RCCookie> outputCookies, 
+			Map<String,String> temporaryParameters, 
+			IDispatcher dispatcher) {
+			
+			this(outputStream, temporaryParameters, persistentParameters, outputCookies);
+			this.dispatcher = dispatcher;
+			this.temporaryParameters = temporaryParameters;
 	}
 	//@formatter:on
 

@@ -123,7 +123,7 @@ public class SmartHttpServer {
 	protected class ServerThread extends Thread {
 		@Override
 		public void run() {
-			// given in pesudo-code:
+			// given in psudo-code:
 			// open serverSocket on specified port
 			// while(true) {
 			// Socket client = serverSocket.accept();
@@ -147,7 +147,7 @@ public class SmartHttpServer {
 		}
 	}
 
-	private class ClientWorker implements Runnable {
+	private class ClientWorker implements Runnable, IDispatcher {
 		private Socket csocket;
 		private PushbackInputStream istream;
 		private OutputStream ostream;
@@ -222,38 +222,15 @@ public class SmartHttpServer {
 				} else {
 					path = requestedPath;
 				}
-				
-				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1)).toAbsolutePath();
-				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
-					sendError(403, "Forbidden.");
-					return;
-				}
 
-				if (!Files.isRegularFile(resolvedReqPath) && !Files.isReadable(resolvedReqPath)) {
-					sendError(404, "File not found.");
-					return;
-				}
-
-				int extensionsSeparatorIndex = String.valueOf(resolvedReqPath).lastIndexOf(".");
-				String fileExtension = String.valueOf(resolvedReqPath).substring(extensionsSeparatorIndex + 1);
-				String mimeValue = mimeTypes.get(fileExtension);
-				if (mimeValue == null) {
-					mimeValue = DEFAULT_MIME_TYPE;
-				}
-
-				// postavi cookije
-				RequestContext rc = new RequestContext(ostream, params, permPrams, outputCookies);
-				rc.setMimeType(mimeValue);
-				rc.setStatusCode(200);
-
-				byte[] content = Files.readAllBytes(resolvedReqPath);
-				rc.write(content);
-				
-				
+				internalDispatchRequest(path, true);
 
 			} catch (IOException e) {
 				e.printStackTrace();
 
+			} catch (Exception e) {
+				System.out.println("InternalDispatchRequest caused an exception");
+				e.printStackTrace();
 			} finally {
 				try {
 					ostream.flush();
@@ -362,6 +339,40 @@ public class SmartHttpServer {
 				}
 			}
 			return bos.toByteArray();
+		}
+
+		public void internalDispatchRequest(String path, boolean directCall) throws Exception {
+			Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
+					.toAbsolutePath();
+			if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
+				sendError(403, "Forbidden.");
+				return;
+			}
+
+			if (!Files.isRegularFile(resolvedReqPath) && !Files.isReadable(resolvedReqPath)) {
+				sendError(404, "File not found.");
+				return;
+			}
+
+			int extensionsSeparatorIndex = String.valueOf(resolvedReqPath).lastIndexOf(".");
+			String fileExtension = String.valueOf(resolvedReqPath).substring(extensionsSeparatorIndex + 1);
+			String mimeValue = mimeTypes.get(fileExtension);
+			if (mimeValue == null) {
+				mimeValue = DEFAULT_MIME_TYPE;
+			}
+
+			// postavi cookije
+			RequestContext rc = new RequestContext(ostream, params, permPrams, outputCookies);
+			rc.setMimeType(mimeValue);
+			rc.setStatusCode(200);
+
+			byte[] content = Files.readAllBytes(resolvedReqPath);
+			rc.write(content);
+		}
+
+		@Override
+		public void dispatchRequest(String urlPath) throws Exception {
+			internalDispatchRequest(urlPath, false);
 		}
 	}
 }
