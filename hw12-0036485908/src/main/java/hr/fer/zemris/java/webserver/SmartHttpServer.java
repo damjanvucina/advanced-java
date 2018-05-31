@@ -49,13 +49,15 @@ public class SmartHttpServer {
 	private int port;
 	private int workerThreads;
 	private int sessionTimeout;
-	private Map<String, String> mimeTypes = new HashMap<String, String>();
+	private Map<String, String> mimeTypes = new HashMap<>();
 	private ServerThread serverThread;
 	private ExecutorService threadPool;
 	private Path documentRoot;
 
 	private String mimeConfig;
 	private String workersConfig;
+
+	private Map<String, IWebWorker> workersMap = new HashMap<>();
 
 	public SmartHttpServer(String configFileName) {
 		Properties properties = new Properties();
@@ -66,8 +68,8 @@ public class SmartHttpServer {
 		properties = loadProperties(properties, mimeConfig);
 		setUpMime(properties);
 
-		// properties = loadProperties(properties, workersConfig);
-		// setUpWorkers(properties);
+		properties = loadProperties(properties, workersConfig);
+		setUpWorkers(properties);
 	}
 
 	private Properties loadProperties(Properties properties, String fileName) {
@@ -83,6 +85,33 @@ public class SmartHttpServer {
 		}
 
 		return properties;
+	}
+
+	private void setUpWorkers(Properties properties) {
+		properties.forEach((key, value) -> processWorker(key, value));
+	}
+
+	private void processWorker(Object key, Object value) {
+		try {
+			String path = (String) key;
+			String fqcn = (String) value;
+
+			if (workersMap.containsKey(path)) {
+				throw new IllegalArgumentException("Workers map already contains entry with the key set to: " + path);
+			}
+
+			Class<?> referenceToClass = this.getClass().getClassLoader().loadClass(fqcn);
+			Object newObject = referenceToClass.newInstance();
+			IWebWorker iww = (IWebWorker) newObject;
+
+			workersMap.put(path, iww);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void setUpMime(Properties properties) {
@@ -164,6 +193,8 @@ public class SmartHttpServer {
 		private List<RCCookie> outputCookies = new ArrayList<RequestContext.RCCookie>();
 		private String SID;
 
+		private RequestContext context;
+
 		public ClientWorker(Socket csocket) {
 			super();
 			this.csocket = csocket;
@@ -222,6 +253,7 @@ public class SmartHttpServer {
 					path = requestedPath.substring(0, pathParamSeparator);
 					paramString = requestedPath.substring(pathParamSeparator + 1);
 					parseParameters(paramString);
+					
 				} else {
 					path = requestedPath;
 				}
@@ -345,19 +377,25 @@ public class SmartHttpServer {
 
 		public void internalDispatchRequest(String path, boolean directCall) throws Exception {
 			try {
-
+				
 				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
 						.toAbsolutePath();
 				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
 					sendError(403, "Forbidden.");
 					return;
 				}
-
+				
+				
+				if (workersMap.containsKey("/" + resolvedReqPath.getFileName())) {
+					workersMap.get("/" + resolvedReqPath.getFileName()).processRequest(acquireContext());
+					return;
+				}
+				
 				if (!Files.isRegularFile(resolvedReqPath) && !Files.isReadable(resolvedReqPath)) {
 					sendError(404, "File not found.");
 					return;
 				}
-
+				
 				int extensionsSeparatorIndex = String.valueOf(resolvedReqPath).lastIndexOf(".");
 				String fileExtension = String.valueOf(resolvedReqPath).substring(extensionsSeparatorIndex + 1);
 				String mimeValue = mimeTypes.get(fileExtension);
@@ -365,7 +403,7 @@ public class SmartHttpServer {
 					mimeValue = DEFAULT_MIME_TYPE;
 				}
 
-				RequestContext rc = new RequestContext(ostream, params, permParams, outputCookies);
+				RequestContext rc = acquireContext();
 				rc.setMimeType(mimeValue);
 				rc.setStatusCode(200);
 
@@ -384,6 +422,14 @@ public class SmartHttpServer {
 
 		}
 
+		private RequestContext acquireContext() {
+			if (context == null) {
+				context = new RequestContext(ostream, params, permParams, outputCookies);
+			}
+
+			return context;
+		}
+
 		private void processSmscrFile(Path resolvedReqPath, RequestContext rc) {
 			byte[] content = null;
 			try {
@@ -391,7 +437,6 @@ public class SmartHttpServer {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 
 			String smscrContent = new String(content, Charset.defaultCharset());
 			SmartScriptParser parser = new SmartScriptParser(smscrContent);
