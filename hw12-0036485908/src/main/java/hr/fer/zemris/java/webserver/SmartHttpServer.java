@@ -2,14 +2,13 @@ package hr.fer.zemris.java.webserver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +22,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import hr.fer.zemris.java.webserver.RequestContext.RCCookie;
 
@@ -132,25 +130,17 @@ public class SmartHttpServer {
 			// ClientWorker cw = new ClientWorker(client);
 			// submit cw to threadpool for execution
 			// }
-			ServerSocket serverSocket = null;
-			try {
-				serverSocket = new ServerSocket(port);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			while (isAlive()) {
-				Socket client = null;
 
-				try {
-					client = serverSocket.accept();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				ClientWorker cw = new ClientWorker(client);
-				threadPool.submit(cw);
-			}
 			try {
+				ServerSocket serverSocket = new ServerSocket();
+				serverSocket.bind(new InetSocketAddress(address, port));
+				while (isAlive()) {
+					Socket client = serverSocket.accept();
+					ClientWorker cw = new ClientWorker(client);
+					threadPool.submit(cw);
+				}
 				serverSocket.close();
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -188,7 +178,7 @@ public class SmartHttpServer {
 				}
 
 				String firstLine = request.get(0);
-				String[] items = firstLine.split("\n");
+				String[] items = firstLine.split(" ");
 
 				String method = items[0];
 				String requestedPath = items[1];
@@ -206,7 +196,7 @@ public class SmartHttpServer {
 
 					r = r.replace(" ", "");
 					if (r.startsWith("Host:")) {
-						String result = host = r.substring(6); // 6 = "Host:".length()
+						host = r.substring(6); // 6 = "Host:".length()
 
 						Pattern pattern = Pattern.compile(HOST_REGEX);
 						Matcher matcher = pattern.matcher(host);
@@ -218,18 +208,23 @@ public class SmartHttpServer {
 				}
 
 				if (host == null) {
-					host = requestedPath;// provjeri ovo
+					host = requestedPath;
 				}
 
-				int pathParamSeparator = requestedPath.indexOf("\\?");
+				String paramString = null;
+				String path = null;
+				if (requestedPath.contains("?")) {
+					int pathParamSeparator = requestedPath.indexOf("?");
+					path = requestedPath.substring(0, pathParamSeparator);
+					paramString = requestedPath.substring(pathParamSeparator + 1);
+					parseParameters(paramString);
 
-				String path = requestedPath.substring(0, pathParamSeparator);
-				String paramString = requestedPath.substring(pathParamSeparator + 1);
-
-				parseParameters(paramString);
-
-				Path resolvedReqPath = documentRoot.resolve(requestedPath);
-				if (!resolvedReqPath.startsWith(documentRoot)) {
+				} else {
+					path = requestedPath;
+				}
+				
+				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1)).toAbsolutePath();
+				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
 					sendError(403, "Forbidden.");
 					return;
 				}
@@ -241,7 +236,6 @@ public class SmartHttpServer {
 
 				int extensionsSeparatorIndex = String.valueOf(resolvedReqPath).lastIndexOf(".");
 				String fileExtension = String.valueOf(resolvedReqPath).substring(extensionsSeparatorIndex + 1);
-
 				String mimeValue = mimeTypes.get(fileExtension);
 				if (mimeValue == null) {
 					mimeValue = DEFAULT_MIME_TYPE;
@@ -254,20 +248,30 @@ public class SmartHttpServer {
 
 				byte[] content = Files.readAllBytes(resolvedReqPath);
 				rc.write(content);
+				
+				
 
 			} catch (IOException e) {
 				e.printStackTrace();
+
+			} finally {
+				try {
+					ostream.flush();
+					csocket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 			}
 		}
 
 		private void parseParameters(String paramString) {
-			String[] paramPairs = paramString.split("\\?");
+			String[] paramPairs = paramString.split("&");
 
 			for (String pair : paramPairs) {
 				int pairSeparatorIndex = pair.indexOf("=");
 				String key = pair.substring(0, pairSeparatorIndex);
 				String value = pair.substring(pairSeparatorIndex + 1);
-
 				params.put(key, value);
 			}
 		}
@@ -359,7 +363,5 @@ public class SmartHttpServer {
 			}
 			return bos.toByteArray();
 		}
-
 	}
-
 }
