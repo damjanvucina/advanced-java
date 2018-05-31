@@ -402,7 +402,11 @@ public class SmartHttpServer {
 
 		public void internalDispatchRequest(String path, boolean directCall) throws Exception {
 			try {
-
+				if(path.startsWith("/private") && directCall) {
+					System.out.println("a");
+					sendError(404, "File not found.");
+					return;
+				}				
 				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
 						.toAbsolutePath();
 				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
