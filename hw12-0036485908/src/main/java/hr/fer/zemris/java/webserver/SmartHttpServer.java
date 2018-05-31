@@ -9,6 +9,7 @@ import java.io.PushbackInputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +24,9 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import hr.fer.zemris.java.custom.scripting.exec.SmartScriptEngine;
+import hr.fer.zemris.java.custom.scripting.nodes.DocumentNode;
+import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
 import hr.fer.zemris.java.webserver.RequestContext.RCCookie;
 
 public class SmartHttpServer {
@@ -156,7 +160,7 @@ public class SmartHttpServer {
 		private String host;
 		private Map<String, String> params = new HashMap<String, String>();
 		private Map<String, String> tempParams = new HashMap<String, String>();
-		private Map<String, String> permPrams = new HashMap<String, String>();
+		private Map<String, String> permParams = new HashMap<String, String>();
 		private List<RCCookie> outputCookies = new ArrayList<RequestContext.RCCookie>();
 		private String SID;
 
@@ -218,7 +222,6 @@ public class SmartHttpServer {
 					path = requestedPath.substring(0, pathParamSeparator);
 					paramString = requestedPath.substring(pathParamSeparator + 1);
 					parseParameters(paramString);
-
 				} else {
 					path = requestedPath;
 				}
@@ -229,7 +232,6 @@ public class SmartHttpServer {
 				e.printStackTrace();
 
 			} catch (Exception e) {
-				System.out.println("InternalDispatchRequest caused an exception");
 				e.printStackTrace();
 			} finally {
 				try {
@@ -342,32 +344,61 @@ public class SmartHttpServer {
 		}
 
 		public void internalDispatchRequest(String path, boolean directCall) throws Exception {
-			Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
-					.toAbsolutePath();
-			if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
-				sendError(403, "Forbidden.");
-				return;
+			try {
+
+				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
+						.toAbsolutePath();
+				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
+					sendError(403, "Forbidden.");
+					return;
+				}
+
+				if (!Files.isRegularFile(resolvedReqPath) && !Files.isReadable(resolvedReqPath)) {
+					sendError(404, "File not found.");
+					return;
+				}
+
+				int extensionsSeparatorIndex = String.valueOf(resolvedReqPath).lastIndexOf(".");
+				String fileExtension = String.valueOf(resolvedReqPath).substring(extensionsSeparatorIndex + 1);
+				String mimeValue = mimeTypes.get(fileExtension);
+				if (mimeValue == null) {
+					mimeValue = DEFAULT_MIME_TYPE;
+				}
+
+				RequestContext rc = new RequestContext(ostream, params, permParams, outputCookies);
+				rc.setMimeType(mimeValue);
+				rc.setStatusCode(200);
+
+				if (path.endsWith(".smscr")) {
+					processSmscrFile(resolvedReqPath, rc);
+
+				} else {
+
+					byte[] content = Files.readAllBytes(resolvedReqPath);
+					rc.write(content);
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 
-			if (!Files.isRegularFile(resolvedReqPath) && !Files.isReadable(resolvedReqPath)) {
-				sendError(404, "File not found.");
-				return;
+		}
+
+		private void processSmscrFile(Path resolvedReqPath, RequestContext rc) {
+			byte[] content = null;
+			try {
+				content = Files.readAllBytes(resolvedReqPath);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 
-			int extensionsSeparatorIndex = String.valueOf(resolvedReqPath).lastIndexOf(".");
-			String fileExtension = String.valueOf(resolvedReqPath).substring(extensionsSeparatorIndex + 1);
-			String mimeValue = mimeTypes.get(fileExtension);
-			if (mimeValue == null) {
-				mimeValue = DEFAULT_MIME_TYPE;
-			}
 
-			// postavi cookije
-			RequestContext rc = new RequestContext(ostream, params, permPrams, outputCookies);
-			rc.setMimeType(mimeValue);
-			rc.setStatusCode(200);
+			String smscrContent = new String(content, Charset.defaultCharset());
+			SmartScriptParser parser = new SmartScriptParser(smscrContent);
+			DocumentNode document = parser.getDocumentNode();
 
-			byte[] content = Files.readAllBytes(resolvedReqPath);
-			rc.write(content);
+			SmartScriptEngine engine = new SmartScriptEngine(document, rc);
+			engine.execute();
 		}
 
 		@Override
