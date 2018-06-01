@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -184,14 +186,39 @@ public class SmartHttpServer {
 	}
 
 	protected synchronized void start() {
-		// … start server thread if not already running …
-		// … init threadpool by Executors.newFixedThreadPool(...); …
+		createInactiveSessionCollector();
 		if (serverThread == null) {
 			serverThread = new ServerThread();
 			serverThread.start();
 		}
 
 		threadPool = Executors.newFixedThreadPool(workerThreads);
+	}
+
+	private void createInactiveSessionCollector() {
+		boolean isDeamon = true;
+		Timer timer = new Timer(isDeamon);
+		Map<String, SessionMapEntry> sessionCopy = new HashMap<>(sessions);
+		
+		TimerTask timerTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				for(Entry<String, SessionMapEntry> entry : sessionCopy.entrySet()) {
+					if(isExpired(entry.getValue().validUntil)) {
+						sessions.remove(entry);
+					}
+				}
+			}
+
+			private boolean isExpired(long validUntil) {
+				return validUntil > System.currentTimeMillis()/1000;
+			}
+		};
+		
+		long delay = 0;
+		long period = 300000; //300000 seconds = 5 minutes
+		timer.schedule(timerTask, delay, period);
 	}
 
 	protected synchronized void stop() {
