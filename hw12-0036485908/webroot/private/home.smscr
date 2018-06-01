@@ -4,7 +4,7 @@
 	<title>Home</title>
 </head>
 
-<body>
+<body style="background-color:{$= "bgcolor" "FFFFFF" @paramGet $};">
 	<h1>Home</h1>
 <p><a href="http://www.localhost.com:5721/scripts/osnovni.smscr">osnovni.smscr</a></p>
 <p><a href="http://www.localhost.com:5721/scripts/brojPoziva.smscr">brojPoziva.smscr</a></p>
@@ -14,7 +14,7 @@
 
 <br>
 
-<form action="http://127.0.0.1:5721/calc?a=11&b=22,">
+<form action="http://127.0.0.1:5721/calc?a=a&b=b">
   First parameter:<br>
   <input type="text" name="a">
   <br>
@@ -22,6 +22,20 @@
   <input type="text" name="b">
   <br><br>
   <input type="submit" value="Submit">
+</form> 
+
+<p>When you click the submit button you will be redirected.</p>
+
+<br>
+
+<form action="http://127.0.0.1:5721/setbgcolor?bgcolor=value">
+<select name="bgcolor">
+  <option value="FF0000">Red</option>
+  <option value="00FF00">Green</option>
+  <option value="0000FF">Blue</option>
+  <option value="FFFFFF">White</option>
+</select>
+<input type="submit" value="Submit">
 </form> 
 
 <p>When you click the submit button you will be redirected.</p>

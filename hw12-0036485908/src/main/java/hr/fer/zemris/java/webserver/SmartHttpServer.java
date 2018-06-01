@@ -54,6 +54,8 @@ public class SmartHttpServer {
 	private static final String CIRCLE_FQCN = "hr.fer.zemris.java.webserver.workers.CircleWorker";
 	private static final String HELLO_FQCN = "hr.fer.zemris.java.webserver.workers.HelloWorker";
 	private static final String HOME_FQCN = "hr.fer.zemris.java.webserver.workers.Home";
+	private static final String BGCOLOR_FQCN = "hr.fer.zemris.java.webserver.workers.BgColorWorker";
+	
 
 	private static final String COOKIE_SEPARATOR = ";";
 
@@ -122,7 +124,12 @@ public class SmartHttpServer {
 			Class<?> referenceToClass2 = this.getClass().getClassLoader().loadClass(HOME_FQCN);
 			Object newObject2 = referenceToClass2.newInstance();
 			IWebWorker iww2 = (IWebWorker) newObject2;
-			workerNameMap.put("EchoParams", iww2);
+			workerNameMap.put("Home", iww2);
+			
+			Class<?> referenceToClass3 = this.getClass().getClassLoader().loadClass(BGCOLOR_FQCN);
+			Object newObject3 = referenceToClass2.newInstance();
+			IWebWorker iww3 = (IWebWorker) newObject3;
+			workerNameMap.put("BgColorWorker", iww3);
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -391,7 +398,7 @@ public class SmartHttpServer {
 			outputCookies.forEach(cookie -> sessionMap.put(cookie.getName(), cookie.getValue()));
 
 			SessionMapEntry entry = new SessionMapEntry(sid, host, validUntil, sessionMap);
-
+			permParams = entry.map;
 			sessions.put(sid, entry);
 			outputCookies.add(new RCCookie("sid", sid, null, host, "/"));
 		}
@@ -532,7 +539,9 @@ public class SmartHttpServer {
 						return;
 					}
 				}
-
+				
+				System.out.println("FAJLL JE " + resolvedReqPath);
+				workersMap.forEach((a, b)->System.out.println(a+" " + b));
 				if (workersMap.containsKey("/" + resolvedReqPath.getFileName())) {
 					System.out.println("e");
 					workersMap.get("/" + resolvedReqPath.getFileName()).processRequest(acquireContext());
