@@ -14,11 +14,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
+import java.util.Timer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -48,6 +52,8 @@ public class SmartHttpServer {
 	private static final String CIRCLE_FQCN = "hr.fer.zemris.java.webserver.workers.CircleWorker";
 	private static final String HELLO_FQCN = "hr.fer.zemris.java.webserver.workers.HelloWorker";
 
+	private static final String COOKIE_SEPARATOR = ";";
+
 	private String address;
 	private String domainName;
 	private int port;
@@ -63,6 +69,11 @@ public class SmartHttpServer {
 
 	private Map<String, IWebWorker> workersMap = new HashMap<>();
 	private Map<String, IWebWorker> workerNameMap = new HashMap<>();
+
+	private Map<String, SessionMapEntry> sessions = new HashMap<String, SmartHttpServer.SessionMapEntry>();
+	private Random sessionRandom = new Random();
+
+	private String extractedHostName;
 
 	public SmartHttpServer(String configFileName) {
 		Properties properties = new Properties();
@@ -205,6 +216,20 @@ public class SmartHttpServer {
 		}
 	}
 
+	private static class SessionMapEntry {
+		String sid;
+		String host;
+		long validUntil;
+		Map<String, String> map;
+
+		public SessionMapEntry(String sid, String host, long validUntil, Map<String, String> map) {
+			this.sid = sid;
+			this.host = host;
+			this.validUntil = validUntil;
+			this.map = map;
+		}
+	}
+
 	private class ClientWorker implements Runnable, IDispatcher {
 		private Socket csocket;
 		private PushbackInputStream istream;
@@ -251,25 +276,48 @@ public class SmartHttpServer {
 					sendError(400, "Invalid protocol version , was: " + version);
 				}
 
-				String hostName = null;
+				// for (String r : request.subList(1, request.size())) {
+				//
+				// r = r.replace(" ", "");
+				// if (r.startsWith("Host:")) {
+				// host = r.substring(6); // 6 = "Host:".length()
+				//
+				// Pattern pattern = Pattern.compile(HOST_REGEX);
+				// Matcher matcher = pattern.matcher(host);
+				// if (matcher.matches()) {
+				// extractedHostName = matcher.group(1);
+				// }
+				// break;
+				// }
+				// }
+				//
+				// if (host == null) {
+				// host = requestedPath;
+				// }
+
 				for (String r : request.subList(1, request.size())) {
 
 					r = r.replace(" ", "");
 					if (r.startsWith("Host:")) {
-						host = r.substring(6); // 6 = "Host:".length()
+						// host = r.substring(6); // 6 = "Host:".length()
 
 						Pattern pattern = Pattern.compile(HOST_REGEX);
-						Matcher matcher = pattern.matcher(host);
+						Matcher matcher = pattern.matcher(r.substring(6));
 						if (matcher.matches()) {
-							hostName = matcher.group(1);
+							host = matcher.group(1);
+
+						} else {
+							host = r.substring(6);
 						}
-						break;
+
 					}
 				}
 
 				if (host == null) {
 					host = requestedPath;
 				}
+
+				checkSession(request);
 
 				String paramString = null;
 				String path = null;
@@ -299,6 +347,74 @@ public class SmartHttpServer {
 				}
 
 			}
+		}
+
+		private synchronized void checkSession(List<String> request) {
+			String sidCandidate = null;
+			for (String line : request) {
+				if (!line.startsWith("Cookie:")) {
+					continue;
+				}
+
+				String cookieLine = line.substring(7); // Cookie: .length()==7
+				String[] browserCookies = cookieLine.split(COOKIE_SEPARATOR);
+
+				for (String cookie : browserCookies) {
+					if (cookie.startsWith("sid")) {
+						sidCandidate = cookie.substring(5, cookie.length() - 1); // sid=".length()=4
+						break;
+					}
+				}
+
+				if (sidCandidate == null) {
+					processNewSid();
+				} else {
+					String browserHost = sessions.get(sidCandidate).host;
+					if (!host.equals(browserHost)) {
+						processNewSid();
+					} else {
+						processExistingSid(sessions.get(sidCandidate));
+					}
+				}
+			}
+		}
+
+		private void processExistingSid(SessionMapEntry entry) {
+			if (entry.validUntil > System.currentTimeMillis() / 1000) {
+				sessions.remove(entry.sid);
+				processNewSid();
+			} else {
+				entry.validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
+				permParams = entry.map;
+			}
+		}
+
+		private void processNewSid() {
+			String sid = generateSessionID();
+			long validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
+			Map<String, String> sessionMap = new ConcurrentHashMap<>();
+
+			sessionMap.put("sid", sid);
+			outputCookies.forEach(cookie -> sessionMap.put(cookie.getName(), cookie.getValue()));
+
+			SessionMapEntry entry = new SessionMapEntry(sid, host, validUntil, sessionMap);
+
+			sessions.put(sid, entry);
+			outputCookies.add(new RCCookie("sid", sid, null, host, "/"));
+		}
+
+		private String generateSessionID() {
+			int leftLimit = 65; // 'A'
+			int rightLimit = 90; // 'Z'
+			int targetLength = 20;
+
+			StringBuilder buffer = new StringBuilder(targetLength);
+			for (int i = 0; i < targetLength; i++) {
+				int randomLimitedInt = leftLimit + (int) (sessionRandom.nextFloat() * (rightLimit - leftLimit + 1));
+				buffer.append((char) randomLimitedInt);
+			}
+
+			return buffer.toString();
 		}
 
 		private void parseParameters(String paramString) {
@@ -402,11 +518,11 @@ public class SmartHttpServer {
 
 		public void internalDispatchRequest(String path, boolean directCall) throws Exception {
 			try {
-				if(path.startsWith("/private") && directCall) {
+				if (path.startsWith("/private") && directCall) {
 					System.out.println("a");
 					sendError(404, "File not found.");
 					return;
-				}				
+				}
 				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
 						.toAbsolutePath();
 				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
@@ -417,8 +533,8 @@ public class SmartHttpServer {
 				if (path.startsWith("/ext/")) {
 					String workerName = path.substring(5);// "/ext/".length()=5
 					IWebWorker currentWorker = workerNameMap.get(workerName);
-					if(currentWorker != null) {
-						
+					if (currentWorker != null) {
+
 						currentWorker.processRequest(acquireContext());
 						return;
 					}
