@@ -120,6 +120,7 @@ public class RequestContext {
 
 		// end of the header
 		sb.append("\r\n");
+		System.out.println("header je " + sb.toString());
 
 		try {
 			outputStream.write(sb.toString().getBytes(charset));

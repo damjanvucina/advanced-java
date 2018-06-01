@@ -16,7 +16,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -44,7 +46,7 @@ public class SmartHttpServer {
 	private static final String MIME_CONFIG_PROPERTY = "server.mimeConfig";
 	private static final String WORKERS_CONFIG_PROPERTY = "server.workers";
 
-	private static final String HOST_REGEX = "(\\w+):(\\d+)";
+	private static final String HOST_REGEX = "(\\w ):(\\d+)";
 
 	private static final String DEFAULT_MIME_TYPE = "application/octet-stream";
 
@@ -70,7 +72,7 @@ public class SmartHttpServer {
 	private Map<String, IWebWorker> workersMap = new HashMap<>();
 	private Map<String, IWebWorker> workerNameMap = new HashMap<>();
 
-	private Map<String, SessionMapEntry> sessions = new HashMap<String, SmartHttpServer.SessionMapEntry>();
+	private Map<String, SessionMapEntry> sessions = new HashMap<String, SmartHttpServer.SessionMapEntry>();//stavi da je obicna hasmapa
 	private Random sessionRandom = new Random();
 
 	private String extractedHostName;
@@ -257,7 +259,6 @@ public class SmartHttpServer {
 				ostream = csocket.getOutputStream();
 
 				List<String> request = extractHeaders();
-
 				if (request.size() < 1) {
 					sendError(400, "Header is less than a single line.");
 				}
@@ -276,38 +277,14 @@ public class SmartHttpServer {
 					sendError(400, "Invalid protocol version , was: " + version);
 				}
 
-				// for (String r : request.subList(1, request.size())) {
-				//
-				// r = r.replace(" ", "");
-				// if (r.startsWith("Host:")) {
-				// host = r.substring(6); // 6 = "Host:".length()
-				//
-				// Pattern pattern = Pattern.compile(HOST_REGEX);
-				// Matcher matcher = pattern.matcher(host);
-				// if (matcher.matches()) {
-				// extractedHostName = matcher.group(1);
-				// }
-				// break;
-				// }
-				// }
-				//
-				// if (host == null) {
-				// host = requestedPath;
-				// }
-
 				for (String r : request.subList(1, request.size())) {
 
 					r = r.replace(" ", "");
 					if (r.startsWith("Host:")) {
-						// host = r.substring(6); // 6 = "Host:".length()
-
-						Pattern pattern = Pattern.compile(HOST_REGEX);
-						Matcher matcher = pattern.matcher(r.substring(6));
-						if (matcher.matches()) {
-							host = matcher.group(1);
-
-						} else {
-							host = r.substring(6);
+						String h = r.substring(5);
+						String[] hostParts = h.split(":");
+						if (hostParts.length == 2) {
+							host = hostParts[0];
 						}
 
 					}
@@ -350,47 +327,76 @@ public class SmartHttpServer {
 		}
 
 		private synchronized void checkSession(List<String> request) {
+			System.out.println("SESSION TIMEOUT JE " + sessionTimeout);
+			System.out.println("zahtjev je ");
+			for(String s : request) {
+				System.out.println(s);
+			}
+			System.out.println("sadrzaj mape prije procesiranja je:");
+			if(sessions.isEmpty()) {
+				System.out.println("prazna");
+			} else {
+				sessions.forEach((a, b) -> System.out.println(a + " " + b));
+			}
+			
 			String sidCandidate = null;
 			for (String line : request) {
 				if (!line.startsWith("Cookie:")) {
 					continue;
 				}
 
-				String cookieLine = line.substring(7); // Cookie: .length()==7
+				String cookieLine = line.substring(7).replace(" ", ""); // Cookie: .length()==7
+				System.out.println("cookie line je " + cookieLine);
 				String[] browserCookies = cookieLine.split(COOKIE_SEPARATOR);
-
+				System.out.println("browser cookies je " + Arrays.toString(browserCookies));
 				for (String cookie : browserCookies) {
+					System.out.println("cookie izgleda ovako:" + cookie);
 					if (cookie.startsWith("sid")) {
-						sidCandidate = cookie.substring(5, cookie.length() - 1); // sid=".length()=4
+						sidCandidate = cookie.substring(4, cookie.length()); // sid=".length()=4
 						break;
 					}
 				}
+			}
 
-				if (sidCandidate == null) {
+			if (sidCandidate == null) {
+				System.out.println("new");
+				processNewSid();
+			} else {
+				String browserHost = sessions.get(sidCandidate).host;
+				if (!host.equals(browserHost)) {
+					System.out.println("host dont match");
 					processNewSid();
 				} else {
-					String browserHost = sessions.get(sidCandidate).host;
-					if (!host.equals(browserHost)) {
-						processNewSid();
-					} else {
-						processExistingSid(sessions.get(sidCandidate));
-					}
+					System.out.println("existing");
+					processExistingSid(sessions.get(sidCandidate));
 				}
 			}
+			
+			System.out.println("sadrzaj mape poslije procesiranja je:");
+			if(sessions.isEmpty()) {
+				System.out.println("prazna");
+			} else {
+				sessions.forEach((a, b) -> System.out.println(a + " " + b));
+			}
+
 		}
 
 		private void processExistingSid(SessionMapEntry entry) {
-			if (entry.validUntil > System.currentTimeMillis() / 1000) {
+			if (entry.validUntil < System.currentTimeMillis() / 1000) {
+				System.out.println("isteka");
 				sessions.remove(entry.sid);
 				processNewSid();
 			} else {
 				entry.validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
+				System.out.println("nije isteka");
 				permParams = entry.map;
 			}
+			
 		}
 
 		private void processNewSid() {
 			String sid = generateSessionID();
+			System.out.println("dajen mu cookie koji ima sid " + sid);
 			long validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
 			Map<String, String> sessionMap = new ConcurrentHashMap<>();
 
@@ -398,8 +404,10 @@ public class SmartHttpServer {
 			outputCookies.forEach(cookie -> sessionMap.put(cookie.getName(), cookie.getValue()));
 
 			SessionMapEntry entry = new SessionMapEntry(sid, host, validUntil, sessionMap);
-
+			
 			sessions.put(sid, entry);
+			System.out.println("u mapu sessions je pohranjen entry sa sid=" + sid + " i entryjen " + entry);
+			System.out.println("XXXXXX jeli null " + entry==null);
 			outputCookies.add(new RCCookie("sid", sid, null, host, "/"));
 		}
 

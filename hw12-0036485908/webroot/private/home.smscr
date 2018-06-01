@@ -1,0 +1,16 @@
+{$= "text/html" @setMimeType $}
+<html>
+<head>
+	<title>Home</title>
+</head>
+
+<body>
+	<h1>Home</h1>
+<p><a href="">osnovni.smscr</a></p>
+<p><a href="http://www.localhost.com:5721/scripts/brojPoziva.smscr">brojPoziva.smscr</a></p>
+<p><a href="http://www.localhost.com:5721/scripts/fibonaccih.smscr">fibonaccih.smscr</a></p>
+<p><a href="http://www.localhost.com:5721/ext/HelloWorker">HelloWorker</a></p>
+<p><a href="http://www.localhost.com:5721/ext/CircleWorker">CircleWorker</a></p>
+</body>
+
+</html>
