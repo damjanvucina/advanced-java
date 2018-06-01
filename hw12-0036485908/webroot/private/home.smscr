@@ -6,11 +6,26 @@
 
 <body>
 	<h1>Home</h1>
-<p><a href="">osnovni.smscr</a></p>
+<p><a href="http://www.localhost.com:5721/scripts/osnovni.smscr">osnovni.smscr</a></p>
 <p><a href="http://www.localhost.com:5721/scripts/brojPoziva.smscr">brojPoziva.smscr</a></p>
 <p><a href="http://www.localhost.com:5721/scripts/fibonaccih.smscr">fibonaccih.smscr</a></p>
 <p><a href="http://www.localhost.com:5721/ext/HelloWorker">HelloWorker</a></p>
 <p><a href="http://www.localhost.com:5721/ext/CircleWorker">CircleWorker</a></p>
+
+<br>
+
+<form action="http://127.0.0.1:5721/calc?a=11&b=22,">
+  First parameter:<br>
+  <input type="text" name="a">
+  <br>
+  Second parameter:<br>
+  <input type="text" name="b">
+  <br><br>
+  <input type="submit" value="Submit">
+</form> 
+
+<p>When you click the submit button you will be redirected.</p>
+
 </body>
 
 </html>

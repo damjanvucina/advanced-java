@@ -53,6 +53,7 @@ public class SmartHttpServer {
 	private static final String ECHO_FQCN = "hr.fer.zemris.java.webserver.workers.EchoParams";
 	private static final String CIRCLE_FQCN = "hr.fer.zemris.java.webserver.workers.CircleWorker";
 	private static final String HELLO_FQCN = "hr.fer.zemris.java.webserver.workers.HelloWorker";
+	private static final String HOME_FQCN = "hr.fer.zemris.java.webserver.workers.Home";
 
 	private static final String COOKIE_SEPARATOR = ";";
 
@@ -72,7 +73,9 @@ public class SmartHttpServer {
 	private Map<String, IWebWorker> workersMap = new HashMap<>();
 	private Map<String, IWebWorker> workerNameMap = new HashMap<>();
 
-	private Map<String, SessionMapEntry> sessions = new HashMap<String, SmartHttpServer.SessionMapEntry>();//stavi da je obicna hasmapa
+	private Map<String, SessionMapEntry> sessions = new HashMap<String, SmartHttpServer.SessionMapEntry>();// stavi da
+																											// je obicna
+																											// hasmapa
 	private Random sessionRandom = new Random();
 
 	private String extractedHostName;
@@ -110,12 +113,17 @@ public class SmartHttpServer {
 		try {
 			workerNameMap.put("HelloWorker", workersMap.get("/hello"));
 			workerNameMap.put("CircleWorker", workersMap.get("/cw"));
-			Class<?> referenceToClass = this.getClass().getClassLoader().loadClass(ECHO_FQCN);
 
+			Class<?> referenceToClass = this.getClass().getClassLoader().loadClass(ECHO_FQCN);
 			Object newObject = referenceToClass.newInstance();
 			IWebWorker iww = (IWebWorker) newObject;
-
 			workerNameMap.put("EchoParams", iww);
+
+			Class<?> referenceToClass2 = this.getClass().getClassLoader().loadClass(HOME_FQCN);
+			Object newObject2 = referenceToClass2.newInstance();
+			IWebWorker iww2 = (IWebWorker) newObject2;
+			workerNameMap.put("EchoParams", iww2);
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -263,6 +271,8 @@ public class SmartHttpServer {
 					sendError(400, "Header is less than a single line.");
 				}
 
+				System.out.println("a");
+
 				String firstLine = request.get(0);
 				String[] items = firstLine.split(" ");
 
@@ -306,6 +316,7 @@ public class SmartHttpServer {
 
 				} else {
 					path = requestedPath;
+					System.out.println("b");
 				}
 
 				internalDispatchRequest(path, true);
@@ -327,18 +338,6 @@ public class SmartHttpServer {
 		}
 
 		private synchronized void checkSession(List<String> request) {
-			System.out.println("SESSION TIMEOUT JE " + sessionTimeout);
-			System.out.println("zahtjev je ");
-			for(String s : request) {
-				System.out.println(s);
-			}
-			System.out.println("sadrzaj mape prije procesiranja je:");
-			if(sessions.isEmpty()) {
-				System.out.println("prazna");
-			} else {
-				sessions.forEach((a, b) -> System.out.println(a + " " + b));
-			}
-			
 			String sidCandidate = null;
 			for (String line : request) {
 				if (!line.startsWith("Cookie:")) {
@@ -346,11 +345,8 @@ public class SmartHttpServer {
 				}
 
 				String cookieLine = line.substring(7).replace(" ", ""); // Cookie: .length()==7
-				System.out.println("cookie line je " + cookieLine);
 				String[] browserCookies = cookieLine.split(COOKIE_SEPARATOR);
-				System.out.println("browser cookies je " + Arrays.toString(browserCookies));
 				for (String cookie : browserCookies) {
-					System.out.println("cookie izgleda ovako:" + cookie);
 					if (cookie.startsWith("sid")) {
 						sidCandidate = cookie.substring(4, cookie.length()); // sid=".length()=4
 						break;
@@ -359,44 +355,35 @@ public class SmartHttpServer {
 			}
 
 			if (sidCandidate == null) {
-				System.out.println("new");
 				processNewSid();
 			} else {
-				String browserHost = sessions.get(sidCandidate).host;
+				//String browserHost = sessions.get(sidCandidate).host;
+				String browserHost = null;
+				if(sessions.get(sidCandidate) != null) {
+					browserHost = sessions.get(sidCandidate).host;
+				} 
+				
 				if (!host.equals(browserHost)) {
-					System.out.println("host dont match");
 					processNewSid();
 				} else {
-					System.out.println("existing");
 					processExistingSid(sessions.get(sidCandidate));
 				}
 			}
-			
-			System.out.println("sadrzaj mape poslije procesiranja je:");
-			if(sessions.isEmpty()) {
-				System.out.println("prazna");
-			} else {
-				sessions.forEach((a, b) -> System.out.println(a + " " + b));
-			}
-
 		}
 
 		private void processExistingSid(SessionMapEntry entry) {
 			if (entry.validUntil < System.currentTimeMillis() / 1000) {
-				System.out.println("isteka");
 				sessions.remove(entry.sid);
 				processNewSid();
 			} else {
 				entry.validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
-				System.out.println("nije isteka");
 				permParams = entry.map;
 			}
-			
+
 		}
 
 		private void processNewSid() {
 			String sid = generateSessionID();
-			System.out.println("dajen mu cookie koji ima sid " + sid);
 			long validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
 			Map<String, String> sessionMap = new ConcurrentHashMap<>();
 
@@ -404,10 +391,8 @@ public class SmartHttpServer {
 			outputCookies.forEach(cookie -> sessionMap.put(cookie.getName(), cookie.getValue()));
 
 			SessionMapEntry entry = new SessionMapEntry(sid, host, validUntil, sessionMap);
-			
+
 			sessions.put(sid, entry);
-			System.out.println("u mapu sessions je pohranjen entry sa sid=" + sid + " i entryjen " + entry);
-			System.out.println("XXXXXX jeli null " + entry==null);
 			outputCookies.add(new RCCookie("sid", sid, null, host, "/"));
 		}
 
@@ -527,12 +512,12 @@ public class SmartHttpServer {
 		public void internalDispatchRequest(String path, boolean directCall) throws Exception {
 			try {
 				if (path.startsWith("/private") && directCall) {
-					System.out.println("a");
 					sendError(404, "File not found.");
 					return;
 				}
 				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
 						.toAbsolutePath();
+				System.out.println(String.valueOf(resolvedReqPath));
 				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
 					sendError(403, "Forbidden.");
 					return;
@@ -549,6 +534,7 @@ public class SmartHttpServer {
 				}
 
 				if (workersMap.containsKey("/" + resolvedReqPath.getFileName())) {
+					System.out.println("e");
 					workersMap.get("/" + resolvedReqPath.getFileName()).processRequest(acquireContext());
 					return;
 				}
@@ -570,10 +556,11 @@ public class SmartHttpServer {
 				rc.setStatusCode(200);
 
 				if (path.endsWith(".smscr")) {
+					System.out.println("d");
 					processSmscrFile(resolvedReqPath, rc);
 
 				} else {
-
+					System.out.println("z");
 					byte[] content = Files.readAllBytes(resolvedReqPath);
 					rc.write(content);
 				}
@@ -600,6 +587,7 @@ public class SmartHttpServer {
 				e.printStackTrace();
 			}
 
+			System.out.println("processing smcr");
 			String smscrContent = new String(content, Charset.defaultCharset());
 			SmartScriptParser parser = new SmartScriptParser(smscrContent);
 			DocumentNode document = parser.getDocumentNode();
