@@ -22,6 +22,11 @@ public abstract class Node {
 	/** The collection of the nodes of the document. */
 	ArrayIndexedCollection collection;
 	
+	/**
+	 * Accept.
+	 *
+	 * @param visitor the visitor
+	 */
 	public abstract void accept(INodeVisitor visitor);
 
 	/**

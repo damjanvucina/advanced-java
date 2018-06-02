@@ -24,13 +24,28 @@ import hr.fer.zemris.java.webserver.RequestContext;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 
+/**
+ * The class responsible for the execution of the previously parsed tree.
+ * 
+ * @author Damjan Vučina
+ */
 public class SmartScriptEngine {
 
+	/** The document node. */
 	private DocumentNode documentNode;
+
+	/** The request context. */
 	private RequestContext requestContext;
+
+	/** The multistack. */
 	private ObjectMultistack multistack = new ObjectMultistack();
+
+	/** The reference to the visitor object that defines printing of the nodes. */
 	private INodeVisitor visitor = new INodeVisitor() {
 
+		/**
+		 * Prints TextNode.
+		 */
 		@Override
 		public void visitTextNode(TextNode node) {
 			try {
@@ -40,6 +55,9 @@ public class SmartScriptEngine {
 			}
 		}
 
+		/**
+		 * Prints ForLoopNode.
+		 */
 		@Override
 		public void visitForLoopNode(ForLoopNode node) {
 			String variableName = node.getVariable().getName();
@@ -61,6 +79,9 @@ public class SmartScriptEngine {
 			multistack.pop(variableName);
 		}
 
+		/**
+		 * Prints EchoNode.
+		 */
 		@Override
 		public void visitEchoNode(EchoNode node) {
 			Stack<Object> temporary = new Stack<>();
@@ -91,21 +112,27 @@ public class SmartScriptEngine {
 					performFunction((ElementFunction) currentElement, temporary);
 				}
 			}
-			
+
 			Collections.reverse(temporary);
-			while(!temporary.isEmpty()) {
+			while (!temporary.isEmpty()) {
 				Object value = temporary.pop();
-				
+
 				try {
 					requestContext.write(String.valueOf(value));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 
 		}
 
+		/**
+		 * Method responsible for the identification and invocation of the functions.
+		 * 
+		 * @param function
+		 * @param temporary
+		 */
 		private void performFunction(ElementFunction function, Stack<Object> temporary) {
 			switch (function.getName()) {
 
@@ -162,11 +189,21 @@ public class SmartScriptEngine {
 			}
 		}
 
+		/**
+		 * Deletes temporary parameter.
+		 * 
+		 * @param temporary
+		 */
 		private void performTParamDel(Stack<Object> temporary) {
 			Object name = temporary.pop();
 			requestContext.removeTemporaryParameter((String) name);
 		}
 
+		/**
+		 * Sets temporary parameter.
+		 * 
+		 * @param temporary
+		 */
 		private void performTParamSet(Stack<Object> temporary) {
 			Object name = temporary.pop();
 			Object value = temporary.pop();
@@ -174,6 +211,11 @@ public class SmartScriptEngine {
 			requestContext.setTemporaryParameter(String.valueOf(name), String.valueOf(value));
 		}
 
+		/**
+		 * Gets temporary parameter.
+		 * 
+		 * @param temporary
+		 */
 		private void performTParamGet(Stack<Object> temporary) {
 			Object defValue = temporary.pop();
 			Object name = temporary.pop();
@@ -182,18 +224,33 @@ public class SmartScriptEngine {
 			temporary.push(value == null ? defValue : value);
 		}
 
+		/**
+		 * Deletes persistent parameter.
+		 * 
+		 * @param temporary
+		 */
 		private void performPParamDel(Stack<Object> temporary) {
 			Object name = temporary.pop();
 			requestContext.removePersistentParameter((String) name);
 		}
 
+		/**
+		 * Sets persistent parameter.
+		 * 
+		 * @param temporary
+		 */
 		private void performPParamSet(Stack<Object> temporary) {
 			Object name = temporary.pop();
 			Object value = temporary.pop();
 
-			requestContext.setPersistentParameter((String) name,  String.valueOf(value));
+			requestContext.setPersistentParameter((String) name, String.valueOf(value));
 		}
 
+		/**
+		 * Gets persistent parameter.
+		 * 
+		 * @param temporary
+		 */
 		private void performPParamGet(Stack<Object> temporary) {
 			Object defValue = temporary.pop();
 			Object name = temporary.pop();
@@ -202,6 +259,11 @@ public class SmartScriptEngine {
 			temporary.push(value == null ? defValue : value);
 		}
 
+		/**
+		 * Gets parameter.
+		 * 
+		 * @param temporary
+		 */
 		private void performParamGet(Stack<Object> temporary) {
 			Object defValue = temporary.pop();
 			Object name = temporary.pop();
@@ -210,10 +272,20 @@ public class SmartScriptEngine {
 			temporary.push(value == null ? defValue : value);
 		}
 
+		/**
+		 * Sets mime type.
+		 * 
+		 * @param temporary
+		 */
 		private void performSetMimeType(Stack<Object> temporary) {
 			requestContext.setMimeType((String) temporary.pop());
 		}
 
+		/**
+		 * Swaps two entries from the given stack.
+		 * 
+		 * @param temporary
+		 */
 		private void performSwap(Stack<Object> temporary) {
 			Object first = temporary.pop();
 			Object second = temporary.pop();
@@ -222,10 +294,20 @@ public class SmartScriptEngine {
 			temporary.push(second);
 		}
 
+		/**
+		 * Duplicates stack peek.
+		 * 
+		 * @param temporary
+		 */
 		private void performDup(Stack<Object> temporary) {
 			temporary.push(temporary.peek());
 		}
 
+		/**
+		 * Formats stack peek.
+		 * 
+		 * @param temporary
+		 */
 		private void performDecfmt(Stack<Object> temporary) {
 			String pattern = (String) temporary.pop();
 			DecimalFormat decimalFormat = new DecimalFormat(pattern);
@@ -234,11 +316,16 @@ public class SmartScriptEngine {
 			temporary.push(decimalFormat.format(wrapper.getValue()));
 		}
 
+		/**
+		 * Calculates sine of the stack peek.
+		 * 
+		 * @param temporary
+		 */
 		private void performSin(Stack<Object> temporary) {
 			Object value = temporary.pop();
 			double result;
-			
-			if(value instanceof Integer) {
+
+			if (value instanceof Integer) {
 				result = sin(toRadians((Integer) value));
 			} else {
 				result = sin(toRadians((Double) value));
@@ -247,6 +334,14 @@ public class SmartScriptEngine {
 			temporary.push(new ValueWrapper(result));
 		}
 
+		/**
+		 * Performs mathematical operation over two ValueWrapper objects.
+		 * 
+		 * @param first
+		 * @param second
+		 * @param operator
+		 * @return
+		 */
 		private ValueWrapper calculateResult(ValueWrapper first, ValueWrapper second, ElementOperator operator) {
 			switch (operator.getSymbol()) {
 
@@ -273,18 +368,29 @@ public class SmartScriptEngine {
 			return first;
 		}
 
+		/**
+		 * Prints DocumentNode.
+		 */
 		@Override
 		public void visitDocumentNode(DocumentNode node) {
 			for (int i = 0, size = node.numberOfChildren(); i < size; i++) {
 				Node currentNode = node.getChild(i);
 				currentNode.accept(this);
 			}
-			
+
 			System.out.println();
 		}
 
 	};
 
+	/**
+	 * Instantiates a new smart script engine.
+	 *
+	 * @param documentNode
+	 *            the document node
+	 * @param requestContext
+	 *            the request context
+	 */
 	public SmartScriptEngine(DocumentNode documentNode, RequestContext requestContext) {
 		Objects.requireNonNull(documentNode, "Document node cannot be null.");
 		Objects.requireNonNull(requestContext, "Request context node cannot be null.");
@@ -293,6 +399,9 @@ public class SmartScriptEngine {
 		this.requestContext = requestContext;
 	}
 
+	/**
+	 * Executes this document node.
+	 */
 	public void execute() {
 		documentNode.accept(visitor);
 	}

@@ -9,14 +9,19 @@ package hr.fer.zemris.java.custom.scripting.nodes;
  */
 public class DocumentNode extends Node {
 
-	/*
-	 * @see java.lang.Object#toString()
+	/**
+	 * Method used for generating string representation of this document.
+	 * NOTICE: this method does not use Visitor design pattern
 	 */
 	@Override
 	public String toString() {
 		return printChildrenNodes();
 	}
 
+	/**
+	 * Method used for generating string representation of this document.
+	 * NOTICE: this method does in fact use Visitor design pattern
+	 */
 	@Override
 	public void accept(INodeVisitor visitor) {
 		visitor.visitDocumentNode(this);

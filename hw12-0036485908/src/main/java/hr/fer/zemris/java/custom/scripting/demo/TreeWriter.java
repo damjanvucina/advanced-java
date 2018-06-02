@@ -14,8 +14,20 @@ import hr.fer.zemris.java.custom.scripting.nodes.Node;
 import hr.fer.zemris.java.custom.scripting.nodes.TextNode;
 import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
 
+/**
+ * The class that represents a program responsible for printing the tree
+ * represented by the DocumentNode. Visitor design pattern is in use.
+ * 
+ * @author Damjan Vučina
+ */
 public class TreeWriter {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.out.println("Invalid input. Expected single file path argument.");
@@ -51,23 +63,39 @@ public class TreeWriter {
 
 	}
 
+	/**
+	 * The class that is responisble for providing an implementation of interface
+	 * that defines the printing of the nodes.
+	 */
 	static class WriterVisitor implements INodeVisitor {
 
+		/**
+		 * Prints TextNode.
+		 */
 		@Override
 		public void visitTextNode(TextNode node) {
 			System.out.print(node.toString());
 		}
 
+		/**
+		 * Prints ForLoopNode.
+		 */
 		@Override
 		public void visitForLoopNode(ForLoopNode node) {
 			System.out.print(node.toString());
 		}
 
+		/**
+		 * Prints EchoNode.
+		 */
 		@Override
 		public void visitEchoNode(EchoNode node) {
 			System.out.print(node.toString());
 		}
 
+		/**
+		 * Prints DocumentNode.
+		 */
 		@Override
 		public void visitDocumentNode(DocumentNode node) {
 			for (int i = 0, size = node.numberOfChildren(); i < size; i++) {

@@ -3,11 +3,27 @@ package hr.fer.zemris.java.webserver.workers;
 import hr.fer.zemris.java.webserver.IWebWorker;
 import hr.fer.zemris.java.webserver.RequestContext;
 
+/**
+ * The class representing a worker used calculating the sum of the given two
+ * parameters and formatting the output in a table.
+ * 
+ * @author Damjan Vučina
+ */
 public class SumWorker implements IWebWorker {
+
+	/** The Constant DEFAULT_A value. */
 	private static final int DEFAULT_A = 1;
+
+	/** The Constant DEFAULT_B value. */
 	private static final int DEFAULT_B = 2;
+
+	/** The Constant ADDITION_TAG. */
 	private static final String ADDITION_TAG = "zbroj";
 
+	/**
+	 * Method responsible for calculating the sum of the given two parameters and
+	 * formatting the output in a table.
+	 */
 	@Override
 	public void processRequest(RequestContext context) {
 		int a = 0;

@@ -46,11 +46,17 @@ public class EchoNode extends Node {
 		return elements;
 	}
 
+	/**
+	 * Method used for notifying the visitor object
+	 */
 	@Override
 	public void accept(INodeVisitor visitor) {
 		visitor.visitEchoNode(this);
 	}
-	
+
+	/**
+	 * Method used for generating string representation of this echo node.
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -9,13 +9,36 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * The demonstration class used for generating the textfile to be inspected by
+ * hexdumping their content.
+ */
 public class DemoRequestContext {
+
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public static void main(String[] args) throws IOException {
 		demo1("primjer1.txt", "ISO-8859-2");
 		demo1("primjer2.txt", "UTF-8");
 		demo2("primjer3.txt", "UTF-8");
 	}
 
+	/**
+	 * First demonstration program.
+	 *
+	 * @param filePath
+	 *            the file path
+	 * @param encoding
+	 *            the encoding
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private static void demo1(String filePath, String encoding) throws IOException {
 		OutputStream os = Files.newOutputStream(Paths.get(filePath));
 		RequestContext rc = new RequestContext(os, new HashMap<String, String>(), new HashMap<String, String>(),
@@ -29,6 +52,16 @@ public class DemoRequestContext {
 		os.close();
 	}
 
+	/**
+	 * Second demonstration program.
+	 *
+	 * @param filePath
+	 *            the file path
+	 * @param encoding
+	 *            the encoding
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private static void demo2(String filePath, String encoding) throws IOException {
 		OutputStream os = Files.newOutputStream(Paths.get(filePath));
 		RequestContext rc = new RequestContext(os, new HashMap<String, String>(), new HashMap<String, String>(),

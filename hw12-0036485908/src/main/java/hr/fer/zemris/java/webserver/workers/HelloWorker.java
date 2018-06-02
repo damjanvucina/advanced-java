@@ -6,15 +6,26 @@ import java.util.Date;
 import hr.fer.zemris.java.webserver.IWebWorker;
 import hr.fer.zemris.java.webserver.RequestContext;
 
+/**
+ * The class responsible for outputting a hello message, current time and the
+ * information on the users name.
+ * 
+ * @author Damjan Vučina
+ */
 public class HelloWorker implements IWebWorker {
+
+	/**
+	 * The method responsible for outputting a hello message, current time and the
+	 * information on the users name.
+	 */
 	@Override
 	public void processRequest(RequestContext context) {
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date now = new Date();
 		context.setMimeType("text/html");
 		String name = context.getParameter("name");
-		
+
 		try {
 			context.write("<html><body>");
 			context.write("<h1>Hello!!!</h1>");
@@ -25,7 +36,7 @@ public class HelloWorker implements IWebWorker {
 				context.write("<p>Your name has " + name.trim().length() + " letters.</p>");
 			}
 			context.write("</body></html>");
-			
+
 		} catch (IOException ex) {
 			// Log exception to servers log...
 			ex.printStackTrace();

@@ -14,11 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,61 +26,123 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import hr.fer.zemris.java.custom.scripting.exec.SmartScriptEngine;
 import hr.fer.zemris.java.custom.scripting.nodes.DocumentNode;
 import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
 import hr.fer.zemris.java.webserver.RequestContext.RCCookie;
 
+/**
+ * The core class of the developed server. This class is responsible for loading
+ * the data from properties files, performing communication with the user,
+ * analyzing user's input and delegating the procession of the user's request to
+ * the designated helper classes and workers. This class defines a few workers
+ * responsible for performing simple calculation tasks and drawing simple
+ * objects.
+ * 
+ * @author Damjan Vučina
+ */
 public class SmartHttpServer {
+
+	/** The Constant ADDRESS_PROPERTY. */
 	private static final String ADDRESS_PROPERTY = "server.address";
+
+	/** The Constant DOMAIN_NAME_PROPERTY. */
 	private static final String DOMAIN_NAME_PROPERTY = "server.domainName";
+
+	/** The Constant PORT_PROPERTY. */
 	private static final String PORT_PROPERTY = "server.port";
+
+	/** The Constant WORKER_THREADS_PROPERTY. */
 	private static final String WORKER_THREADS_PROPERTY = "server.workerThreads";
+
+	/** The Constant DOCUMENT_ROOT_PROPERTY. */
 	private static final String DOCUMENT_ROOT_PROPERTY = "server.documentRoot";
+
+	/** The Constant TIMEOUT_PROPERTY. */
 	private static final String TIMEOUT_PROPERTY = "session.timeout";
 
+	/** The Constant MIME_CONFIG_PROPERTY. */
 	private static final String MIME_CONFIG_PROPERTY = "server.mimeConfig";
+
+	/** The Constant WORKERS_CONFIG_PROPERTY. */
 	private static final String WORKERS_CONFIG_PROPERTY = "server.workers";
 
-	private static final String HOST_REGEX = "(\\w ):(\\d+)";
-
+	/** The Constant DEFAULT_MIME_TYPE. */
 	private static final String DEFAULT_MIME_TYPE = "application/octet-stream";
 
+	/** The Fully Qualified Class name for the EchoParams Worker */
 	private static final String ECHO_FQCN = "hr.fer.zemris.java.webserver.workers.EchoParams";
-	private static final String CIRCLE_FQCN = "hr.fer.zemris.java.webserver.workers.CircleWorker";
-	private static final String HELLO_FQCN = "hr.fer.zemris.java.webserver.workers.HelloWorker";
-	private static final String HOME_FQCN = "hr.fer.zemris.java.webserver.workers.Home";
-	private static final String BGCOLOR_FQCN = "hr.fer.zemris.java.webserver.workers.BgColorWorker";
-	
 
+	/** The Fully Qualified Class name for the Circle Worker */
+	@SuppressWarnings("unused")
+	private static final String CIRCLE_FQCN = "hr.fer.zemris.java.webserver.workers.CircleWorker";
+
+	/** The Fully Qualified Class name for the Hello Worker */
+	@SuppressWarnings("unused")
+	private static final String HELLO_FQCN = "hr.fer.zemris.java.webserver.workers.HelloWorker";
+
+	/** The Fully Qualified Class name for the Home Worker */
+	private static final String HOME_FQCN = "hr.fer.zemris.java.webserver.workers.Home";
+
+	/** The Fully Qualified Class name for the BgColor Worker */
+	private static final String BGCOLOR_FQCN = "hr.fer.zemris.java.webserver.workers.BgColorWorker";
+
+	/** The Constant COOKIE_SEPARATOR. */
 	private static final String COOKIE_SEPARATOR = ";";
 
+	/** The address. */
 	private String address;
+
+	/** The domain name. */
+	@SuppressWarnings("unused")
 	private String domainName;
+
+	/** The port. */
 	private int port;
+
+	/** The worker threads. */
 	private int workerThreads;
+
+	/** The session timeout. */
 	private int sessionTimeout;
+
+	/** The mime types. */
 	private Map<String, String> mimeTypes = new HashMap<>();
+
+	/** The server thread. */
 	private ServerThread serverThread;
+
+	/** The thread pool. */
 	private ExecutorService threadPool;
+
+	/** The document root. */
 	private Path documentRoot;
 
+	/** The mime config. */
 	private String mimeConfig;
+
+	/** The workers config. */
 	private String workersConfig;
 
+	/** The workers map. */
 	private Map<String, IWebWorker> workersMap = new HashMap<>();
+
+	/** The worker name map. */
 	private Map<String, IWebWorker> workerNameMap = new HashMap<>();
 
-	private Map<String, SessionMapEntry> sessions = new HashMap<String, SmartHttpServer.SessionMapEntry>();// stavi da
-																											// je obicna
-																											// hasmapa
+	/** The sessions. */
+	private Map<String, SessionMapEntry> sessions = new HashMap<String, SmartHttpServer.SessionMapEntry>();
+
+	/** The session random. */
 	private Random sessionRandom = new Random();
 
-	private String extractedHostName;
-
+	/**
+	 * Instantiates a new smart http server and sets up properties.
+	 *
+	 * @param configFileName
+	 *            the config file name
+	 */
 	public SmartHttpServer(String configFileName) {
 		Properties properties = new Properties();
 
@@ -98,6 +157,15 @@ public class SmartHttpServer {
 		setUpNameWorkers();
 	}
 
+	/**
+	 * Loads properties.
+	 *
+	 * @param properties
+	 *            the properties
+	 * @param fileName
+	 *            the file name
+	 * @return the properties
+	 */
 	private Properties loadProperties(Properties properties, String fileName) {
 		properties.clear();
 		InputStream inputStream = null;
@@ -113,6 +181,26 @@ public class SmartHttpServer {
 		return properties;
 	}
 
+	/**
+	 * Sets the up name workers, i.e. map that maps workers name to the designated
+	 * classes.
+	 * 
+	 * @throws ClassNotFoundException
+	 *             when an application tries to load in a class but no definition
+	 *             for the class with the specified name could be found
+	 * @throws InstantiationException
+	 *             when an application tries to create an instance of a class using
+	 *             the newInstance method in class Class, but the specified class
+	 *             object cannot be instantiated.
+	 * @throws IllegalAccessException
+	 *             when an application tries to reflectively create an instance ,
+	 *             set or get a field, or invoke a method, but the currently
+	 *             executing method does not have access to the definition of the
+	 *             specified class
+	 * 
+	 * 
+	 */
+	@SuppressWarnings("deprecation")
 	private void setUpNameWorkers() {
 		try {
 			workerNameMap.put("HelloWorker", workersMap.get("/hello"));
@@ -127,9 +215,9 @@ public class SmartHttpServer {
 			Object newObject2 = referenceToClass2.newInstance();
 			IWebWorker iww2 = (IWebWorker) newObject2;
 			workerNameMap.put("Home", iww2);
-			
+
 			Class<?> referenceToClass3 = this.getClass().getClassLoader().loadClass(BGCOLOR_FQCN);
-			Object newObject3 = referenceToClass2.newInstance();
+			Object newObject3 = referenceToClass3.newInstance();
 			IWebWorker iww3 = (IWebWorker) newObject3;
 			workerNameMap.put("BgColorWorker", iww3);
 
@@ -142,10 +230,25 @@ public class SmartHttpServer {
 		}
 	}
 
+	/**
+	 * Sets up the workers.
+	 *
+	 * @param properties
+	 *            the new up workers
+	 */
 	private void setUpWorkers(Properties properties) {
 		properties.forEach((key, value) -> processWorker(key, value));
 	}
 
+	/**
+	 * Processes worker by initializing the workers map.
+	 *
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 */
+	@SuppressWarnings("deprecation")
 	private void processWorker(Object key, Object value) {
 		try {
 			String path = (String) key;
@@ -169,10 +272,22 @@ public class SmartHttpServer {
 		}
 	}
 
+	/**
+	 * Sets the up mime type.
+	 *
+	 * @param properties
+	 *            the new up mime
+	 */
 	private void setUpMime(Properties properties) {
 		properties.forEach((key, value) -> mimeTypes.put(key.toString(), value.toString()));
 	}
 
+	/**
+	 * Sets the up server.
+	 *
+	 * @param properties
+	 *            the new up server
+	 */
 	private void setUpServer(Properties properties) {
 		address = properties.getProperty(ADDRESS_PROPERTY);
 		domainName = properties.getProperty(DOMAIN_NAME_PROPERTY);
@@ -185,6 +300,9 @@ public class SmartHttpServer {
 		workersConfig = String.valueOf(Paths.get(properties.getProperty(WORKERS_CONFIG_PROPERTY)));
 	}
 
+	/**
+	 * Starts the server and creates a collector of inactive sessions.
+	 */
 	protected synchronized void start() {
 		createInactiveSessionCollector();
 		if (serverThread == null) {
@@ -195,55 +313,64 @@ public class SmartHttpServer {
 		threadPool = Executors.newFixedThreadPool(workerThreads);
 	}
 
+	/**
+	 * Creates the inactive session collector.
+	 */
 	private void createInactiveSessionCollector() {
 		boolean isDeamon = true;
 		Timer timer = new Timer(isDeamon);
 		Map<String, SessionMapEntry> sessionCopy = new HashMap<>(sessions);
-		
+
 		TimerTask timerTask = new TimerTask() {
-			
+
 			@Override
 			public void run() {
-				for(Entry<String, SessionMapEntry> entry : sessionCopy.entrySet()) {
-					if(isExpired(entry.getValue().validUntil)) {
-						sessions.remove(entry);
+				for (Entry<String, SessionMapEntry> entry : sessionCopy.entrySet()) {
+					if (isExpired(entry.getValue().validUntil)) {
+						sessions.remove(entry.getKey());
 					}
 				}
 			}
 
 			private boolean isExpired(long validUntil) {
-				return validUntil > System.currentTimeMillis()/1000;
+				return validUntil > System.currentTimeMillis() / 1000;
 			}
 		};
-		
+
 		long delay = 0;
-		long period = 300000; //300000 seconds = 5 minutes
+		long period = 300000; // 300000 seconds = 5 minutes
 		timer.schedule(timerTask, delay, period);
 	}
 
+	/**
+	 * Stops the server.
+	 */
 	protected synchronized void stop() {
-		// … signal server thread to stop running …
-		// … shutdown threadpool …
 		serverThread.interrupt();
 		threadPool.shutdown();
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		SmartHttpServer server = new SmartHttpServer("config/server.properties");
 		server.start();
 	}
 
+	/**
+	 * The class that represents the work performed by this server.
+	 */
 	protected class ServerThread extends Thread {
+
+		/**
+		 * Method represents the work performed by this server.
+		 */
 		@Override
 		public void run() {
-			// given in psudo-code:
-			// open serverSocket on specified port
-			// while(true) {
-			// Socket client = serverSocket.accept();
-			// ClientWorker cw = new ClientWorker(client);
-			// submit cw to threadpool for execution
-			// }
-
 			try {
 				ServerSocket serverSocket = new ServerSocket();
 				serverSocket.bind(new InetSocketAddress(address, port));
@@ -260,12 +387,36 @@ public class SmartHttpServer {
 		}
 	}
 
+	/**
+	 * The Class that gives further information on a certain session. Used to track
+	 * the clients of this server.
+	 */
 	private static class SessionMapEntry {
+
+		/** The session id number. */
 		String sid;
+
+		/** The host. */
 		String host;
+
+		/** The valid until timestamp. */
 		long validUntil;
+
+		/** The map. */
 		Map<String, String> map;
 
+		/**
+		 * Instantiates a new session map entry.
+		 *
+		 * @param sid
+		 *            the sid
+		 * @param host
+		 *            the host
+		 * @param validUntil
+		 *            the valid until
+		 * @param map
+		 *            the map
+		 */
 		public SessionMapEntry(String sid, String host, long validUntil, Map<String, String> map) {
 			this.sid = sid;
 			this.host = host;
@@ -274,26 +425,66 @@ public class SmartHttpServer {
 		}
 	}
 
+	/**
+	 * The class that is responsible for inspecting the request header, extracting
+	 * data from the header, reading and writing to the user.
+	 */
 	private class ClientWorker implements Runnable, IDispatcher {
+
+		/** The client socket. */
 		private Socket csocket;
+
+		/** The input stream. */
 		private PushbackInputStream istream;
+
+		/** The output stream. */
 		private OutputStream ostream;
+
+		/** The version. */
+		@SuppressWarnings("unused")
 		private String version;
+
+		/** The method. */
+		@SuppressWarnings("unused")
 		private String method;
+
+		/** The host. */
 		private String host;
+
+		/** The parameters. */
 		private Map<String, String> params = new HashMap<String, String>();
+
+		/** The temporary params. */
 		private Map<String, String> tempParams = new HashMap<String, String>();
+
+		/** The permanent params. */
 		private Map<String, String> permParams = new HashMap<String, String>();
+
+		/** The output cookies. */
 		private List<RCCookie> outputCookies = new ArrayList<RequestContext.RCCookie>();
+
+		/** The session id. */
+		@SuppressWarnings("unused")
 		private String SID;
 
+		/** The context. */
 		private RequestContext context;
 
+		/**
+		 * Instantiates a new client worker.
+		 *
+		 * @param csocket
+		 *            the csocket
+		 */
 		public ClientWorker(Socket csocket) {
 			super();
 			this.csocket = csocket;
 		}
 
+		/**
+		 * Method that is responsible for inspecting the request header, extracting data
+		 * from the header, reading and writing to the user.
+		 */
 		@Override
 		public void run() {
 			try {
@@ -304,8 +495,6 @@ public class SmartHttpServer {
 				if (request.size() < 1) {
 					sendError(400, "Header is less than a single line.");
 				}
-
-				System.out.println("a");
 
 				String firstLine = request.get(0);
 				String[] items = firstLine.split(" ");
@@ -350,13 +539,14 @@ public class SmartHttpServer {
 
 				} else {
 					path = requestedPath;
-					System.out.println("b");
 				}
 
 				internalDispatchRequest(path, true);
 
 			} catch (IOException e) {
 				e.printStackTrace();
+
+			} catch (NullPointerException e) {
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -371,6 +561,14 @@ public class SmartHttpServer {
 			}
 		}
 
+		/**
+		 * Performs checks on the current session. Depending on the request's cookie,
+		 * this method delegates to helper methods responsible to creating new sessions
+		 * or updating existing ones.
+		 *
+		 * @param request
+		 *            the request
+		 */
 		private synchronized void checkSession(List<String> request) {
 			String sidCandidate = null;
 			for (String line : request) {
@@ -391,12 +589,11 @@ public class SmartHttpServer {
 			if (sidCandidate == null) {
 				processNewSid();
 			} else {
-				//String browserHost = sessions.get(sidCandidate).host;
 				String browserHost = null;
-				if(sessions.get(sidCandidate) != null) {
+				if (sessions.get(sidCandidate) != null) {
 					browserHost = sessions.get(sidCandidate).host;
-				} 
-				
+				}
+
 				if (!host.equals(browserHost)) {
 					processNewSid();
 				} else {
@@ -405,6 +602,12 @@ public class SmartHttpServer {
 			}
 		}
 
+		/**
+		 * Process existing session.
+		 *
+		 * @param entry
+		 *            the entry
+		 */
 		private void processExistingSid(SessionMapEntry entry) {
 			if (entry.validUntil < System.currentTimeMillis() / 1000) {
 				sessions.remove(entry.sid);
@@ -416,6 +619,9 @@ public class SmartHttpServer {
 
 		}
 
+		/**
+		 * Process new session.
+		 */
 		private void processNewSid() {
 			String sid = generateSessionID();
 			long validUntil = System.currentTimeMillis() / 1000 + sessionTimeout;
@@ -430,6 +636,11 @@ public class SmartHttpServer {
 			outputCookies.add(new RCCookie("sid", sid, null, host, "/"));
 		}
 
+		/**
+		 * Generate session ID.
+		 *
+		 * @return the string
+		 */
 		private String generateSessionID() {
 			int leftLimit = 65; // 'A'
 			int rightLimit = 90; // 'Z'
@@ -444,6 +655,12 @@ public class SmartHttpServer {
 			return buffer.toString();
 		}
 
+		/**
+		 * Parses the parameters.
+		 *
+		 * @param paramString
+		 *            the param string
+		 */
 		private void parseParameters(String paramString) {
 			String[] paramPairs = paramString.split("&");
 
@@ -455,6 +672,16 @@ public class SmartHttpServer {
 			}
 		}
 
+		/**
+		 * Sends error to the user.
+		 *
+		 * @param statusCode
+		 *            the status code
+		 * @param statusText
+		 *            the status text
+		 * @throws IOException
+		 *             Signals that an I/O exception has occurred.
+		 */
 		private void sendError(int statusCode, String statusText) throws IOException {
 
 			ostream.write(("HTTP/1.1 " + statusCode + " " + statusText + "\r\n" + "Server: simple java server\r\n"
@@ -464,6 +691,11 @@ public class SmartHttpServer {
 
 		}
 
+		/**
+		 * Extracts header.
+		 *
+		 * @return the list
+		 */
 		private List<String> extractHeaders() {
 			List<String> headers = new ArrayList<String>();
 			String currentLine = null;
@@ -491,6 +723,13 @@ public class SmartHttpServer {
 			return headers;
 		}
 
+		/**
+		 * Reads request.
+		 *
+		 * @param istream
+		 *            the istream
+		 * @return the byte[]
+		 */
 		private byte[] readRequest(PushbackInputStream istream) {
 
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -543,6 +782,17 @@ public class SmartHttpServer {
 			return bos.toByteArray();
 		}
 
+		/**
+		 * Dispatches the request to the worker classes and validates the level of
+		 * clearance for reading private files.
+		 *
+		 * @param path
+		 *            the path
+		 * @param directCall
+		 *            the direct call
+		 * @throws Exception
+		 *             the exception
+		 */
 		public void internalDispatchRequest(String path, boolean directCall) throws Exception {
 			try {
 				if (path.startsWith("/private") && directCall) {
@@ -551,7 +801,6 @@ public class SmartHttpServer {
 				}
 				Path resolvedReqPath = documentRoot.toAbsolutePath().normalize().resolve(path.substring(1))
 						.toAbsolutePath();
-				System.out.println(String.valueOf(resolvedReqPath));
 				if (!resolvedReqPath.startsWith(documentRoot.normalize().toAbsolutePath())) {
 					sendError(403, "Forbidden.");
 					return;
@@ -566,11 +815,8 @@ public class SmartHttpServer {
 						return;
 					}
 				}
-				
-				System.out.println("FAJLL JE " + resolvedReqPath);
-				workersMap.forEach((a, b)->System.out.println(a+" " + b));
+
 				if (workersMap.containsKey("/" + resolvedReqPath.getFileName())) {
-					System.out.println("e");
 					workersMap.get("/" + resolvedReqPath.getFileName()).processRequest(acquireContext());
 					return;
 				}
@@ -592,11 +838,9 @@ public class SmartHttpServer {
 				rc.setStatusCode(200);
 
 				if (path.endsWith(".smscr")) {
-					System.out.println("d");
 					processSmscrFile(resolvedReqPath, rc);
 
 				} else {
-					System.out.println("z");
 					byte[] content = Files.readAllBytes(resolvedReqPath);
 					rc.write(content);
 				}
@@ -607,6 +851,11 @@ public class SmartHttpServer {
 
 		}
 
+		/**
+		 * Acquires existing context or creates a new one.
+		 *
+		 * @return the request context
+		 */
 		private RequestContext acquireContext() {
 			if (context == null) {
 				context = new RequestContext(ostream, params, permParams, outputCookies, tempParams, this);
@@ -615,6 +864,14 @@ public class SmartHttpServer {
 			return context;
 		}
 
+		/**
+		 * Process smscr file.
+		 *
+		 * @param resolvedReqPath
+		 *            the resolved req path
+		 * @param rc
+		 *            the rc
+		 */
 		private void processSmscrFile(Path resolvedReqPath, RequestContext rc) {
 			byte[] content = null;
 			try {
@@ -623,7 +880,6 @@ public class SmartHttpServer {
 				e.printStackTrace();
 			}
 
-			System.out.println("processing smcr");
 			String smscrContent = new String(content, Charset.defaultCharset());
 			SmartScriptParser parser = new SmartScriptParser(smscrContent);
 			DocumentNode document = parser.getDocumentNode();
@@ -632,6 +888,9 @@ public class SmartHttpServer {
 			engine.execute();
 		}
 
+		/**
+		 * Dispatches this non direct request.
+		 */
 		@Override
 		public void dispatchRequest(String urlPath) throws Exception {
 			internalDispatchRequest(urlPath, false);

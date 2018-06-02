@@ -12,8 +12,16 @@ import javax.imageio.ImageIO;
 import hr.fer.zemris.java.webserver.IWebWorker;
 import hr.fer.zemris.java.webserver.RequestContext;
 
+/**
+ * The worker class responsible for creating an image of the circle.
+ * 
+ * @author Damjan Vučina
+ */
 public class CircleWorker implements IWebWorker {
 
+	/**
+	 * Creates an image of the circle an writes it to the output stream.
+	 */
 	@Override
 	public void processRequest(RequestContext context) throws Exception {
 		BufferedImage bim = new BufferedImage(200, 200, BufferedImage.TYPE_3BYTE_BGR);

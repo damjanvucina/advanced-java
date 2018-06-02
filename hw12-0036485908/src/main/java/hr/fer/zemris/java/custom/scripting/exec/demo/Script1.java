@@ -14,8 +14,20 @@ import hr.fer.zemris.java.custom.scripting.parser.SmartScriptParser;
 import hr.fer.zemris.java.webserver.RequestContext;
 import hr.fer.zemris.java.webserver.RequestContext.RCCookie;
 
+/**
+ * Test class responsible for the demonstation of parsing and executing a
+ * document.
+ * 
+ * @author Damjan Vučina
+ */
 public class Script1 {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		String documentBody = null;
 		try {

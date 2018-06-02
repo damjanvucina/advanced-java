@@ -3,6 +3,7 @@ package hr.fer.zemris.java.custom.scripting.nodes;
 import hr.fer.zemris.java.custom.scripting.elems.Element;
 import hr.fer.zemris.java.custom.scripting.elems.ElementVariable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The class that represents a node which consist of a single for-loop
  * construct. It inherits from Node class. It is defined by the case insensitive
@@ -102,11 +103,17 @@ public class ForLoopNode extends Node {
 		return stepExpression;
 	}
 
+	/**
+	 * Method used for notifying the visitor object
+	 */
 	@Override
 	public void accept(INodeVisitor visitor) {
 		visitor.visitForLoopNode(this);
 	}
 	
+	/**
+	 * Method used for generating string representation of this for loop node.
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

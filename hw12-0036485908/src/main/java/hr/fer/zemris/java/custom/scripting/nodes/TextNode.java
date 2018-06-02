@@ -33,11 +33,17 @@ public class TextNode extends Node {
 		return text;
 	}
 
+	/**
+	 * Method used for notifying the visitor object
+	 */
 	@Override
 	public void accept(INodeVisitor visitor) {
 		visitor.visitTextNode(this);
 	}
 	
+	/**
+	 * Method used for generating string representation of this text node.
+	 */
 	@Override
 	public String toString() {
 		return text;
