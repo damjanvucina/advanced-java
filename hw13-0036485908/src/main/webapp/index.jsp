@@ -46,5 +46,9 @@
 		<input type="submit" value="Generate XLS"><input type="reset"
 			value="Reset values">
 	</form>
+	<br>
+	<br>
+	<h1>App Lifetime</h1>
+	<a href="appinfo.jsp" action="GET">View app lifetime</a>
 </body>
 </html>
