@@ -8,5 +8,8 @@
 			<a href="./setcolor?color=red">RED</a><br>
 			<a href="./setcolor?color=green"> GREEN</a><br>
 			<a href="./setcolor?color=cyan">CYAN</a><br>
+			
+			<br><br>
+			<a href="./index.jsp">Go to homepage</a><br>
    </body>
 </html>
