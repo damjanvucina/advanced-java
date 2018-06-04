@@ -7,12 +7,13 @@
 	<a href="./colors.jsp">Choose color</a>
 	<br>
 	<br>
+	
 	<h1>Trigonometry</h1>
-	<a href="./trigonometric?a=0&b=90" action="GET">See basic
-		trigonometric angles table</a>
+	<a href="./trigonometric?a=0&b=90" action="GET">See basic trigonometric angles table</a>
 	<br>
 	<br>
-	<h1>Form</h1>
+	
+	<h3>Form</h3>
 	<form action="trigonometric" method="GET">
 		Početni kut:<br>
 		<input type="number" name="a" min="0" max="360" step="1" value="0"><br>
@@ -21,5 +22,11 @@
 		<input type="submit" value="Tabeliraj"><input type="reset"
 			value="Reset">
 	</form>
+	
+	<h1>Trigonometry</h1>
+	<a href="funny" action="GET">A funny story</a>
+	<br>
+	<br>
+	
 </body>
 </html>
