@@ -29,7 +29,7 @@ public class SetColorServlet extends HttpServlet {
 		HttpSession session = req.getSession();
 		session.setAttribute(COLOR_ATTRIBUTE, pickedColor);
 
-		req.getRequestDispatcher("/index.jsp").forward(req, resp);
+		req.getRequestDispatcher("/colors.jsp").forward(req, resp);
 	}
 
 	private boolean isSupportedColor(String pickedColor) {
