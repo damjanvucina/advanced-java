@@ -59,7 +59,7 @@ public class TrigonometricTableServlet extends HttpServlet {
 		HttpSession session = req.getSession();
 		session.setAttribute("angles", list);
 		
-		req.getRequestDispatcher("/WEB-INF/pages/trigonometric.jsp").forward(req, resp);;
+		req.getRequestDispatcher("/WEB-INF/pages/trigonometric.jsp").forward(req, resp);
 	}
 	
 	public static class TrigonometryEncapsulation{

@@ -14,12 +14,12 @@
 	<br>
 	<br>
 
-	<h3>Form</h3>
+	<h3>Enter custom limits</h3>
 	<form action="trigonometric" method="GET">
-		Početni kut:<br> <input type="number" name="a" min="0" max="360"
-			step="1" value="0"><br> Završni kut:<br> <input
+		Start angle:<br> <input type="number" name="a" min="0" max="360"
+			step="1" value="0"><br> End angle:<br> <input
 			type="number" name="b" min="0" max="360" step="1" value="360"><br>
-		<input type="submit" value="Tabeliraj"><input type="reset"
+		<input type="submit" value="Show Table"><input type="reset"
 			value="Reset">
 	</form>
 
@@ -32,5 +32,19 @@
 	<br>
 	<br>
 
+	<h1>XLS Generator</h1>
+	<h3>a represents lower limit; its value must be between -100 and
+		100</h3>
+	<h3>b represents upper limit; its value must be between -1 and 100</h3>
+	<h3>n represents numbers of sheets to be generated; its value must
+		be between 1 and 5</h3>
+
+	<form action="powers" method="GET">
+		a:<br> <input type="number" name="a" step="1" value="1"><br>
+		b:<br> <input type="number" name="b" step="1" value="100"><br>
+		n:<br> <input type="number" name="n" step="1" value="3"><br>
+		<input type="submit" value="Generate XLS"><input type="reset"
+			value="Reset values">
+	</form>
 </body>
 </html>
