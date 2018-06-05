@@ -1,6 +1,5 @@
 package hr.fer.zemris.java.servlets;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -22,7 +21,7 @@ public class PowersServlet extends HttpServlet {
 		int a = 0;
 		int b = 0;
 		int n = 0;
-		
+
 		int status;
 
 		try {
@@ -35,13 +34,11 @@ public class PowersServlet extends HttpServlet {
 		}
 
 		status = validateLimits(a, b, n, req, resp);
-		if(status == -1) {
+		if (status == -1) {
 			return;
 		}
-		
-		generateXLS(a, b, n);
 
-		req.getRequestDispatcher("/index.jsp").forward(req, resp);
+		generateXLS(a, b, n, resp);
 	}
 
 	private int validateLimits(int a, int b, int n, HttpServletRequest req, HttpServletResponse resp) {
@@ -59,7 +56,7 @@ public class PowersServlet extends HttpServlet {
 			errorOccurred("n must be between 1 and 5, was: " + n, req, resp);
 			return -1;
 		}
-		
+
 		return 0;
 	}
 
@@ -72,9 +69,11 @@ public class PowersServlet extends HttpServlet {
 		}
 	}
 
-	private void generateXLS(int a, int b, int n) {
+	private void generateXLS(int a, int b, int n, HttpServletResponse resp) {
+		resp.setContentType("application/vnd.ms-excel");
+		resp.setHeader("Content-Disposition", "attachment; filename=powers.xls");
+
 		try {
-			String filename = "generatedFile.xls";// file saved in project root
 			HSSFWorkbook hwb = new HSSFWorkbook();
 
 			for (int i = 1; i <= n; i++) {
@@ -92,9 +91,7 @@ public class PowersServlet extends HttpServlet {
 				}
 			}
 
-			FileOutputStream fileOut = new FileOutputStream(filename);
-			hwb.write(fileOut);
-			fileOut.close();
+			hwb.write(resp.getOutputStream());
 			hwb.close();
 		} catch (Exception ex) {
 			System.out.println(ex);
