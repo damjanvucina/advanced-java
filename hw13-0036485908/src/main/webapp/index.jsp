@@ -35,7 +35,7 @@
 	<h1>XLS Generator</h1>
 	<h3>a represents lower limit; its value must be between -100 and
 		100</h3>
-	<h3>b represents upper limit; its value must be between -1 and 100</h3>
+	<h3>b represents upper limit; its value must be between -100 and 100</h3>
 	<h3>n represents numbers of sheets to be generated; its value must
 		be between 1 and 5</h3>
 
@@ -49,6 +49,9 @@
 	<br>
 	<br>
 	<h1>App Lifetime</h1>
-	<a href="appinfo.jsp" action="GET">View app lifetime</a>
+	<a href="appinfo.jsp">View app lifetime</a>
+	<br><br>
+	<h1>Bend Voting</h1>
+	<a href="glasanje" action="GET">Vote for your favorite band!</a>
 </body>
 </html>
