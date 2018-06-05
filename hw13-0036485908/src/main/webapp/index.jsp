@@ -9,7 +9,7 @@
 	<br>
 
 	<h1>Trigonometry</h1>
-	<a href="./trigonometric?a=0&b=90" action="GET">See basic
+	<a href="./trigonometric?a=0&b=90">See basic
 		trigonometric angles table</a>
 	<br>
 	<br>
@@ -24,11 +24,11 @@
 	</form>
 
 	<h1>A funny story</h1>
-	<a href="funny" action="GET">A funny story</a>
+	<a href="funny">A funny story</a>
 	<br>
 	<br>
 	<h1>Operating systems distribution</h1>
-	<a href="reportImage" action="GET">Distribution info</a>
+	<a href="reportImage">Distribution info</a>
 	<br>
 	<br>
 
@@ -52,6 +52,6 @@
 	<a href="appinfo.jsp">View app lifetime</a>
 	<br><br>
 	<h1>Bend Voting</h1>
-	<a href="glasanje" action="GET">Vote for your favorite band!</a>
+	<a href="glasanje">Vote for your favorite band!</a>
 </body>
 </html>

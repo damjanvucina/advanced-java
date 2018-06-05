@@ -3,10 +3,6 @@ package hr.fer.zemris.java.servlets;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -24,10 +20,25 @@ import org.jfree.chart.util.Rotation;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
+/**
+ * The servlet class responsible for generating a pie-chart representing the
+ * number of votes for each band. Bands that do not have a single vote at the
+ * time of invocation are not displayed on the chart.
+ * 
+ * @author Damjan Vučina
+ */
 @WebServlet("/glasanje-grafika")
 public class GlasanjeGrafikaServlet extends HttpServlet {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Generates a pie-chart representing the number of votes for each band based on
+	 * the current standings as can be seen by downloading the designated xls file.
+	 * Bands that do not have a single vote at the time of invocation are not
+	 * displayed on the chart.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("image/png");
@@ -43,6 +54,17 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 		writeStream.close();
 	}
 
+	/**
+	 * Creates the pie-chart using the current band-vote as can be seen by
+	 * downloading the designated xls file. Bands that do not have a single vote at
+	 * the time of invocation are not displayed on the chart.
+	 *
+	 * @param dataset
+	 *            the dataset
+	 * @param title
+	 *            the title of the chart
+	 * @return the chart
+	 */
 	private JFreeChart createChart(PieDataset dataset, String title) {
 
 		JFreeChart chart = ChartFactory.createPieChart3D(title, // chart title
@@ -58,12 +80,20 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 
 	}
 
+	/**
+	 * Creates the dataset by acquring the number of votes for each band from the
+	 * txt file representing a database.
+	 *
+	 * @param req
+	 *            the request
+	 * @return the chart dataset
+	 */
 	private PieDataset createDataset(HttpServletRequest req) {
 		DefaultPieDataset result = new DefaultPieDataset();
 		@SuppressWarnings("unchecked")
 		Map<String, Integer> map = (Map<String, Integer>) req.getServletContext().getAttribute("results");
-		map.forEach((k, v) ->{
-			if(v > 0) {
+		map.forEach((k, v) -> {
+			if (v > 0) {
 				result.setValue(k, v);
 			}
 		});

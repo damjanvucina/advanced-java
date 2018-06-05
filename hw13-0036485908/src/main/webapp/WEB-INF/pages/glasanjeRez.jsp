@@ -12,7 +12,7 @@
 	<h1>Band voting results</h1>
 	<p>Results are shown below:</p>
 
-	<table border=2>
+	<table border=1>
 		<thead>
 			<tr>
 				<th>Band</th>
@@ -36,7 +36,7 @@
 	<br>
 	<br>
 	<h3>Download voting results</h3>
-	<a href="glasanje-xls" action="GET">Results are available here</a>
+	<a href="glasanje-xls">Results are available here</a>
 	<br>
 	<br>
 	<h3>References</h3>

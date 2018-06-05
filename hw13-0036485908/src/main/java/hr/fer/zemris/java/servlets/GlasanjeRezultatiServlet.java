@@ -21,10 +21,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/**
+ * The servlet class responsible for creating a map containing the bands an
+ * their votes. This map is to be used by the glasanjeRez.jsp file for
+ * displaying purposes. This class also generates a map to be used for
+ * displaying the links for the mos popular bands.
+ * 
+ * @author Damjan Vučina
+ */
 @WebServlet("/glasanje-rezultati")
 public class GlasanjeRezultatiServlet extends HttpServlet {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a band-votes and band-link mappings to be used by the glasanjeRez.jsp
+	 * file for displaying purposes.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String fileName = req.getServletContext().getRealPath("/WEB-INF/glasanje-rezultati.txt");
@@ -68,6 +82,15 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 		req.getRequestDispatcher("/WEB-INF/pages/glasanjeRez.jsp").forward(req, resp);
 	}
 
+	/**
+	 * Acquires references to bands from the base txt file representing a database.
+	 *
+	 * @param votingFile
+	 *            the voting file
+	 * @param sortedMap
+	 *            the sorted map
+	 * @return the map
+	 */
 	private Map<String, String> acquireReferences(List<String> votingFile, Map<String, Integer> sortedMap) {
 		int maxVotes = 0;
 		Map<String, String> references = new HashMap<>();
@@ -90,10 +113,20 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 				references.put(elems[1], elems[2]);
 			}
 		}
-		
+
 		return references;
 	}
 
+	/**
+	 * Extracts band name based on the id of the band from the txt file representing
+	 * a database.
+	 *
+	 * @param bandID
+	 *            the band ID
+	 * @param votingFile
+	 *            the voting file
+	 * @return the band's name
+	 */
 	private String extractBandName(String bandID, List<String> votingFile) {
 		for (String line : votingFile) {
 
@@ -105,8 +138,13 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 		return bandID;
 	}
 
-	// algorithm used available at
-	// https://www.mkyong.com/java/how-to-sort-a-map-in-java/
+	/**
+	 * Helper method used for sorting a hashmap by its Integer value.
+	 *
+	 * @param map
+	 *            the map
+	 * @return the sorted map
+	 */
 	private Map<String, Integer> sortByValue(Map<String, Integer> map) {
 		List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(map.entrySet());
 
@@ -124,6 +162,17 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 		return sortedMap;
 	}
 
+	/**
+	 * Signals that an error occurred by redirecting to a error page with the error
+	 * message.
+	 *
+	 * @param errorMessage
+	 *            the error message
+	 * @param req
+	 *            the request
+	 * @param resp
+	 *            the response
+	 */
 	private void errorOccurred(String errorMessage, HttpServletRequest req, HttpServletResponse resp) {
 		try {
 			req.setAttribute("errorMessage", errorMessage);

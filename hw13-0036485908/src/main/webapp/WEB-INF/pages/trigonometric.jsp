@@ -17,7 +17,7 @@
 	<a href="./index.jsp">Go to homepage</a>
 	<br>
 
-	<table border=2>
+	<table border=1>
 		<thead>
 			<tr>
 				<th>Number</th>

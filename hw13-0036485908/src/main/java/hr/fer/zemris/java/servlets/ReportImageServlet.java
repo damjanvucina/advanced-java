@@ -19,10 +19,24 @@ import org.jfree.chart.util.Rotation;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
+/**
+ * The class responsible for the creation of a demonstration pie chart with
+ * dummy data. The free jfreechart library is used for the process of creating
+ * the chart.
+ * 
+ * @author Damjan Vučina
+ */
 @WebServlet("/reportImage")
 public class ReportImageServlet extends HttpServlet {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Method assigned with the task of creating a dummy dataset to be shown on the
+	 * pie-chart, creating the chart itself and writing the generated chart to the
+	 * response stream as png image.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("image/png");
@@ -32,10 +46,19 @@ public class ReportImageServlet extends HttpServlet {
 		JFreeChart chart = createChart(dataset, "Operating Systems Distribution");
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new Dimension(500, 500));
-		
+
 		ChartUtils.writeChartAsPNG(writeStream, chart, 500, 500);
 	}
 
+	/**
+	 * Creates the chart with dummy values.
+	 *
+	 * @param dataset
+	 *            the dummy dataset
+	 * @param title
+	 *            the title of the chart
+	 * @return the chart
+	 */
 	private JFreeChart createChart(PieDataset dataset, String title) {
 
 		JFreeChart chart = ChartFactory.createPieChart3D(title, // chart title
@@ -51,6 +74,11 @@ public class ReportImageServlet extends HttpServlet {
 
 	}
 
+	/**
+	 * Creates the dummy dataset to be shown on the pie-chart.
+	 *
+	 * @return the pie dataset
+	 */
 	private PieDataset createDataset() {
 		DefaultPieDataset result = new DefaultPieDataset();
 		result.setValue("Linux", 29);
