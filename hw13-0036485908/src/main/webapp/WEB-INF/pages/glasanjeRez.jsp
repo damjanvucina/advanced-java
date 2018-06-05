@@ -12,11 +12,6 @@
 	<h1>Band voting results</h1>
 	<p>Results are shown below:</p>
 
-	<br>
-	<br>
-	<a href="./index.jsp">Go to homepage</a>
-	<br>
-
 	<table border=2>
 		<thead>
 			<tr>
@@ -34,5 +29,27 @@
 			</c:forEach>
 		</tbody>
 	</table>
+	<br>
+	<br>
+	<h1>Pie chart</h1>
+	<img alt="Pie-chart" src="glasanje-grafika" width="400" height="400" />
+	<br>
+	<br>
+	<h3>Download voting results</h3>
+	<a href="glasanje-xls" action="GET">Results are available here</a>
+	<br>
+	<br>
+	<h3>References</h3>
+	<ol>
+		<c:forEach var="reference" items="${references}">
+			<li><a href="${reference.value}">${reference.key}</a></li>
+
+		</c:forEach>
+	</ol>
+
+	<br>
+	<br>
+	<a href="./index.jsp">Go to homepage</a>
+	<br>
 </body>
 </html>

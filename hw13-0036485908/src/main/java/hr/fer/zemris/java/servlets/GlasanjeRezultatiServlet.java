@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -56,10 +57,41 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 
 		Map<String, Integer> sortedMap = sortByValue(map);
 
+		Map<String, String> references = acquireReferences(votingFile, sortedMap);
+
 		HttpSession session = req.getSession();
 		session.setAttribute("results", sortedMap);
 
+		req.getServletContext().setAttribute("results", sortedMap);
+		req.getServletContext().setAttribute("references", references);
+
 		req.getRequestDispatcher("/WEB-INF/pages/glasanjeRez.jsp").forward(req, resp);
+	}
+
+	private Map<String, String> acquireReferences(List<String> votingFile, Map<String, Integer> sortedMap) {
+		int maxVotes = 0;
+		Map<String, String> references = new HashMap<>();
+
+		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
+			if (entry.getValue() > maxVotes) {
+				maxVotes = entry.getValue();
+			}
+		}
+
+		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
+			if (entry.getValue() == maxVotes) {
+				references.put(entry.getKey(), "UNDEFINED");
+			}
+		}
+
+		for (String line : votingFile) {
+			String[] elems = line.split("\t");
+			if (references.containsKey(elems[1])) {
+				references.put(elems[1], elems[2]);
+			}
+		}
+		
+		return references;
 	}
 
 	private String extractBandName(String bandID, List<String> votingFile) {
