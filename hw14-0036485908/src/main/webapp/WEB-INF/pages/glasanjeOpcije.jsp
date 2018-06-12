@@ -9,7 +9,6 @@
 	<ol>
 		<c:forEach var="poll" items="${pollList}">
 			<li><a href="/servleti/glasanje?pollID=${poll.id}">${poll.title}</a></li>
-
 		</c:forEach>
 	</ol>
 
