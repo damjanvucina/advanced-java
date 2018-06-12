@@ -112,12 +112,12 @@ public class Inicijalizacija implements ServletContextListener {
 			pst = currentConnetion.prepareStatement("INSERT INTO PollOptions "
 					+ "(optionTitle, optionLink, pollID, votesCount) VALUES\r\n"
 					+ "('The Beatles','https://www.youtube.com/watch?v=z9ypq6_5bsg'," + generatedId + ", 0),\r\n"
-					+ "('The Beatles','https://www.youtube.com/watch?v=z9ypq6_5bsg'," + generatedId + ", 0),\r\n"
-					+ "('The Beatles','https://www.youtube.com/watch?v=z9ypq6_5bsg'," + generatedId + ", 0),\r\n"
-					+ "('The Beatles','https://www.youtube.com/watch?v=z9ypq6_5bsg'," + generatedId + ", 0),\r\n"
-					+ "('The Beatles','https://www.youtube.com/watch?v=z9ypq6_5bsg'," + generatedId + ", 0),\r\n"
-					+ "('The Beatles','https://www.youtube.com/watch?v=z9ypq6_5bsg'," + generatedId + ", 0),\r\n"
-					+ "('The Beatles','https://www.youtube.com/watch?v=z9ypq6_5bsg'," + generatedId + ", 0)");
+					+ "('The Platters','https://www.youtube.com/watch?v=H2di83WAOhU'," + generatedId + ", 0),\r\n"
+					+ "('The Beach Boys','https://www.youtube.com/watch?v=2s4slliAtQU'," + generatedId + ", 0),\r\n"
+					+ "('The Four Seasons','https://www.youtube.com/watch?v=y8yvnqHmFds'," + generatedId + ", 0),\r\n"
+					+ "('The Marcels','https://www.youtube.com/watch?v=qoi3TH59ZEs'," + generatedId + ", 0),\r\n"
+					+ "('The Everly Brothers','https://www.youtube.com/watch?v=tbU3zdAgiX8'," + generatedId + ", 0),\r\n"
+					+ "('The Mamas And The Papas','https://www.youtube.com/watch?v=N-aK6JnyFmk'," + generatedId + ", 0)");
 
 			pst.execute();
 
