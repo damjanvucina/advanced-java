@@ -57,7 +57,7 @@ public class GlasanjeXLSServlet extends HttpServlet {
 			HSSFSheet sheet = hwb.createSheet("Band Voting");
 			HSSFRow rowhead = sheet.createRow((short) 0);
 
-			rowhead.createCell((short) 0).setCellValue("Band");
+			rowhead.createCell((short) 0).setCellValue("Option");
 			rowhead.createCell((short) 1).setCellValue("Votes");
 
 			int rowCounter = 1;

@@ -11,10 +11,5 @@
 			<li><a href="glasanje?pollID=${poll.id}">${poll.title}</a></li>
 		</c:forEach>
 	</ol>
-
-	<br>
-	<br>
-	<a href="./index.jsp">Go to homepage</a>
-	<br>
 </body>
 </html>

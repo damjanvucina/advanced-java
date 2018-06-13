@@ -9,13 +9,13 @@
 <meta charset="utf-8">
 </head>
 <body bgcolor="${pickedBgCol}">
-	<h1>Band voting results</h1>
+	<h1>Voting results</h1>
 	<p>Results are shown below:</p>
 
 	<table border=1>
 		<thead>
 			<tr>
-				<th>Band</th>
+				<th>Voting option</th>
 				<th>Number of Votes</th>
 			</tr>
 		</thead>
@@ -46,10 +46,5 @@
 
 		</c:forEach>
 	</ol>
-
-	<br>
-	<br>
-	<a href="./index.jsp">Go to homepage</a>
-	<br>
 </body>
 </html>

@@ -10,6 +10,14 @@ public class PollOption {
 	
 	public PollOption() {
 	}
+	
+	public PollOption(long id, String optionTitle, String optionLink, long pollID, long votesCount) {
+		this.id = id;
+		this.optionTitle = optionTitle;
+		this.optionLink = optionLink;
+		this.pollID = pollID;
+		this.votesCount = votesCount;
+	}
 
 	public long getId() {
 		return id;

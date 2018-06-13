@@ -10,19 +10,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import org.apache.derby.client.am.SqlException;
-
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.DataSources;
 
-import hr.fer.zemris.java.p12.dao.DAOException;
-import hr.fer.zemris.java.p12.dao.sql.SQLConnectionProvider;
+import hr.fer.zemris.java.p12.model.Poll;
+import hr.fer.zemris.java.p12.model.PollOption;
 
 @WebListener
 public class Inicijalizacija implements ServletContextListener {
@@ -30,7 +30,7 @@ public class Inicijalizacija implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		Properties properties = new Properties();
-		String path = "WEB-INF/dbsettings.properties"; 
+		String path = "WEB-INF/dbsettings.properties";
 
 		try {
 			properties.load(new FileInputStream(sce.getServletContext().getRealPath(path)));
@@ -88,7 +88,7 @@ public class Inicijalizacija implements ServletContextListener {
 
 		try {
 			if (pollResult == null || !pollResult.next()) {
-				populatePollRelations(currentConnetion);
+				fillDummyDatabase(currentConnetion);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -110,36 +110,75 @@ public class Inicijalizacija implements ServletContextListener {
 		}
 	}
 
-	private void populatePollOptionsRelation(Connection currentConnetion, long generatedId) {
+	private void fillDummyDatabase(Connection currentConnetion) {
+		String firstTitle = "Glasanje za omiljeni bend:";
+		String firstMessage = "Od sljedećih bendova, koji Vam je bend najdraži? Kliknite na link kako biste glasali!";
+
+		List<PollOption> options = new ArrayList<>();
+		options.add(new PollOption(-1, "The Beatles", "https://www.youtube.com/watch?v=z9ypq6_5bsg", -1, 0));
+		options.add(new PollOption(-1, "The Platters", "https://www.youtube.com/watch?v=H2di83WAOhU", -1, 0));
+		options.add(new PollOption(-1, "The Beach Boys", "https://www.youtube.com/watch?v=2s4slliAtQU", -1, 0));
+		options.add(new PollOption(-1, "The Four Seasons", "https://www.youtube.com/watch?v=y8yvnqHmFds", -1, 0));
+		options.add(new PollOption(-1, "The Marcels", "https://www.youtube.com/watch?v=qoi3TH59ZEs", -1, 0));
+		options.add(new PollOption(-1, "The Everly Brothers", "https://www.youtube.com/watch?v=tbU3zdAgiX8", -1, 0));
+		options.add(
+				new PollOption(-1, "The Mamas And The Papas", "https://www.youtube.com/watch?v=N-aK6JnyFmk", -1, 0));
+
+		populatePollRelations(currentConnetion, new Poll(1, firstTitle, firstMessage), options);
+
+		String secondTitle = "Lakers' best players";
+		String secondMessage = "Who is the all-time best Laker";
+
+		options.clear();
+		options.add(new PollOption(-1, "Shaq Diesel", "https://www.basketball-reference.com/players/o/onealsh01.html",
+				-1, 0));
+		options.add(new PollOption(-1, "Black Mamba", "https://www.basketball-reference.com/players/b/bryanko01.html",
+				-1, 0));
+		options.add(
+				new PollOption(-1, "Magic", "https://www.basketball-reference.com/players/j/johnsma02.html", -1, 0));
+		options.add(
+				new PollOption(-1, "Kareem", "https://www.basketball-reference.com/players/a/abdulka01.html", -1, 0));
+		options.add(new PollOption(-1, "Wilt", "https://www.basketball-reference.com/players/c/chambwi01.html", -1, 0));
+		options.add(
+				new PollOption(-1, "The Logo", "https://www.basketball-reference.com/players/w/westje01.html", -1, 0));
+		options.add(new PollOption(-1, "Big Game James",
+				"https://www.basketball-reference.com/players/w/worthja01.html", -1, 0));
+		options.add(new PollOption(-1, "Mr.Inside", "https://www.basketball-reference.com/players/b/bayloel01.html", -1,
+				0));
+
+		populatePollRelations(currentConnetion, new Poll(1, secondTitle, secondMessage), options);
+	}
+
+	private void populatePollOptionsRelation(Connection currentConnetion, long generatedId, List<PollOption> options) {
 		PreparedStatement pst = null;
 
 		try {
-			pst = currentConnetion.prepareStatement("INSERT INTO PollOptions "
-					+ "(optionTitle, optionLink, pollID, votesCount) VALUES\r\n"
-					+ "('The Beatles','https://www.youtube.com/watch?v=z9ypq6_5bsg'," + generatedId + ", 0),\r\n"
-					+ "('The Platters','https://www.youtube.com/watch?v=H2di83WAOhU'," + generatedId + ", 0),\r\n"
-					+ "('The Beach Boys','https://www.youtube.com/watch?v=2s4slliAtQU'," + generatedId + ", 0),\r\n"
-					+ "('The Four Seasons','https://www.youtube.com/watch?v=y8yvnqHmFds'," + generatedId + ", 0),\r\n"
-					+ "('The Marcels','https://www.youtube.com/watch?v=qoi3TH59ZEs'," + generatedId + ", 0),\r\n"
-					+ "('The Everly Brothers','https://www.youtube.com/watch?v=tbU3zdAgiX8'," + generatedId
-					+ ", 0),\r\n" + "('The Mamas And The Papas','https://www.youtube.com/watch?v=N-aK6JnyFmk',"
-					+ generatedId + ", 0)");
 
-			pst.execute();
+			for (PollOption option : options) {
+				pst = currentConnetion.prepareStatement(
+						"INSERT INTO PollOptions (optionTitle, optionLink, pollID, votesCount) VALUES (?,?,?,?)");
+
+				pst.setString(1, option.getOptionTitle());
+				pst.setString(2, option.getOptionLink());
+				pst.setLong(3, generatedId);
+				pst.setLong(4, 0);
+
+				pst.executeUpdate();
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void populatePollRelations(Connection currentConnetion) {
+	private void populatePollRelations(Connection currentConnetion, Poll poll, List<PollOption> options) {
 		PreparedStatement pst = null;
 		try {
 			pst = currentConnetion.prepareStatement("INSERT INTO Polls (title, message) values (?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
-			pst.setString(1, "Glasanje za omiljeni bend:");
-			pst.setString(2, "Od sljedećih bendova, koji Vam je bend najdraži? Kliknite na link kako biste glasali!");
+			pst.setString(1, poll.getTitle());
+			pst.setString(2, poll.getMessage());
 
 			int numberOfAffectedRows = pst.executeUpdate();
 
@@ -152,7 +191,7 @@ public class Inicijalizacija implements ServletContextListener {
 			try {
 				if (rset != null && rset.next()) {
 					long generatedId = rset.getLong(1);
-					populatePollOptionsRelation(currentConnetion, generatedId);
+					populatePollOptionsRelation(currentConnetion, generatedId, options);
 				}
 			} finally {
 				try {
@@ -165,14 +204,13 @@ public class Inicijalizacija implements ServletContextListener {
 		} catch (SQLException e) {
 			e.printStackTrace();
 
+		} finally {
+			try {
+				pst.close();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
 		}
-		// finally {
-		// try {
-		// pst.close();
-		// } catch (SQLException ex) {
-		// ex.printStackTrace();
-		// }
-		// }
 	}
 
 	private void createDatabaseRelations(Connection currentConnetion) {
@@ -183,7 +221,7 @@ public class Inicijalizacija implements ServletContextListener {
 			DatabaseMetaData dbm = currentConnetion.getMetaData();
 
 			pollsResult = dbm.getTables(null, null, "POLLS", null);
-			if (!pollsResult.next() ) {
+			if (!pollsResult.next()) {
 				createPollsRelation(currentConnetion);
 			}
 
@@ -198,9 +236,7 @@ public class Inicijalizacija implements ServletContextListener {
 	}
 
 	private void createPollOptionsRelation(Connection currentConnetion) {
-		//@formatter:off
 		String pollOptionsCreation = "CREATE TABLE PollOptions(id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,optionTitle VARCHAR(100) NOT NULL,optionLink VARCHAR(150) NOT NULL,pollID BIGINT,votesCount BIGINT,FOREIGN KEY (pollID) REFERENCES Polls(id))";
-		//@formatter:on
 		PreparedStatement pst = null;
 		try {
 			pst = currentConnetion.prepareStatement(pollOptionsCreation);
@@ -233,26 +269,6 @@ public class Inicijalizacija implements ServletContextListener {
 			e.printStackTrace();
 		}
 	}
-
-	// public void createPollsRelation(Connection con) {
-	//
-	// try (PreparedStatement pst =
-	// con.prepareStatement("CREATE TABLE Polls (id BIGINT PRIMARY KEY GENERATED
-	// ALWAYS AS IDENTITY, " + "title VARCHAR(150) NOT NULL, message CLOB(2048) NOT
-	// NULL)")) {
-	//
-	// try {
-	// pst.executeUpdate();
-	// } catch (SQLException exc) {
-	//
-	// }
-	//
-	// } catch (Exception ex) {
-	// throw new DAOException("Pogreška inicijalizacije baze." + " " +
-	// ex.getMessage(), ex);
-	// }
-	//
-	// }
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {

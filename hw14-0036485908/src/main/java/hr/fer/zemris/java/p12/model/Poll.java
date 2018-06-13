@@ -8,6 +8,13 @@ public class Poll {
 	
 	public Poll() {
 	}
+	
+	public Poll(long id, String title, String message) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.message = message;
+	}
 
 	public long getId() {
 		return id;

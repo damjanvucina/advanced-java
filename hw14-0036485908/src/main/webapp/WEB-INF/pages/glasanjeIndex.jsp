@@ -12,10 +12,5 @@
 
 		</c:forEach>
 	</ol>
-
-	<br>
-	<br>
-	<a href="./index.html">Go to homepage</a>
-	<br>
 </body>
 </html>

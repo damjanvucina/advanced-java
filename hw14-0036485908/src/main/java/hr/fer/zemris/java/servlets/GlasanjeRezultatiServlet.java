@@ -1,20 +1,8 @@
 package hr.fer.zemris.java.servlets;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -61,105 +49,4 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 
 		req.getRequestDispatcher("/WEB-INF/pages/glasanjeRez.jsp").forward(req, resp);
 	}
-
-	/**
-	 * Acquires references to bands from the base txt file representing a database.
-	 *
-	 * @param votingFile
-	 *            the voting file
-	 * @param sortedMap
-	 *            the sorted map
-	 * @return the map
-	 */
-	private Map<String, String> acquireReferences(List<String> votingFile, Map<String, Integer> sortedMap) {
-		int maxVotes = 0;
-		Map<String, String> references = new HashMap<>();
-
-		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
-			if (entry.getValue() > maxVotes) {
-				maxVotes = entry.getValue();
-			}
-		}
-
-		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
-			if (entry.getValue() == maxVotes) {
-				references.put(entry.getKey(), "UNDEFINED");
-			}
-		}
-
-		for (String line : votingFile) {
-			String[] elems = line.split("\t");
-			if (references.containsKey(elems[1])) {
-				references.put(elems[1], elems[2]);
-			}
-		}
-
-		return references;
-	}
-
-	/**
-	 * Extracts band name based on the id of the band from the txt file representing
-	 * a database.
-	 *
-	 * @param bandID
-	 *            the band ID
-	 * @param votingFile
-	 *            the voting file
-	 * @return the band's name
-	 */
-	private String extractBandName(String bandID, List<String> votingFile) {
-		for (String line : votingFile) {
-
-			String elems[] = line.split("\t");
-			if (elems[0].equals(bandID)) {
-				return elems[1];
-			}
-		}
-		return bandID;
-	}
-
-	/**
-	 * Helper method used for sorting a hashmap by its Integer value.
-	 *
-	 * @param map
-	 *            the map
-	 * @return the sorted map
-	 */
-	private Map<String, Integer> sortByValue(Map<String, Integer> map) {
-		List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(map.entrySet());
-
-		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-				return (o2.getValue()).compareTo(o1.getValue());
-			}
-		});
-
-		Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
-		for (Map.Entry<String, Integer> entry : list) {
-			sortedMap.put(entry.getKey(), entry.getValue());
-		}
-
-		return sortedMap;
-	}
-
-	/**
-	 * Signals that an error occurred by redirecting to a error page with the error
-	 * message.
-	 *
-	 * @param errorMessage
-	 *            the error message
-	 * @param req
-	 *            the request
-	 * @param resp
-	 *            the response
-	 */
-	private void errorOccurred(String errorMessage, HttpServletRequest req, HttpServletResponse resp) {
-		try {
-			req.setAttribute("errorMessage", errorMessage);
-			req.getRequestDispatcher("/WEB-INF/pages/XLSGeneratorError.jsp").forward(req, resp);
-		} catch (ServletException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 }

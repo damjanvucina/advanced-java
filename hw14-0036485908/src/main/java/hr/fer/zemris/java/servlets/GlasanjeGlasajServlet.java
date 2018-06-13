@@ -1,14 +1,6 @@
 package hr.fer.zemris.java.servlets;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,26 +35,5 @@ public class GlasanjeGlasajServlet extends HttpServlet {
 		DAOProvider.getDao().performVoting(optionID);
 		
 		resp.sendRedirect(req.getContextPath() + "/servleti/glasanje-rezultati?pollID=" + pollID);
-	}
-
-
-	/**
-	 * Signals that an error occurred by redirecting to a error page with the error
-	 * message.
-	 *
-	 * @param errorMessage
-	 *            the error message
-	 * @param req
-	 *            the request
-	 * @param resp
-	 *            the response
-	 */
-	private void errorOccurred(String errorMessage, HttpServletRequest req, HttpServletResponse resp) {
-		try {
-			req.setAttribute("errorMessage", errorMessage);
-			req.getRequestDispatcher("/WEB-INF/pages/XLSGeneratorError.jsp").forward(req, resp);
-		} catch (ServletException | IOException e) {
-			e.printStackTrace();
-		}
 	}
 }
