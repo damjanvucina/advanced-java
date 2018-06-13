@@ -13,15 +13,27 @@ import javax.servlet.http.HttpSession;
 import hr.fer.zemris.java.p12.dao.DAOProvider;
 import hr.fer.zemris.java.p12.model.Poll;
 
+/**
+ * The servlet class responsible for loading available polls from the database
+ * and forwarding to the designated jsp page for displaying purposes.
+ * 
+ * @author Damjan Vučina
+ */
 @WebServlet("/servleti/index.html")
-public class OpcijeServlet extends HttpServlet{
+public class OpcijeServlet extends HttpServlet {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
+	/**
+	 * Loads available polls from the database and forwards to the designated jsp
+	 * page for displaying purposes.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+
 		List<Poll> pollList = DAOProvider.getDao().acquirePolls();
-		
+
 		HttpSession session = req.getSession();
 		session.setAttribute("pollList", pollList);
 

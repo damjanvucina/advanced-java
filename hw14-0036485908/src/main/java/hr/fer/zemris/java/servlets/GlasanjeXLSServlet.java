@@ -14,8 +14,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
- * The servlet class responsible for generating an xls file containing the band
- * names and number of votes each of the band received.
+ * The servlet class responsible for generating an xls file containing the
+ * pollingOptions and number of votes each of the polling options received.
  * 
  * @author Damjan Vučina
  */
@@ -26,9 +26,9 @@ public class GlasanjeXLSServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Generates a an xls file containing the band names and number of votes each of
-	 * the band received based on the attribute previously set by the
-	 * GlasanjeRezultatiServlet class.
+	 * Generates a an xls file containing the polling options and number of votes
+	 * each of the polling option received based on the attribute previously set by
+	 * the GlasanjeRezultatiServlet class.
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,13 +39,13 @@ public class GlasanjeXLSServlet extends HttpServlet {
 	}
 
 	/**
-	 * Generates XLS file based on the map containing the band names and number of
-	 * votes each of the band received..
+	 * Generates XLS file based on the map containing the polling options and number
+	 * of votes each of the polling options received.
 	 *
 	 * @param map
 	 *            the map
 	 * @param resp
-	 *            the resp
+	 *            the response
 	 */
 	private void generateXLS(Map<String, Long> map, HttpServletResponse resp) {
 		resp.setContentType("application/vnd.ms-excel");

@@ -22,8 +22,8 @@ import org.jfree.data.general.PieDataset;
 
 /**
  * The servlet class responsible for generating a pie-chart representing the
- * number of votes for each band. Bands that do not have a single vote at the
- * time of invocation are not displayed on the chart.
+ * number of votes for each polling option. Polling options that do not have a
+ * single vote at the time of invocation are not displayed on the chart.
  * 
  * @author Damjan Vučina
  */
@@ -34,10 +34,10 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Generates a pie-chart representing the number of votes for each band based on
-	 * the current standings as can be seen by downloading the designated xls file.
-	 * Bands that do not have a single vote at the time of invocation are not
-	 * displayed on the chart.
+	 * Generates a pie-chart representing the number of votes for each polling
+	 * option based on the current standings as can be seen by downloading the
+	 * designated xls file. Polling options that do not have a single vote at the
+	 * time of invocation are not displayed on the chart.
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -55,9 +55,9 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 	}
 
 	/**
-	 * Creates the pie-chart using the current band-vote as can be seen by
-	 * downloading the designated xls file. Bands that do not have a single vote at
-	 * the time of invocation are not displayed on the chart.
+	 * Creates the pie-chart using the current pollingOption-numberOfVotes as can be
+	 * seen by downloading the designated xls file. Polling options that do not have
+	 * a single vote at the time of invocation are not displayed on the chart.
 	 *
 	 * @param dataset
 	 *            the dataset
@@ -81,9 +81,10 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 	}
 
 	/**
-	 * Creates the dataset by acquring the number of votes for each band from the
-	 * txt file representing a database.
-	 * @param req 
+	 * Creates the dataset by acquring the number of votes for each pollingOptions
+	 * from the txt file representing a database.
+	 * 
+	 * @param req
 	 *
 	 * @param req
 	 *            the request

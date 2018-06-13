@@ -3,36 +3,37 @@ package hr.fer.zemris.java.p12.dao.sql;
 import java.sql.Connection;
 
 /**
- * Pohrana veza prema bazi podataka u ThreadLocal object. ThreadLocal je zapravo
- * mapa čiji su ključevi identifikator dretve koji radi operaciju nad mapom.
+ * The class responsible for storing and acquiring the connections to the
+ * database.
  * 
- * @author marcupic
- *
+ * @author Damjan Vučina
  */
 public class SQLConnectionProvider {
 
+	/** The connections to the database. */
 	private static ThreadLocal<Connection> connections = new ThreadLocal<>();
-	
+
 	/**
-	 * Postavi vezu za trenutnu dretvu (ili obriši zapis iz mape ako je argument <code>null</code>).
-	 * 
-	 * @param con veza prema bazi
+	 * Sets the connection for the current thread, or removes the current connection if the argument is null.
+	 *
+	 * @param con
+	 *            the current connection
 	 */
 	public static void setConnection(Connection con) {
-		if(con==null) {
+		if (con == null) {
 			connections.remove();
 		} else {
 			connections.set(con);
 		}
 	}
-	
+
 	/**
-	 * Dohvati vezu koju trenutna dretva (pozivatelj) smije koristiti.
-	 * 
-	 * @return vezu prema bazi podataka
+	 * Gets the connection to be used by the current thread.
+	 *
+	 * @return the connection
 	 */
 	public static Connection getConnection() {
 		return connections.get();
 	}
-	
+
 }

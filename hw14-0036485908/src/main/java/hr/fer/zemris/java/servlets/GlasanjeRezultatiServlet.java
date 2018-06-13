@@ -14,10 +14,10 @@ import javax.servlet.http.HttpSession;
 import hr.fer.zemris.java.p12.dao.DAOProvider;
 
 /**
- * The servlet class responsible for creating a map containing the bands an
- * their votes. This map is to be used by the glasanjeRez.jsp file for
- * displaying purposes. This class also generates a map to be used for
- * displaying the links for the mos popular bands.
+ * The servlet class responsible for creating a map containing the polling
+ * options an their votes. This map is to be used by the glasanjeRez.jsp file
+ * for displaying purposes. This class also generates a map to be used for
+ * displaying the links for the most popular polling options.
  * 
  * @author Damjan Vučina
  */
@@ -28,8 +28,8 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Creates a band-votes and band-link mappings to be used by the glasanjeRez.jsp
-	 * file for displaying purposes.
+	 * Creates a polling option-number of votes and polling option-link mappings to
+	 * be used by the glasanjeRez.jsp file for displaying purposes.
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -37,7 +37,7 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 
 		Map<String, Long> sortedMap = new LinkedHashMap<>();
 		sortedMap = DAOProvider.getDao().acquirePollResults(pollID);// ime banda broj glasova
-		
+
 		Long votesCount = sortedMap.entrySet().iterator().next().getValue();
 		Map<String, String> references = DAOProvider.getDao().acquireReferences(pollID, votesCount);
 

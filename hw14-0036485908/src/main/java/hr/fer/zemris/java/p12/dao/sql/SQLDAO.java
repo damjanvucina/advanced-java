@@ -16,18 +16,18 @@ import hr.fer.zemris.java.p12.model.Poll;
 import hr.fer.zemris.java.p12.model.PollOption;
 
 /**
- * Ovo je implementacija podsustava DAO uporabom tehnologije SQL. Ova konkretna
- * implementacija očekuje da joj veza stoji na raspolaganju preko
- * {@link SQLConnectionProvider} razreda, što znači da bi netko prije no što
- * izvođenje dođe do ove točke to trebao tamo postaviti. U web-aplikacijama
- * tipično rješenje je konfigurirati jedan filter koji će presresti pozive
- * servleta i prije toga ovdje ubaciti jednu vezu iz connection-poola, a po
- * zavrsetku obrade je maknuti.
+ * The class responsible for communicating with the database and performing
+ * queries defined by the DAO interface.
  * 
- * @author marcupic
+ * @author Damjan Vučina
  */
 public class SQLDAO implements DAO {
 
+	/**
+	 * Acquires all available polls from the database.
+	 *
+	 * @return the list
+	 */
 	@Override
 	public List<Poll> acquirePolls() {
 		List<Poll> pollList = new ArrayList<>();
@@ -70,12 +70,20 @@ public class SQLDAO implements DAO {
 		return pollList;
 	}
 
+	/**
+	 * Acquires PollOption-NumberOfVotes mappings for the specified poll.
+	 *
+	 * @param pollID
+	 *            the poll whose results are to be extracted
+	 * @return the map
+	 */
 	@Override
 	public Map<String, Long> acquirePollResults(long pollID) {
 		Map<String, Long> options = new LinkedHashMap<>();
 		Connection con = SQLConnectionProvider.getConnection();
 		PreparedStatement pst = null;
-		String query = "select optionTitle, votesCount from POLLOPTIONS where pollID=" + pollID + " order by votesCount DESC";
+		String query = "select optionTitle, votesCount from POLLOPTIONS where pollID=" + pollID
+				+ " order by votesCount DESC";
 
 		try {
 			pst = con.prepareStatement(query);
@@ -106,20 +114,33 @@ public class SQLDAO implements DAO {
 		return options;
 	}
 
+	/**
+	 * Performs voting for the designated option by increasing its vote count by
+	 * one.
+	 *
+	 * @param optionID
+	 *            the option ID
+	 */
 	@Override
 	public void performVoting(long optionID) {
 		Connection con = SQLConnectionProvider.getConnection();
 		PreparedStatement pst = null;
 
 		try {
-			pst = con.prepareStatement(
-					"UPDATE PollOptions SET votesCount = votesCount + 1 WHERE id = " + optionID);
+			pst = con.prepareStatement("UPDATE PollOptions SET votesCount = votesCount + 1 WHERE id = " + optionID);
 			pst.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Identifies the poll based on its option.
+	 *
+	 * @param optionID
+	 *            the chosen option
+	 * @return the long id of the poll
+	 */
 	@Override
 	public long identifyPoll(long optionID) {
 		Connection con = SQLConnectionProvider.getConnection();
@@ -127,12 +148,12 @@ public class SQLDAO implements DAO {
 		Long value = null;
 
 		try {
-			pst = con.prepareStatement("SELECT POLLID FROM POLLOPTIONS WHERE ID = " + optionID, Statement.RETURN_GENERATED_KEYS);
+			pst = con.prepareStatement("SELECT POLLID FROM POLLOPTIONS WHERE ID = " + optionID,
+					Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = pst.executeQuery();
-			if(rs.next()) {
+			if (rs.next()) {
 				value = rs.getLong(1);
 			}
-			
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -141,6 +162,13 @@ public class SQLDAO implements DAO {
 		return value;
 	}
 
+	/**
+	 * Acquires pollOptions for the defined poll.
+	 *
+	 * @param pollID
+	 *            the poll ID
+	 * @return the list of options for the designated poll
+	 */
 	@Override
 	public List<PollOption> acquirePollOptions(long pollID) {
 		List<PollOption> optionList = new ArrayList<>();
@@ -185,6 +213,15 @@ public class SQLDAO implements DAO {
 		return optionList;
 	}
 
+	/**
+	 * Acquires PollOption-Link mappings for the specified poll and number of votes.
+	 *
+	 * @param pollID
+	 *            the poll ID
+	 * @param votesCount
+	 *            the votes count
+	 * @return the map
+	 */
 	@Override
 	public Map<String, String> acquireReferences(Long pollID, Long votesCount) {
 		Connection con = SQLConnectionProvider.getConnection();
@@ -219,7 +256,7 @@ public class SQLDAO implements DAO {
 		} catch (Exception ex) {
 			throw new DAOException("Pogreška prilikom dohvata liste korisnika.", ex);
 		}
-		
+
 		return references;
 	}
 }

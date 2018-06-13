@@ -24,7 +24,7 @@ public class GlasanjeGlasajServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Updates the band-votes tracking file and redirects to glasanje-rezultati.jsp
+	 * Updates the pollOption-votesNumber tracking file and redirects to glasanje-rezultati.jsp
 	 * page for displaying purposes.
 	 */
 	@Override

@@ -24,9 +24,22 @@ import com.mchange.v2.c3p0.DataSources;
 import hr.fer.zemris.java.p12.model.Poll;
 import hr.fer.zemris.java.p12.model.PollOption;
 
+/**
+ * The Listener class responsible for enabling and setting Connection-Pool as
+ * well as destroying it once the web application is shut down. This class is
+ * also assigned with the task of creating the relations in the database and
+ * populating them with dummy data for demonstration purposes.
+ * 
+ * @author Damjan Vučina
+ */
 @WebListener
 public class Inicijalizacija implements ServletContextListener {
 
+	/**
+	 * Receives notification that the web application initialization process is
+	 * starting, reads the database information from designated properties file and
+	 * creates connection pool. Delegates to helper methods for databse creation.
+	 */
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		Properties properties = new Properties();
@@ -70,6 +83,13 @@ public class Inicijalizacija implements ServletContextListener {
 		sce.getServletContext().setAttribute("hr.fer.zemris.dbpool", cpds);
 	}
 
+	/**
+	 * Checks whether the previously created relations are empty. If they are,
+	 * populates those relations with dummy data for demonstration purposes.
+	 *
+	 * @param currentConnetion
+	 *            the current connetion
+	 */
 	private void validateDatabaseRelations(Connection currentConnetion) {
 		String isPollEmpty = "SELECT * FROM POLLS";
 		String isPollOptionsEmpty = "SELECT * FROM POLLOPTIONS";
@@ -110,6 +130,13 @@ public class Inicijalizacija implements ServletContextListener {
 		}
 	}
 
+	/**
+	 * Helper method responsible for preparing the data relations are to be
+	 * populated with.
+	 *
+	 * @param currentConnetion
+	 *            the current connetion
+	 */
 	private void fillDummyDatabase(Connection currentConnetion) {
 		String firstTitle = "Glasanje za omiljeni bend:";
 		String firstMessage = "Od sljedećih bendova, koji Vam je bend najdraži? Kliknite na link kako biste glasali!";
@@ -149,6 +176,17 @@ public class Inicijalizacija implements ServletContextListener {
 		populatePollRelations(currentConnetion, new Poll(1, secondTitle, secondMessage), options);
 	}
 
+	/**
+	 * Populates pollOptions relation with the given PollOptions.
+	 *
+	 * @param currentConnetion
+	 *            the current connetion
+	 * @param generatedId
+	 *            the foreign key referencing designated Poll class for recieved
+	 *            PollOptions
+	 * @param options
+	 *            the pollOptions to be stored in the database
+	 */
 	private void populatePollOptionsRelation(Connection currentConnetion, long generatedId, List<PollOption> options) {
 		PreparedStatement pst = null;
 
@@ -171,6 +209,17 @@ public class Inicijalizacija implements ServletContextListener {
 		}
 	}
 
+	/**
+	 * Populates Poll relation and delegates given PollOptions collection for
+	 * further database populating.
+	 *
+	 * @param currentConnetion
+	 *            the current connetion
+	 * @param poll
+	 *            the current Poll
+	 * @param options
+	 *            the pollOptions to be stored in the database
+	 */
 	private void populatePollRelations(Connection currentConnetion, Poll poll, List<PollOption> options) {
 		PreparedStatement pst = null;
 		try {
@@ -213,6 +262,12 @@ public class Inicijalizacija implements ServletContextListener {
 		}
 	}
 
+	/**
+	 * Creates the database relations.
+	 *
+	 * @param currentConnetion
+	 *            the current connetion
+	 */
 	private void createDatabaseRelations(Connection currentConnetion) {
 		ResultSet pollsResult = null;
 		ResultSet pollOptionsResult = null;
@@ -235,6 +290,12 @@ public class Inicijalizacija implements ServletContextListener {
 		}
 	}
 
+	/**
+	 * Creates the poll options relation.
+	 *
+	 * @param currentConnetion
+	 *            the current connetion
+	 */
 	private void createPollOptionsRelation(Connection currentConnetion) {
 		String pollOptionsCreation = "CREATE TABLE PollOptions(id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,optionTitle VARCHAR(100) NOT NULL,optionLink VARCHAR(150) NOT NULL,pollID BIGINT,votesCount BIGINT,FOREIGN KEY (pollID) REFERENCES Polls(id))";
 		PreparedStatement pst = null;
@@ -255,10 +316,14 @@ public class Inicijalizacija implements ServletContextListener {
 		}
 	}
 
+	/**
+	 * Creates the polls relation.
+	 *
+	 * @param currentConnetion
+	 *            the current connetion
+	 */
 	private void createPollsRelation(Connection currentConnetion) {
-		//@formatter:off
 		String pollCreation = "CREATE TABLE Polls (id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY, title VARCHAR(150) NOT NULL, message CLOB(2048) NOT NULL)";
-		//@formatter:on
 
 		PreparedStatement pst = null;
 
@@ -270,6 +335,10 @@ public class Inicijalizacija implements ServletContextListener {
 		}
 	}
 
+	/**
+	 * Receives notification that the ServletContext is about to be shut down and
+	 * destroys the Connection-Pool.
+	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 		ComboPooledDataSource cpds = (ComboPooledDataSource) sce.getServletContext()
