@@ -44,7 +44,7 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 		resp.setContentType("image/png");
 		OutputStream writeStream = resp.getOutputStream();
 
-		PieDataset dataset = createDataset();
+		PieDataset dataset = createDataset(req);
 		JFreeChart chart = createChart(dataset, "Voting visual representation");
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new Dimension(400, 400));
@@ -83,16 +83,21 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 	/**
 	 * Creates the dataset by acquring the number of votes for each band from the
 	 * txt file representing a database.
+	 * @param req 
 	 *
 	 * @param req
 	 *            the request
 	 * @return the chart dataset
 	 */
-	private PieDataset createDataset() {
+	private PieDataset createDataset(HttpServletRequest req) {
 		DefaultPieDataset result = new DefaultPieDataset();
-		result.setValue("Linux", 29);
-		result.setValue("Mac", 20);
-		result.setValue("Windows", 51);
+		@SuppressWarnings("unchecked")
+		Map<String, Long> map = (Map<String, Long>) req.getServletContext().getAttribute("results");
+		map.forEach((k, v) -> {
+			if (v > 0) {
+				result.setValue(k, v);
+			}
+		});
 		return result;
 
 	}

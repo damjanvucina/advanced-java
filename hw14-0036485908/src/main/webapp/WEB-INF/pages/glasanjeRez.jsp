@@ -32,7 +32,7 @@
 	<br>
 	<br>
 	<h1>Pie chart</h1>
-	<img alt="Pie-chart" src="servleti/glasanje-grafika" width="400" height="400" />
+	<img alt="Pie-chart" src="glasanje-grafika" width="400" height="400" />
 	<br>
 	<br>
 	<h3>Download voting results</h3>
