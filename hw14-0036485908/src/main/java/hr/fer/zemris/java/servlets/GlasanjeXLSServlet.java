@@ -19,7 +19,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
  * 
  * @author Damjan Vučina
  */
-@WebServlet("/glasanje-xls")
+@WebServlet("/servleti/glasanje-xls")
 public class GlasanjeXLSServlet extends HttpServlet {
 
 	/** The Constant serialVersionUID. */
@@ -33,7 +33,7 @@ public class GlasanjeXLSServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		@SuppressWarnings("unchecked")
-		Map<String, Integer> map = (Map<String, Integer>) req.getServletContext().getAttribute("results");
+		Map<String, Long> map = (Map<String, Long>) req.getServletContext().getAttribute("results");
 
 		generateXLS(map, resp);
 	}
@@ -47,7 +47,7 @@ public class GlasanjeXLSServlet extends HttpServlet {
 	 * @param resp
 	 *            the resp
 	 */
-	private void generateXLS(Map<String, Integer> map, HttpServletResponse resp) {
+	private void generateXLS(Map<String, Long> map, HttpServletResponse resp) {
 		resp.setContentType("application/vnd.ms-excel");
 		resp.setHeader("Content-Disposition", "attachment; filename=voting.xls");
 
@@ -61,7 +61,7 @@ public class GlasanjeXLSServlet extends HttpServlet {
 			rowhead.createCell((short) 1).setCellValue("Votes");
 
 			int rowCounter = 1;
-			for (Map.Entry<String, Integer> entry : map.entrySet()) {
+			for (Map.Entry<String, Long> entry : map.entrySet()) {
 				HSSFRow row = sheet.createRow((short) rowCounter++);
 				row.createCell((short) 0).setCellValue(entry.getKey());
 				row.createCell((short) 1).setCellValue(entry.getValue());

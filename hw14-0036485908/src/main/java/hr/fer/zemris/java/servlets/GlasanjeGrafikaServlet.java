@@ -27,7 +27,7 @@ import org.jfree.data.general.PieDataset;
  * 
  * @author Damjan Vučina
  */
-@WebServlet("/glasanje-grafika")
+@WebServlet("/servleti/glasanje-grafika")
 public class GlasanjeGrafikaServlet extends HttpServlet {
 
 	/** The Constant serialVersionUID. */
@@ -44,7 +44,7 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 		resp.setContentType("image/png");
 		OutputStream writeStream = resp.getOutputStream();
 
-		PieDataset dataset = createDataset(req);
+		PieDataset dataset = createDataset();
 		JFreeChart chart = createChart(dataset, "Voting visual representation");
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new Dimension(400, 400));
@@ -88,15 +88,11 @@ public class GlasanjeGrafikaServlet extends HttpServlet {
 	 *            the request
 	 * @return the chart dataset
 	 */
-	private PieDataset createDataset(HttpServletRequest req) {
+	private PieDataset createDataset() {
 		DefaultPieDataset result = new DefaultPieDataset();
-		@SuppressWarnings("unchecked")
-		Map<String, Integer> map = (Map<String, Integer>) req.getServletContext().getAttribute("results");
-		map.forEach((k, v) -> {
-			if (v > 0) {
-				result.setValue(k, v);
-			}
-		});
+		result.setValue("Linux", 29);
+		result.setValue("Mac", 20);
+		result.setValue("Windows", 51);
 		return result;
 
 	}

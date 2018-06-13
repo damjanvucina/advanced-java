@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import hr.fer.zemris.java.p12.dao.DAOProvider;
+
 /**
  * The servlet class responsible for creating a map containing the bands an
  * their votes. This map is to be used by the glasanjeRez.jsp file for
@@ -43,15 +45,13 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Map<String, Integer> map = new HashMap<>();//ime banda broj glasova
-		List<String> results = new ArrayList<>();
 		Long pollID = Long.valueOf(req.getParameter("pollID"));
-		
-		map = acquirePollResults(pollID);
-		
-		Map<String, Integer> sortedMap = sortByValue(map);
 
-		Map<String, String> references = acquireReferences(votingFile, sortedMap);
+		Map<String, Long> sortedMap = new LinkedHashMap<>();
+		sortedMap = DAOProvider.getDao().acquirePollResults(pollID);// ime banda broj glasova
+		
+		Long votesCount = sortedMap.entrySet().iterator().next().getValue();
+		Map<String, String> references = DAOProvider.getDao().acquireReferences(pollID, votesCount);
 
 		HttpSession session = req.getSession();
 		session.setAttribute("results", sortedMap);

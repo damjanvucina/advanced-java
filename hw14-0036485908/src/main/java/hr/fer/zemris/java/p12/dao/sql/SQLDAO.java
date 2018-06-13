@@ -1,20 +1,20 @@
 package hr.fer.zemris.java.p12.dao.sql;
 
-import hr.fer.zemris.java.p12.dao.DAO;
-import hr.fer.zemris.java.p12.dao.DAOException;
-import hr.fer.zemris.java.p12.model.Poll;
-import hr.fer.zemris.java.p12.model.PollOption;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mchange.io.impl.EndsWithFilenameFilter;
+import hr.fer.zemris.java.p12.dao.DAO;
+import hr.fer.zemris.java.p12.dao.DAOException;
+import hr.fer.zemris.java.p12.model.Poll;
+import hr.fer.zemris.java.p12.model.PollOption;
 
 /**
  * Ovo je implementacija podsustava DAO uporabom tehnologije SQL. Ova konkretna
@@ -70,27 +70,21 @@ public class SQLDAO implements DAO {
 
 		return pollList;
 	}
-	
+
 	@Override
-	public Map<String, Integer> acquirePollResults(long pollID) {
-		Map<String, Integer> temp = new HashMap<>();
-		
+	public Map<String, Long> acquirePollResults(long pollID) {
+		Map<String, Long> options = new LinkedHashMap<>();
 		Connection con = SQLConnectionProvider.getConnection();
 		PreparedStatement pst = null;
-		
+		String query = "select optionTitle, votesCount from POLLOPTIONS where pollID=" + pollID + " order by votesCount DESC";
+
 		try {
-			pst = con.prepareStatement("select id, title, message from Polls order by id");
+			pst = con.prepareStatement(query);
 			try {
 				ResultSet rs = pst.executeQuery();
 				try {
 					while (rs != null && rs.next()) {
-						Poll poll = new Poll();
-
-						poll.setId(rs.getLong(1));
-						poll.setTitle(rs.getString(2));
-						poll.setMessage(rs.getString(2));
-
-						pollList.add(poll);
+						options.put(rs.getString(1), rs.getLong(2));
 					}
 
 				} finally {
@@ -107,9 +101,10 @@ public class SQLDAO implements DAO {
 				}
 			}
 		} catch (Exception ex) {
-			throw new DAOException("Pogreška prilikom dohvata liste korisnika.", ex);
+			throw new DAOException(ex.getMessage());
 		}
-		
+
+		return options;
 	}
 
 	@Override
@@ -119,7 +114,7 @@ public class SQLDAO implements DAO {
 
 		try {
 			pst = con.prepareStatement(
-					"UPDATE PollOptions SET votesCount = votesCount + 1 WHERE id = " + optionID + "SET ");
+					"UPDATE PollOptions SET votesCount = votesCount + 1 WHERE id = " + optionID);
 			pst.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -130,18 +125,21 @@ public class SQLDAO implements DAO {
 	public long identifyPoll(long optionID) {
 		Connection con = SQLConnectionProvider.getConnection();
 		PreparedStatement pst = null;
+		Long value = null;
 
 		try {
-			pst = con.prepareStatement(
-					"SELECT pollID FROM PollOptions WHERE optionID = " + optionID);
+			pst = con.prepareStatement("SELECT POLLID FROM POLLOPTIONS WHERE ID = " + optionID, Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = pst.executeQuery();
-			return rs.getLong(1);
+			if(rs.next()) {
+				value = rs.getLong(1);
+			}
 			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return -1;
+
+		return value;
 	}
 
 	@Override
@@ -153,7 +151,7 @@ public class SQLDAO implements DAO {
 
 		try {
 			pst = con.prepareStatement(
-					"SELECT id, optionTitle, optionLink, pollID FROM PollOptions WHERE pollID = " + pollID);
+					"SELECT id, optionTitle, optionLink, pollID FROM POLLOPTIONS WHERE pollID = " + pollID);
 			try {
 				ResultSet rs = pst.executeQuery();
 				try {
@@ -186,5 +184,43 @@ public class SQLDAO implements DAO {
 		}
 
 		return optionList;
+	}
+
+	@Override
+	public Map<String, String> acquireReferences(Long pollID, Long votesCount) {
+		Connection con = SQLConnectionProvider.getConnection();
+		PreparedStatement pst = null;
+		Map<String, String> references = new LinkedHashMap<>();
+
+		String query = "SELECT optionTitle, optionLink FROM POLLOPTIONS WHERE pollID=" + pollID + "and votesCount="
+				+ votesCount;
+
+		try {
+			pst = con.prepareStatement(query);
+			try {
+				ResultSet rs = pst.executeQuery();
+				try {
+					while (rs != null && rs.next()) {
+						references.put(rs.getString(1), rs.getString(2));
+					}
+
+				} finally {
+					try {
+						rs.close();
+					} catch (Exception ignorable) {
+					}
+				}
+
+			} finally {
+				try {
+					pst.close();
+				} catch (Exception ignorable) {
+				}
+			}
+		} catch (Exception ex) {
+			throw new DAOException("Pogreška prilikom dohvata liste korisnika.", ex);
+		}
+		
+		return references;
 	}
 }

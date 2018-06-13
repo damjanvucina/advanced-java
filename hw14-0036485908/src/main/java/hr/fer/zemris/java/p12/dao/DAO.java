@@ -18,6 +18,7 @@ public interface DAO {
 	List<PollOption> acquirePollOptions(long pollID);
 	void performVoting(long optionID);
 	long identifyPoll(long optionID);
-	Map<String, Integer> acquirePollResults(long pollID);
+	Map<String, Long> acquirePollResults(long pollID);
+	Map<String, String> acquireReferences(Long pollID, Long votesCount);
 	
 }

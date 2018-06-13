@@ -16,8 +16,13 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.apache.derby.client.am.SqlException;
+
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.DataSources;
+
+import hr.fer.zemris.java.p12.dao.DAOException;
+import hr.fer.zemris.java.p12.dao.sql.SQLConnectionProvider;
 
 @WebListener
 public class Inicijalizacija implements ServletContextListener {
@@ -25,7 +30,7 @@ public class Inicijalizacija implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		Properties properties = new Properties();
-		String path = "WEB-INF/dbsettings.properties";
+		String path = "WEB-INF/dbsettings.properties"; 
 
 		try {
 			properties.load(new FileInputStream(sce.getServletContext().getRealPath(path)));
@@ -59,15 +64,15 @@ public class Inicijalizacija implements ServletContextListener {
 			e1.printStackTrace();
 		}
 
-		// createDatabaseRelations(currentConnetion);
-		// validateDatabaseRelations(currentConnetion);
+		createDatabaseRelations(currentConnetion);
+		validateDatabaseRelations(currentConnetion);
 
 		sce.getServletContext().setAttribute("hr.fer.zemris.dbpool", cpds);
 	}
 
 	private void validateDatabaseRelations(Connection currentConnetion) {
-		String isPollEmpty = "SELECT COUNT(*) FROM Polls";
-		String isPollOptionsEmpty = "SELECT COUNT(*) FROM PollOptions";
+		String isPollEmpty = "SELECT * FROM POLLS";
+		String isPollOptionsEmpty = "SELECT * FROM POLLOPTIONS";
 
 		PreparedStatement pst = null;
 		ResultSet pollResult = null;
@@ -81,13 +86,13 @@ public class Inicijalizacija implements ServletContextListener {
 			e.printStackTrace();
 		}
 
-//		try {
-			// if (!pollResult.next()) {
-			populatePollRelations(currentConnetion);
-			// }
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			if (pollResult == null || !pollResult.next()) {
+				populatePollRelations(currentConnetion);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		try {
 			pst = currentConnetion.prepareStatement(isPollOptionsEmpty);
@@ -97,7 +102,7 @@ public class Inicijalizacija implements ServletContextListener {
 		}
 
 		try {
-			if (pollOptionsResult.getInt(1) == 0) {
+			if (pollOptionsResult == null || !pollOptionsResult.next()) {
 				throw new IllegalStateException("PollOptions table should not be empty by now.");
 			}
 		} catch (SQLException e) {
@@ -116,8 +121,9 @@ public class Inicijalizacija implements ServletContextListener {
 					+ "('The Beach Boys','https://www.youtube.com/watch?v=2s4slliAtQU'," + generatedId + ", 0),\r\n"
 					+ "('The Four Seasons','https://www.youtube.com/watch?v=y8yvnqHmFds'," + generatedId + ", 0),\r\n"
 					+ "('The Marcels','https://www.youtube.com/watch?v=qoi3TH59ZEs'," + generatedId + ", 0),\r\n"
-					+ "('The Everly Brothers','https://www.youtube.com/watch?v=tbU3zdAgiX8'," + generatedId + ", 0),\r\n"
-					+ "('The Mamas And The Papas','https://www.youtube.com/watch?v=N-aK6JnyFmk'," + generatedId + ", 0)");
+					+ "('The Everly Brothers','https://www.youtube.com/watch?v=tbU3zdAgiX8'," + generatedId
+					+ ", 0),\r\n" + "('The Mamas And The Papas','https://www.youtube.com/watch?v=N-aK6JnyFmk',"
+					+ generatedId + ", 0)");
 
 			pst.execute();
 
@@ -135,9 +141,8 @@ public class Inicijalizacija implements ServletContextListener {
 			pst.setString(1, "Glasanje za omiljeni bend:");
 			pst.setString(2, "Od sljedećih bendova, koji Vam je bend najdraži? Kliknite na link kako biste glasali!");
 
-			pst.executeUpdate();
-
 			int numberOfAffectedRows = pst.executeUpdate();
+
 			if (numberOfAffectedRows != 1) {
 				throw new IllegalStateException("Invalid number of rows affected, was: " + numberOfAffectedRows);
 			}
@@ -160,13 +165,14 @@ public class Inicijalizacija implements ServletContextListener {
 		} catch (SQLException e) {
 			e.printStackTrace();
 
-		} finally {
-			try {
-				pst.close();
-			} catch (SQLException ex) {
-				ex.printStackTrace();
-			}
 		}
+		// finally {
+		// try {
+		// pst.close();
+		// } catch (SQLException ex) {
+		// ex.printStackTrace();
+		// }
+		// }
 	}
 
 	private void createDatabaseRelations(Connection currentConnetion) {
@@ -176,12 +182,12 @@ public class Inicijalizacija implements ServletContextListener {
 		try {
 			DatabaseMetaData dbm = currentConnetion.getMetaData();
 
-			pollsResult = dbm.getTables(null, null, "Polls", null);
-			if (!pollsResult.next()) {
+			pollsResult = dbm.getTables(null, null, "POLLS", null);
+			if (!pollsResult.next() ) {
 				createPollsRelation(currentConnetion);
 			}
 
-			pollOptionsResult = dbm.getTables(null, null, "PollOptions", null);
+			pollOptionsResult = dbm.getTables(null, null, "POLLOPTIONS", null);
 			if (!pollOptionsResult.next()) {
 				createPollOptionsRelation(currentConnetion);
 			}
@@ -193,14 +199,7 @@ public class Inicijalizacija implements ServletContextListener {
 
 	private void createPollOptionsRelation(Connection currentConnetion) {
 		//@formatter:off
-		String pollOptionsCreation = "CREATE TABLE PollOptions\r\n" + 
-									 "(id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,\r\n" + 
-									 "optionTitle VARCHAR(100) NOT NULL,\r\n" + 
-									 "optionLink VARCHAR(150) NOT NULL,\r\n" + 
-									 "pollID BIGINT,\r\n" + 
-									 "votesCount BIGINT,\r\n" + 
-									 "FOREIGN KEY (pollID) REFERENCES Polls(id)\r\n" + 
-									 ");";
+		String pollOptionsCreation = "CREATE TABLE PollOptions(id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,optionTitle VARCHAR(100) NOT NULL,optionLink VARCHAR(150) NOT NULL,pollID BIGINT,votesCount BIGINT,FOREIGN KEY (pollID) REFERENCES Polls(id))";
 		//@formatter:on
 		PreparedStatement pst = null;
 		try {
@@ -222,22 +221,38 @@ public class Inicijalizacija implements ServletContextListener {
 
 	private void createPollsRelation(Connection currentConnetion) {
 		//@formatter:off
-		String pollCreation = "CREATE TABLE Polls\r\n" + 
-							  "(id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,\r\n" +
-							  "title VARCHAR(150) NOT NULL,\r\n" + 
-							  "message CLOB(2048) NOT NULL\r\n" + 
-							  ");";
+		String pollCreation = "CREATE TABLE Polls (id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY, title VARCHAR(150) NOT NULL, message CLOB(2048) NOT NULL)";
 		//@formatter:on
 
 		PreparedStatement pst = null;
 
 		try {
 			pst = currentConnetion.prepareStatement(pollCreation);
-			pst.execute();
+			pst.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
+
+	// public void createPollsRelation(Connection con) {
+	//
+	// try (PreparedStatement pst =
+	// con.prepareStatement("CREATE TABLE Polls (id BIGINT PRIMARY KEY GENERATED
+	// ALWAYS AS IDENTITY, " + "title VARCHAR(150) NOT NULL, message CLOB(2048) NOT
+	// NULL)")) {
+	//
+	// try {
+	// pst.executeUpdate();
+	// } catch (SQLException exc) {
+	//
+	// }
+	//
+	// } catch (Exception ex) {
+	// throw new DAOException("Pogreška inicijalizacije baze." + " " +
+	// ex.getMessage(), ex);
+	// }
+	//
+	// }
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
