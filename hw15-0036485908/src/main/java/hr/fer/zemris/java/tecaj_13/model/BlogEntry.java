@@ -1,6 +1,7 @@
 package hr.fer.zemris.java.tecaj_13.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -33,7 +36,18 @@ public class BlogEntry {
 	private Date lastModifiedAt;
 	private String title;
 	private String text;
+	private BlogUser creator;
 	
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	public BlogUser getCreator() {
+		return creator;
+	}
+
+	public void setCreator(BlogUser creator) {
+		this.creator = creator;
+	}
+
 	@Id @GeneratedValue
 	public Long getId() {
 		return id;

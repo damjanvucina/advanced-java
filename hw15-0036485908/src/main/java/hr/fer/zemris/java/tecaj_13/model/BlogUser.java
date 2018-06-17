@@ -1,9 +1,15 @@
 package hr.fer.zemris.java.tecaj_13.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -16,13 +22,14 @@ public class BlogUser {
 	private String nick;
 	private String email;
 	private String passwordHash;
+	private Collection<BlogEntry> entries = new ArrayList<>();
 
 	@Id
 	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
-	
+
 	@Column(length = 100, nullable = false)
 	public String getFirstName() {
 		return firstName;
@@ -33,16 +40,16 @@ public class BlogUser {
 		return lastName;
 	}
 
-	@Column(length = 100, nullable = false)
+	@Column(length = 100, nullable = false, unique = true)
 	public String getNick() {
 		return nick;
 	}
-	
+
 	@Column(length = 100, nullable = false)
 	public String getEmail() {
 		return email;
 	}
-	
+
 	@Column(length = 1000, nullable = false)
 	public String getPasswordHash() {
 		return passwordHash;
@@ -70,6 +77,15 @@ public class BlogUser {
 
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
+	}
+
+	@OneToMany(mappedBy="creator")
+	public Collection<BlogEntry> getEntries() {
+		return entries;
+	}
+
+	public void setEntries(Collection<BlogEntry> entries) {
+		this.entries = entries;
 	}
 
 	@Override
