@@ -16,24 +16,15 @@
 
 				<form action="login" method="POST">
 					Nickname:<br> <input type="text" name="nickName"
-						placeholder="Please enter your nickname" size="30"><br>
-
-					<c:if test="${invalid.login != null}">
-						<div class="error">
-							<c:out value="${invalid.login}" />
-						</div>
+						placeholder="Please enter your nickname" size="30"
+						value="${invalidNickname}"><br> <br> Password:<br>
+					<input type="password" name="password"
+						placeholder="Please enter your password" size="30"> <br>
+					<c:if test="${not empty sessionScope['invalid.login']}">
+    					Invalid nickname or password
 					</c:if>
 
-
-					<br> Password:<br> <input type="password" name="password"
-						placeholder="Please enter your password" size="30"><br>
-
-					<c:if test="${invalid.login != null}">
-						<div class="error">
-							<c:out value="${invalid.login}" />
-						</div>
-					</c:if>
-					<br> <input type="submit" value="Login"><input
+					<br> <input type="submit" value="Login"> <input
 						type="reset" value="Reset">
 				</form>
 				<br>
@@ -43,10 +34,14 @@
 				<br>
 			</c:when>
 			<c:otherwise>
+			
+			
 		${sessionScope["current.user.nick"]}
 		<br>
-		<h3>If you would like to logout, click <a href="logout">here</a></h3>
-		</c:otherwise>
+				<h3>
+					If you would like to logout, click <a href="logout">here</a>
+				</h3>
+			</c:otherwise>
 		</c:choose>
 	</h3>
 	<br>

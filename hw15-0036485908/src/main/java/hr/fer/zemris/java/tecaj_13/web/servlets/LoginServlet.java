@@ -47,6 +47,7 @@ public class LoginServlet extends HttpServlet {
 		} else {
 			req.getSession().setAttribute(SESSION_INVALID_LOGIN, "Invalid nickname or password.");
 			try {
+				req.setAttribute("invalidNickname", nickName);
 				req.getRequestDispatcher("/WEB-INF/pages/index.jsp").forward(req, resp);
 			} catch (ServletException | IOException e) {
 				e.printStackTrace();
