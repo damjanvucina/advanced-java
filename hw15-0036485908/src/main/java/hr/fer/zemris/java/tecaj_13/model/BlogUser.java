@@ -2,13 +2,11 @@ package hr.fer.zemris.java.tecaj_13.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -19,11 +17,11 @@ public class BlogUser {
 	private Long id;
 	private String firstName;
 	private String lastName;
-	private String nick;
+	private String nickName;
 	private String email;
 	private String passwordHash;
 	private Collection<BlogEntry> entries = new ArrayList<>();
-
+	
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -41,8 +39,8 @@ public class BlogUser {
 	}
 
 	@Column(length = 100, nullable = false, unique = true)
-	public String getNick() {
-		return nick;
+	public String getNickName() {
+		return nickName;
 	}
 
 	@Column(length = 100, nullable = false)
@@ -67,8 +65,8 @@ public class BlogUser {
 		this.lastName = lastName;
 	}
 
-	public void setNick(String nick) {
-		this.nick = nick;
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 
 	public void setEmail(String email) {

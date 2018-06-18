@@ -6,20 +6,53 @@
 <body>
 	<h1>Welcome to our blog!</h1>
 	<br>
-	<br>
-	<h2>Already have an account?</h2>
+	<h3>
+		Welcome,
+		<c:choose>
+			<c:when test="${empty sessionScope['current.user.id']}">
+		Anonymous user
+		
+		<h2>Already have an account?</h2>
 
-	<form action="login" method="POST">
-		Nickname:<br> <input type="text" name="nick" placeholder="Please enter your nickname" size="30"><br><br>
-		Password:<br> <input type="password" name="password" placeholder="Please enter your password" size="30"><br><br>
-		<input type="submit" value="Login"><input type="reset"
-			value="Reset">
-	</form>
-	<br><br>
-	<h2>Don't have an account yet</h2>
-	<a href="servleti/register"></a>
-	<br><br>
-		<h2>List of registered authors</h2>
+				<form action="login" method="POST">
+					Nickname:<br> <input type="text" name="nickName"
+						placeholder="Please enter your nickname" size="30"><br>
+
+					<c:if test="${invalid.login != null}">
+						<div class="error">
+							<c:out value="${invalid.login}" />
+						</div>
+					</c:if>
+
+
+					<br> Password:<br> <input type="password" name="password"
+						placeholder="Please enter your password" size="30"><br>
+
+					<c:if test="${invalid.login != null}">
+						<div class="error">
+							<c:out value="${invalid.login}" />
+						</div>
+					</c:if>
+					<br> <input type="submit" value="Login"><input
+						type="reset" value="Reset">
+				</form>
+				<br>
+				<br>
+				<h2>Don't have an account yet</h2>
+				<a href="register">Register now</a>
+				<br>
+			</c:when>
+			<c:otherwise>
+		${sessionScope["current.user.nick"]}
+		<br>
+		<h3>If you would like to logout, click <a href="logout">here</a></h3>
+		</c:otherwise>
+		</c:choose>
+	</h3>
+	<br>
+
+	<br>
+	<h2>List of registered authors</h2>
 	<a href="servleti/register"></a>
 </body>
 </html>
