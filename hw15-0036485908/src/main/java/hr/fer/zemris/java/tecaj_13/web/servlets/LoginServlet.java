@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
 		if (user != null) {
 			setSessionAttributes(req, user);
 			try {
-				resp.sendRedirect("../main");
+				resp.sendRedirect(req.getContextPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

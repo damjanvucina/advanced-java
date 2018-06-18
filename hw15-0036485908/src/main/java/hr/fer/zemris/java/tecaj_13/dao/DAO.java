@@ -1,5 +1,7 @@
 package hr.fer.zemris.java.tecaj_13.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,8 +24,13 @@ public interface DAO {
 	 */
 	BlogEntry getBlogEntry(Long id) throws DAOException;
 	
+	List<BlogEntry> acquireUserEntries(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp, Long authorID);
+	
 	BlogUser validateLogin(HttpServletRequest req, String nickName, String password);
 	
 	BlogUser createNewUser(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp, FormularForm f);
-
+	
+	List<BlogUser> acquireRegisteredAuthors(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp);
+	
+	Long acquireUserID(EntityManagerFactory emf, String nickName);
 }

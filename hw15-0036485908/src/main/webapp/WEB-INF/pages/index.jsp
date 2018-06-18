@@ -48,6 +48,19 @@
 
 	<br>
 	<h2>List of registered authors</h2>
-	<a href="servleti/register"></a>
+	<c:choose>
+		<c:when test="${registeredAuthors.isEmpty()}">
+			<p>There are currently no registered users</p>
+		</c:when>
+		<c:otherwise>
+			<ol>
+				<c:forEach var="author" items="${registeredAuthors}">
+					<li><c:out value="${author.firstName}" /> <c:out
+							value="${author.lastName}" /> (<c:out value="${author.email}" />)
+						<a href="author/<c:out value="${author.nickName}"/>">View Posts</a></li>
+				</c:forEach>
+			</ol>
+		</c:otherwise>
+	</c:choose>
 </body>
 </html>

@@ -2,6 +2,7 @@ package hr.fer.zemris.java.tecaj_13.dao.jpa;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -79,8 +80,58 @@ public class JPADAOImpl implements DAO {
 
 		em.getTransaction().commit();
 		em.close();
-		
+
 		return user;
+	}
+
+	@Override
+	public List<BlogUser> acquireRegisteredAuthors(EntityManagerFactory emf, HttpServletRequest req,
+			HttpServletResponse resp) {
+
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+
+		List<BlogUser> registeredAuthors = null;
+		try {
+			registeredAuthors = em.createQuery("select b from BlogUser as b", BlogUser.class).getResultList();
+		} catch (NoResultException ignorable) {
+		}
+
+		return registeredAuthors;
+	}
+
+	@Override
+	public List<BlogEntry> acquireUserEntries(EntityManagerFactory emf, HttpServletRequest req,
+			HttpServletResponse resp, Long authorID) {
+
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+
+		List<BlogEntry> userEntries = null;
+
+		try {
+			em.createQuery("select b from BlogEntry as b where b.creator.id=:creatorID", BlogEntry.class)
+					.setParameter("creatorID", authorID).getResultList();
+		} catch (NoResultException ignorable) {
+		}
+
+		return userEntries;
+	}
+
+	@Override
+	public Long acquireUserID(EntityManagerFactory emf, String nickName) {
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+
+		Long userID = null;
+
+		try {
+			userID = em.createQuery("select b.id from BlogUser as b where b.nickName=:nickName", Long.class)
+					.setParameter("nickName", nickName).getSingleResult();
+		} catch (NoResultException ignorable) {
+		}
+
+		return userID;
 	}
 
 }
