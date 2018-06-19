@@ -17,5 +17,32 @@
 			</h3>
 		</c:otherwise>
 	</c:choose>
+	<br> BlogEntries List:
+	<br>
+	<br>
+	<c:choose>
+		<c:when test="${empty requestScope['userEntries']}">
+		This user does not have any posts yet.
+		</c:when>
+		<c:otherwise>
+			<ol>
+				<c:forEach var="entry" items="${userEntries}">
+					<li>${entry.title}</li>
+				</c:forEach>
+			</ol>
+		</c:otherwise>
+	</c:choose>
+	<br><br>
+	<c:choose>
+		<c:when test="${empty requestScope['owner']}">
+		Cannot edit other user's profile
+		</c:when>
+		<c:otherwise>
+			<br>
+			Add new entry
+			Edit entry
+		</c:otherwise>
+	</c:choose>
+
 </body>
 </html>
