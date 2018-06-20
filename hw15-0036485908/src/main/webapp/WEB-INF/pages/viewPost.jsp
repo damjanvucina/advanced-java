@@ -27,11 +27,16 @@ div {
 
 	<h2>Selected blog:</h2>
 	<div>
-		<b>Title: </b> ${blogEntry.title} <br>
-		<b>Text: </b> ${blogEntry.text} <br> 
-		<b>Author: </b> ${blogEntry.creator.nickName} <br> 
-		<b>Created At: </b> ${blogEntry.createdAt} <br> 
-		<b>Last Modified At: </b> ${blogEntry.lastModifiedAt}
+		<b>Title: </b> ${blogEntry.title} <br> <b>Text: </b>
+		${blogEntry.text} <br> <b>Author: </b>
+		${blogEntry.creator.nickName} <br> <b>Created At: </b>
+		${blogEntry.createdAt} <br> <b>Last Modified At: </b>
+		${blogEntry.lastModifiedAt}
+		
+		<c:if
+			test="${blogEntry.creator.nickName eq sessionScope['current.user.nick']}">
+ 			<br><a href="edit?id=${blogEntry.id}"><b>Edit</b></a>
+		</c:if>
 	</div>
 
 
@@ -44,8 +49,7 @@ div {
 		<c:otherwise>
 			<c:forEach var="comment" items="${comments}">
 				<div>
-					<b>Message: </b>${comment.message}<br>
-					<b>By: </b>${comment.usersEMail}<br>
+					<b>Message: </b>${comment.message}<br> <b>By: </b>${comment.usersEMail}<br>
 					<b>Posted At: </b>${comment.postedOn}</div>
 			</c:forEach>
 		</c:otherwise>

@@ -64,12 +64,27 @@ public class SwitchServlet extends HttpServlet {
 
 		if (indicator.equals("new")) {
 			processNew(req, resp, indicator);
+			
+		} else if (indicator.equals("edit")) {
+			processEdit(req, resp, indicator);
+			
 		} else if (isSelectedPost(indicator)) {
 			processViewPost(req, resp, indicator);
+			
 		} else {
 			processAuthor(req, resp, indicator);
 		}
+	}
 
+	private void processEdit(HttpServletRequest req, HttpServletResponse resp, String indicator) throws ServletException, IOException {
+		Long entryID = Long.valueOf(req.getParameter("id"));
+		
+		BlogEntry entry = DAOProvider.getDAO().getBlogEntry(entryID);
+		req.setAttribute("enteredTitle", entry.getTitle());
+		req.setAttribute("enteredText", entry.getText());
+		req.setAttribute("enteredID", entryID);
+		
+		req.getRequestDispatcher("/WEB-INF/pages/edit.jsp").forward(req, resp);
 	}
 
 	private void processViewPost(HttpServletRequest req, HttpServletResponse resp, String indicator)

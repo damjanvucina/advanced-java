@@ -17,7 +17,7 @@
 			</h3>
 		</c:otherwise>
 	</c:choose>
-	<br> BlogEntries List:
+	<br> <h2>Blog Entries:</h2>
 	<br>
 	<br>
 	<c:choose>
@@ -36,7 +36,6 @@
 	<br>
 	<c:choose>
 		<c:when test="${empty requestScope['owner']}">
-		Cannot edit other user's profile
 		</c:when>
 		<c:otherwise>
 			<br>

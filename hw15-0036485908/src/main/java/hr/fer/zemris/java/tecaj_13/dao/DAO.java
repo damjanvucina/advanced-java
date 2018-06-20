@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.tecaj_13.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -40,4 +41,7 @@ public interface DAO {
 	void performDatabaseInput(Object obj);
 
 	List<BlogComment> acquireBlogComments(HttpServletRequest req, HttpServletResponse resp, Long entryID);
+
+	void updateBlogEntry(Long entryID, String updatedTitle, String updatedText, Date now);
+
 }

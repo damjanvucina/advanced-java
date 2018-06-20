@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -170,4 +169,17 @@ public class JPADAOImpl implements DAO {
 		return blogComments;
 	}
 
+	@Override
+	public void updateBlogEntry(Long entryID, String updatedTitle, String updatedText, Date now) {
+		EntityManager em = JPAEMProvider.getEntityManager();
+		int affectedRows = em
+				.createQuery(
+						"update BlogEntry as b set b.title=:updatedTitle, b.text=:updatedText, b.lastModifiedAt=:now where b.id =:entryID")
+				.setParameter("updatedTitle", updatedTitle).setParameter("updatedText", updatedText).setParameter("now", now)
+				.setParameter("entryID", entryID).executeUpdate();
+		em.close();
+		if (affectedRows != 1) {
+			throw new DAOException("Invalid number of affected rows, was: " + affectedRows);
+		}
+	}
 }
