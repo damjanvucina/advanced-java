@@ -30,11 +30,16 @@ public class PostCommentServlet extends HttpServlet {
 		}
 		
 		Long blogID = Long.valueOf(req.getParameter("blogEntryID"));
-		//BlogUser commenter = DAOProvider.getDAO().acquireUser(null, req.getSession().getAttribute(SESSION_NICK_NAME));
+		BlogUser commenter = DAOProvider.getDAO().acquireUser((String) req.getSession().getAttribute(SESSION_NICK_NAME));
 		
 		BlogComment comment =  new BlogComment();
 		comment.setBlogEntry(DAOProvider.getDAO().getBlogEntry(blogID));
 		comment.setMessage(message);
 		comment.setPostedOn(new Date());
+		comment.setUsersEMail(commenter.getEmail());
+		
+		DAOProvider.getDAO().performDatabaseInput(comment);
+		
+		resp.sendRedirect(req.getContextPath());
 	}
 }

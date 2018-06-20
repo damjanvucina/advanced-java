@@ -3,6 +3,13 @@
 	session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
+<style>
+div {
+	padding: 5px;
+	border: 2px solid gray;
+	margin: 2;
+}
+</style>
 <body>
 	Current User:
 	<c:choose>
@@ -19,13 +26,14 @@
 	</c:choose>
 
 	<h2>Selected blog:</h2>
-	<b>Title:</b> ${blogEntry.title}
-	<br>
-	<b>Text:</b> ${blogEntry.text}
-	<br>
-	<b>Created At:</b> ${blogEntry.createdAt}
-	<br>
-	<b>Last Modified At:</b> ${blogEntry.lastModifiedAt}
+	<div>
+		<b>Title: </b> ${blogEntry.title} <br>
+		<b>Text: </b> ${blogEntry.text} <br> 
+		<b>Author: </b> ${blogEntry.creator.nickName} <br> 
+		<b>Created At: </b> ${blogEntry.createdAt} <br> 
+		<b>Last Modified At: </b> ${blogEntry.lastModifiedAt}
+	</div>
+
 
 	<h2>Blog comments:</h2>
 
@@ -34,19 +42,22 @@
 		This post has no comments yet.
 		</c:when>
 		<c:otherwise>
-			<ul>
-				<c:forEach var="comment" items="${comments}">
-					<li>${comment.message},by:${comment.usersMail}</li>
-				</c:forEach>
-			</ul>
+			<c:forEach var="comment" items="${comments}">
+				<div>
+					<b>Message: </b>${comment.message}<br>
+					<b>By: </b>${comment.usersEMail}<br>
+					<b>Posted At: </b>${comment.postedOn}</div>
+			</c:forEach>
 		</c:otherwise>
 	</c:choose>
+
+
 
 	<h3>Post New Comment</h3>
 	<form action="../postCommentServlet" method="POST">
 		Message:<br> <input type="text" name="message"
-			placeholder="Please enter your comment" size="30"><br>
-			<input type="hidden" name="blogEntryID"	value="${blogEntry.id}">
+			placeholder="Please enter your comment" size="30"><br> <input
+			type="hidden" name="blogEntryID" value="${blogEntry.id}">
 
 		<c:if test="${not empty requestScope['invalidComment']}">
 			Invalid comment entered.

@@ -27,7 +27,7 @@
 		<c:otherwise>
 			<ul>
 				<c:forEach var="entry" items="${userEntries}">
-					<li> <a href="${entry.id}">${entry.title}</a></li>
+					<li> <a href="${entry.creator.nickName}/${entry.id}">${entry.title}</a></li>
 				</c:forEach>
 			</ul>
 		</c:otherwise>
