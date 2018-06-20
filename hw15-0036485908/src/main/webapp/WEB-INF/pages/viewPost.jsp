@@ -32,10 +32,11 @@ div {
 		${blogEntry.creator.nickName} <br> <b>Created At: </b>
 		${blogEntry.createdAt} <br> <b>Last Modified At: </b>
 		${blogEntry.lastModifiedAt}
-		
+
 		<c:if
 			test="${blogEntry.creator.nickName eq sessionScope['current.user.nick']}">
- 			<br><a href="edit?id=${blogEntry.id}"><b>Edit</b></a>
+			<br>
+			<a href="edit?id=${blogEntry.id}"><b>Edit</b></a>
 		</c:if>
 	</div>
 
@@ -58,10 +59,21 @@ div {
 
 
 	<h3>Post New Comment</h3>
-	<form action="../postCommentServlet" method="POST">
+	<form action="/blog/servleti/postCommentServlet" method="POST">
+		<c:if test="${empty sessionScope['current.user.id']}">
+			Email:<br>
+			<input type="text" name="commenterEmail" placeholder="Enter mail"
+				size="30">
+			<br>
+			<c:if test="${not empty requestScope['invalidMail']}">
+			Invalid mail entered.
+		</c:if>
+			<br>
+		</c:if>
 		Message:<br> <input type="text" name="message"
-			placeholder="Please enter your comment" size="30"><br> <input
-			type="hidden" name="blogEntryID" value="${blogEntry.id}">
+			placeholder="Comment here" size="30" value="${enteredMessage}"><br>
+			 
+			<input type="hidden" name="blogEntryID" value="${blogEntry.id}">
 
 		<c:if test="${not empty requestScope['invalidComment']}">
 			Invalid comment entered.

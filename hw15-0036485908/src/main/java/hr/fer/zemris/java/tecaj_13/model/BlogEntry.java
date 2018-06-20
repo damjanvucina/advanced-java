@@ -1,7 +1,6 @@
 package hr.fer.zemris.java.tecaj_13.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 

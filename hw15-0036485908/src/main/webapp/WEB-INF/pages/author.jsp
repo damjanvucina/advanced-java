@@ -3,6 +3,13 @@
 	session="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
+<style>
+div {
+	padding: 5px;
+	border: 2px solid gray;
+	margin: 2;
+}
+</style>
 <body>
 	Current User:
 	<c:choose>
@@ -17,31 +24,32 @@
 			</h3>
 		</c:otherwise>
 	</c:choose>
-	<br> <h2>Blog Entries:</h2>
+
 	<br>
-	<br>
+	<h2>Blog Entries:</h2>
+
+	<c:choose>
+		<c:when test="${empty requestScope['owner']}">
+		</c:when>
+		<c:otherwise>
+			<a href="${sessionScope['current.user.nick']}/new">Add New Post</a>
+		</c:otherwise>
+	</c:choose>	
+	<br><br>
 	<c:choose>
 		<c:when test="${empty requestScope['userEntries']}">
 		This user does not have any posts yet.
 		</c:when>
 		<c:otherwise>
-			<ul>
-				<c:forEach var="entry" items="${userEntries}">
-					<li> <a href="${entry.creator.nickName}/${entry.id}">${entry.title}</a></li>
-				</c:forEach>
-			</ul>
+			<c:forEach var="entry" items="${userEntries}">
+				<div>
+					<a href="${entry.creator.nickName}/${entry.id}">${entry.title}</a>
+				</div>
+			</c:forEach>
 		</c:otherwise>
 	</c:choose>
 	<br>
 	<br>
-	<c:choose>
-		<c:when test="${empty requestScope['owner']}">
-		</c:when>
-		<c:otherwise>
-			<br>
-			<a href="${sessionScope['current.user.nick']}/new">Add New Post</a>
-		</c:otherwise>
-	</c:choose>
 
 </body>
 </html>

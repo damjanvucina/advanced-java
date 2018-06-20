@@ -3,7 +3,6 @@ package hr.fer.zemris.java.tecaj_13.dao;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

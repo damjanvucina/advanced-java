@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import hr.fer.zemris.java.tecaj_13.dao.DAOProvider;
 import hr.fer.zemris.java.tecaj_13.model.BlogComment;
 import hr.fer.zemris.java.tecaj_13.model.BlogEntry;
-import hr.fer.zemris.java.tecaj_13.model.BlogUser;
 
 import static hr.fer.zemris.java.tecaj_13.web.servlets.LoginServlet.SESSION_NICK_NAME;
 import static hr.fer.zemris.java.tecaj_13.web.servlets.LoginServlet.SESSION_ID;
@@ -130,7 +128,7 @@ public class SwitchServlet extends HttpServlet {
 
 	private void setUpEntries(HttpServletRequest req, HttpServletResponse resp, Long authorID) {
 
-		BlogUser user = DAOProvider.getDAO().acquireUser((String) req.getSession().getAttribute(SESSION_NICK_NAME));
+		//BlogUser user = DAOProvider.getDAO().acquireUser((String) req.getSession().getAttribute(SESSION_NICK_NAME));
 
 		List<BlogEntry> userEntries = DAOProvider.getDAO().acquireUserEntries(req, resp, authorID);
 		req.setAttribute("userEntries", userEntries);
