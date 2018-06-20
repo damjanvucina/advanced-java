@@ -83,7 +83,7 @@ public class ValidateRegistrationServlet extends HttpServlet {
 			em.close();
 
 		} else {
-			BlogUser newUser = DAOProvider.getDAO().createNewUser(emf, req, resp, f);
+			BlogUser newUser = DAOProvider.getDAO().createNewUser(req, resp, f);
 			try {
 				LoginServlet.setSessionAttributes(req, newUser);
 				resp.sendRedirect("./main");

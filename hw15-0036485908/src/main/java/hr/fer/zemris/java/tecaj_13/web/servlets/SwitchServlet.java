@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import hr.fer.zemris.java.tecaj_13.dao.DAOProvider;
+import hr.fer.zemris.java.tecaj_13.model.BlogComment;
 import hr.fer.zemris.java.tecaj_13.model.BlogEntry;
 import hr.fer.zemris.java.tecaj_13.model.BlogUser;
 
@@ -38,8 +39,6 @@ public class SwitchServlet extends HttpServlet {
 			req.getRequestDispatcher("/WEB-INF/pages/new.jsp").forward(req, resp);
 
 		} else {
-			EntityManagerFactory emf = (EntityManagerFactory) req.getServletContext()
-					.getAttribute("my.application.emf");
 
 			String creatorNick = (String) req.getSession().getAttribute(SESSION_NICK_NAME);
 
@@ -48,11 +47,11 @@ public class SwitchServlet extends HttpServlet {
 			entry.setText(text);
 			entry.setCreatedAt(new Date());
 			entry.setLastModifiedAt(entry.getCreatedAt());
-			entry.setCreator(DAOProvider.getDAO().acquireUser(emf, creatorNick));
+			entry.setCreator(DAOProvider.getDAO().acquireUser(creatorNick));
 
-			DAOProvider.getDAO().performDatabaseInput(emf, entry);
-			setUpEntries(emf, req, resp, (Long) req.getSession().getAttribute(SESSION_ID));
-			req.getRequestDispatcher("/WEB-INF/pages/author.jsp").forward(req, resp);
+			DAOProvider.getDAO().performDatabaseInput(entry);
+			setUpEntries(req, resp, (Long) req.getSession().getAttribute(SESSION_ID));
+			resp.sendRedirect(req.getContextPath());
 		}
 	}
 
@@ -65,25 +64,45 @@ public class SwitchServlet extends HttpServlet {
 
 		if (indicator.equals("new")) {
 			processNew(req, resp, indicator);
+		} else if (isSelectedPost(indicator)) {
+			processViewPost(req, resp, indicator);
 		} else {
 			processAuthor(req, resp, indicator);
 		}
 
 	}
 
+	private void processViewPost(HttpServletRequest req, HttpServletResponse resp, String indicator)
+			throws ServletException, IOException {
+		BlogEntry entry = DAOProvider.getDAO().getBlogEntry(Long.valueOf(indicator));
+		List<BlogComment> comments = DAOProvider.getDAO().acquireBlogComments(req, resp, Long.valueOf(indicator));
+
+		req.setAttribute("blogEntry", entry);
+		req.setAttribute("comments", comments);
+
+		req.getRequestDispatcher("/WEB-INF/pages/viewPost.jsp").forward(req, resp);
+	}
+
+	private boolean isSelectedPost(String indicator) {
+		try {
+			Long.parseLong(indicator);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
 	private void processAuthor(HttpServletRequest req, HttpServletResponse resp, String authorNick)
 			throws ServletException, IOException {
 
-		EntityManagerFactory emf = (EntityManagerFactory) req.getServletContext().getAttribute("my.application.emf");
-
-		Long authorID = DAOProvider.getDAO().acquireUserID(emf, authorNick);
+		Long authorID = DAOProvider.getDAO().acquireUserID(authorNick);
 
 		if (authorNick == null) {
 			req.setAttribute("errorMessage", "Invalid author nickname");
 			req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
 		}
 
-		setUpEntries(emf, req, resp, authorID);
+		setUpEntries(req, resp, authorID);
 
 		req.setAttribute("authorNick", authorNick);
 
@@ -94,12 +113,11 @@ public class SwitchServlet extends HttpServlet {
 		req.getRequestDispatcher("/WEB-INF/pages/author.jsp").forward(req, resp);
 	}
 
-	private void setUpEntries(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp,
-			Long authorID) {
-		
-		BlogUser user = DAOProvider.getDAO().acquireUser(emf, (String) req.getSession().getAttribute(SESSION_NICK_NAME));
-		
-		List<BlogEntry> userEntries = DAOProvider.getDAO().acquireUserEntries(emf, req, resp, authorID);
+	private void setUpEntries(HttpServletRequest req, HttpServletResponse resp, Long authorID) {
+
+		BlogUser user = DAOProvider.getDAO().acquireUser((String) req.getSession().getAttribute(SESSION_NICK_NAME));
+
+		List<BlogEntry> userEntries = DAOProvider.getDAO().acquireUserEntries(req, resp, authorID);
 		req.setAttribute("userEntries", userEntries);
 	}
 

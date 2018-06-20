@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import hr.fer.zemris.java.tecaj_13.dao.DAO;
 import hr.fer.zemris.java.tecaj_13.dao.DAOException;
+import hr.fer.zemris.java.tecaj_13.model.BlogComment;
 import hr.fer.zemris.java.tecaj_13.model.BlogEntry;
 import hr.fer.zemris.java.tecaj_13.model.BlogUser;
 import hr.fer.zemris.java.tecaj_13.model.FormularForm;
@@ -62,8 +63,7 @@ public class JPADAOImpl implements DAO {
 	}
 
 	@Override
-	public BlogUser createNewUser(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp,
-			FormularForm f) {
+	public BlogUser createNewUser(HttpServletRequest req, HttpServletResponse resp, FormularForm f) {
 
 		BlogUser user = new BlogUser();
 		user.setFirstName(f.getFirstName());
@@ -80,8 +80,7 @@ public class JPADAOImpl implements DAO {
 	}
 
 	@Override
-	public List<BlogUser> acquireRegisteredAuthors(EntityManagerFactory emf, HttpServletRequest req,
-			HttpServletResponse resp) {
+	public List<BlogUser> acquireRegisteredAuthors(HttpServletRequest req, HttpServletResponse resp) {
 
 		EntityManager em = JPAEMProvider.getEntityManager();
 
@@ -96,15 +95,16 @@ public class JPADAOImpl implements DAO {
 	}
 
 	@Override
-	public List<BlogEntry> acquireUserEntries(EntityManagerFactory emf, HttpServletRequest req,
-			HttpServletResponse resp, Long authorID) {
+	public List<BlogEntry> acquireUserEntries(HttpServletRequest req, HttpServletResponse resp, Long authorID) {
 
 		EntityManager em = JPAEMProvider.getEntityManager();
 
 		List<BlogEntry> userEntries = null;
 
 		try {
-			userEntries = em.createQuery("select b from BlogEntry as b where b.creator.id=:creatorID", BlogEntry.class)
+			userEntries = em
+					.createQuery("select b from BlogEntry as b where b.creator.id=:creatorID order by b.createdAt desc",
+							BlogEntry.class)
 					.setParameter("creatorID", authorID).getResultList();
 		} catch (NoResultException ignorable) {
 		}
@@ -114,25 +114,7 @@ public class JPADAOImpl implements DAO {
 	}
 
 	@Override
-	public List<BlogEntry> acquireUserEntries2(EntityManagerFactory emf, HttpServletRequest req,
-			HttpServletResponse resp, BlogUser user) {
-
-		EntityManager em = JPAEMProvider.getEntityManager();
-
-		List<BlogEntry> userEntries = null;
-
-		try {
-			em.createQuery("select b from BlogEntry as b where b.creator=:creator", BlogEntry.class)
-					.setParameter("creator", user).getResultList();
-		} catch (NoResultException ignorable) {
-		}
-
-		JPAEMProvider.getEntityManager();
-		return userEntries;
-	}
-
-	@Override
-	public Long acquireUserID(EntityManagerFactory emf, String nickName) {
+	public Long acquireUserID(String nickName) {
 		EntityManager em = JPAEMProvider.getEntityManager();
 
 		Long userID = null;
@@ -148,14 +130,14 @@ public class JPADAOImpl implements DAO {
 	}
 
 	@Override
-	public void performDatabaseInput(EntityManagerFactory emf, Object obj) {
+	public void performDatabaseInput(Object obj) {
 		EntityManager em = JPAEMProvider.getEntityManager();
 		em.persist(obj);
 		JPAEMProvider.close();
 	}
 
 	@Override
-	public BlogUser acquireUser(EntityManagerFactory emf, String nickName) {
+	public BlogUser acquireUser(String nickName) {
 		EntityManager em = JPAEMProvider.getEntityManager();
 
 		BlogUser user = null;
@@ -168,6 +150,24 @@ public class JPADAOImpl implements DAO {
 
 		JPAEMProvider.close();
 		return user;
+	}
+
+	@Override
+	public List<BlogComment> acquireBlogComments(HttpServletRequest req, HttpServletResponse resp, Long entryID) {
+		EntityManager em = JPAEMProvider.getEntityManager();
+
+		List<BlogComment> blogComments = null;
+
+		try {
+			blogComments = em.createQuery(
+					"select b from BlogComment as b where b.blogEntry.id=:entryID order by b.postedOn desc",
+					BlogComment.class).setParameter("entryID", entryID).getResultList();
+		} catch (NoResultException ignorable) {
+		}
+
+		JPAEMProvider.close();
+
+		return blogComments;
 	}
 
 }

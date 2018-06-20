@@ -6,6 +6,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import hr.fer.zemris.java.tecaj_13.model.BlogComment;
 import hr.fer.zemris.java.tecaj_13.model.BlogEntry;
 import hr.fer.zemris.java.tecaj_13.model.BlogUser;
 import hr.fer.zemris.java.tecaj_13.model.FormularForm;
@@ -24,20 +25,19 @@ public interface DAO {
 	 */
 	BlogEntry getBlogEntry(Long id) throws DAOException;
 	
-	List<BlogEntry> acquireUserEntries(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp, Long authorID);
+	List<BlogEntry> acquireUserEntries(HttpServletRequest req, HttpServletResponse resp, Long authorID);
 	
 	BlogUser validateLogin(HttpServletRequest req, String nickName, String password);
 	
-	BlogUser createNewUser(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp, FormularForm f);
+	BlogUser createNewUser(HttpServletRequest req, HttpServletResponse resp, FormularForm f);
 	
-	List<BlogUser> acquireRegisteredAuthors(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp);
+	List<BlogUser> acquireRegisteredAuthors(HttpServletRequest req, HttpServletResponse resp);
 	
-	Long acquireUserID(EntityManagerFactory emf, String nickName);
+	Long acquireUserID(String nickName);
 	
-	BlogUser acquireUser(EntityManagerFactory emf, String nickName);
+	BlogUser acquireUser(String nickName);
 	
-	void performDatabaseInput(EntityManagerFactory emf, Object obj);
+	void performDatabaseInput(Object obj);
 
-	List<BlogEntry> acquireUserEntries2(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp,
-			BlogUser user);
+	List<BlogComment> acquireBlogComments(HttpServletRequest req, HttpServletResponse resp, Long entryID);
 }

@@ -19,9 +19,7 @@ public class MainServlet extends HttpServlet{
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		EntityManagerFactory emf = (EntityManagerFactory) req.getServletContext().getAttribute("my.application.emf");
-		
-		List<BlogUser> registeredAuthors = DAOProvider.getDAO().acquireRegisteredAuthors(emf, req, resp);
+		List<BlogUser> registeredAuthors = DAOProvider.getDAO().acquireRegisteredAuthors(req, resp);
 		req.getSession().setAttribute("registeredAuthors", registeredAuthors);
 		
 		req.getRequestDispatcher("/WEB-INF/pages/index.jsp").forward(req, resp);
