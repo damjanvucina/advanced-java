@@ -25,22 +25,22 @@
 		This user does not have any posts yet.
 		</c:when>
 		<c:otherwise>
-			<ol>
+			<ul>
 				<c:forEach var="entry" items="${userEntries}">
 					<li>${entry.title}</li>
 				</c:forEach>
-			</ol>
+			</ul>
 		</c:otherwise>
 	</c:choose>
-	<br><br>
+	<br>
+	<br>
 	<c:choose>
 		<c:when test="${empty requestScope['owner']}">
 		Cannot edit other user's profile
 		</c:when>
 		<c:otherwise>
 			<br>
-			Add new entry
-			Edit entry
+			<a href="${sessionScope['current.user.nick']}/new">Add New Post</a>
 		</c:otherwise>
 	</c:choose>
 

@@ -33,4 +33,11 @@ public interface DAO {
 	List<BlogUser> acquireRegisteredAuthors(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp);
 	
 	Long acquireUserID(EntityManagerFactory emf, String nickName);
+	
+	BlogUser acquireUser(EntityManagerFactory emf, String nickName);
+	
+	void performDatabaseInput(EntityManagerFactory emf, Object obj);
+
+	List<BlogEntry> acquireUserEntries2(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp,
+			BlogUser user);
 }

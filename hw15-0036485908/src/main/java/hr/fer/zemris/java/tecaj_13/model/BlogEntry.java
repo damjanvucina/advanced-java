@@ -23,10 +23,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @NamedQueries({
-	@NamedQuery(name="BlogEntry.upit1",query="select b from BlogComment as b where b.blogEntry=:be and b.postedOn>:when")
-})
+		@NamedQuery(name = "BlogEntry.upit1", query = "select b from BlogComment as b where b.blogEntry=:be and b.postedOn>:when") })
 @Entity
-@Table(name="blog_entries")
+@Table(name = "blog_entries")
 @Cacheable(true)
 public class BlogEntry {
 
@@ -37,7 +36,7 @@ public class BlogEntry {
 	private String title;
 	private String text;
 	private BlogUser creator;
-	
+
 	@ManyToOne
 	@JoinColumn(nullable = false)
 	public BlogUser getCreator() {
@@ -48,27 +47,28 @@ public class BlogEntry {
 		this.creator = creator;
 	}
 
-	@Id @GeneratedValue
+	@Id
+	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	@OneToMany(mappedBy="blogEntry",fetch=FetchType.LAZY, cascade=CascadeType.PERSIST, orphanRemoval=true)
+	@OneToMany(mappedBy = "blogEntry", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
 	@OrderBy("postedOn")
 	public List<BlogComment> getComments() {
 		return comments;
 	}
-	
+
 	public void setComments(List<BlogComment> comments) {
 		this.comments = comments;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable=false)
+	@Column(nullable = false)
 	public Date getCreatedAt() {
 		return createdAt;
 	}
@@ -78,7 +78,7 @@ public class BlogEntry {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable=true)
+	@Column(nullable = true)
 	public Date getLastModifiedAt() {
 		return lastModifiedAt;
 	}
@@ -87,7 +87,7 @@ public class BlogEntry {
 		this.lastModifiedAt = lastModifiedAt;
 	}
 
-	@Column(length=200,nullable=false)
+	@Column(length = 200, nullable = false)
 	public String getTitle() {
 		return title;
 	}
@@ -96,7 +96,7 @@ public class BlogEntry {
 		this.title = title;
 	}
 
-	@Column(length=4096,nullable=false)
+	@Column(length = 4096, nullable = false)
 	public String getText() {
 		return text;
 	}

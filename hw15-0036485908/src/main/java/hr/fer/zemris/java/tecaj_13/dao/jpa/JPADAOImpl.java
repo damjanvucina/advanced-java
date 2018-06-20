@@ -2,6 +2,7 @@ package hr.fer.zemris.java.tecaj_13.dao.jpa;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -26,9 +27,7 @@ public class JPADAOImpl implements DAO {
 
 	@Override
 	public BlogUser validateLogin(HttpServletRequest req, String nickName, String password) {
-		EntityManagerFactory emf = (EntityManagerFactory) req.getServletContext().getAttribute("my.application.emf");
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
+		EntityManager em = JPAEMProvider.getEntityManager();
 
 		BlogUser user = null;
 		try {
@@ -41,6 +40,7 @@ public class JPADAOImpl implements DAO {
 		} catch (NoResultException ignorable) {
 		}
 
+		JPAEMProvider.close();
 		return user;
 	}
 
@@ -65,9 +65,6 @@ public class JPADAOImpl implements DAO {
 	public BlogUser createNewUser(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp,
 			FormularForm f) {
 
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-
 		BlogUser user = new BlogUser();
 		user.setFirstName(f.getFirstName());
 		user.setLastName(f.getLastName());
@@ -76,10 +73,8 @@ public class JPADAOImpl implements DAO {
 		user.setEmail(f.getEmail());
 		user.setPasswordHash(toSHA1(f.getPassword()));
 
-		em.persist(user);
-
-		em.getTransaction().commit();
-		em.close();
+		JPAEMProvider.getEntityManager().persist(user);
+		JPAEMProvider.close();
 
 		return user;
 	}
@@ -88,8 +83,7 @@ public class JPADAOImpl implements DAO {
 	public List<BlogUser> acquireRegisteredAuthors(EntityManagerFactory emf, HttpServletRequest req,
 			HttpServletResponse resp) {
 
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
+		EntityManager em = JPAEMProvider.getEntityManager();
 
 		List<BlogUser> registeredAuthors = null;
 		try {
@@ -97,6 +91,7 @@ public class JPADAOImpl implements DAO {
 		} catch (NoResultException ignorable) {
 		}
 
+		JPAEMProvider.close();
 		return registeredAuthors;
 	}
 
@@ -104,24 +99,41 @@ public class JPADAOImpl implements DAO {
 	public List<BlogEntry> acquireUserEntries(EntityManagerFactory emf, HttpServletRequest req,
 			HttpServletResponse resp, Long authorID) {
 
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
+		EntityManager em = JPAEMProvider.getEntityManager();
 
 		List<BlogEntry> userEntries = null;
 
 		try {
-			em.createQuery("select b from BlogEntry as b where b.creator.id=:creatorID", BlogEntry.class)
+			userEntries = em.createQuery("select b from BlogEntry as b where b.creator.id=:creatorID", BlogEntry.class)
 					.setParameter("creatorID", authorID).getResultList();
 		} catch (NoResultException ignorable) {
 		}
 
+		JPAEMProvider.close();
+		return userEntries;
+	}
+
+	@Override
+	public List<BlogEntry> acquireUserEntries2(EntityManagerFactory emf, HttpServletRequest req,
+			HttpServletResponse resp, BlogUser user) {
+
+		EntityManager em = JPAEMProvider.getEntityManager();
+
+		List<BlogEntry> userEntries = null;
+
+		try {
+			em.createQuery("select b from BlogEntry as b where b.creator=:creator", BlogEntry.class)
+					.setParameter("creator", user).getResultList();
+		} catch (NoResultException ignorable) {
+		}
+
+		JPAEMProvider.getEntityManager();
 		return userEntries;
 	}
 
 	@Override
 	public Long acquireUserID(EntityManagerFactory emf, String nickName) {
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
+		EntityManager em = JPAEMProvider.getEntityManager();
 
 		Long userID = null;
 
@@ -131,7 +143,31 @@ public class JPADAOImpl implements DAO {
 		} catch (NoResultException ignorable) {
 		}
 
+		JPAEMProvider.close();
 		return userID;
+	}
+
+	@Override
+	public void performDatabaseInput(EntityManagerFactory emf, Object obj) {
+		EntityManager em = JPAEMProvider.getEntityManager();
+		em.persist(obj);
+		JPAEMProvider.close();
+	}
+
+	@Override
+	public BlogUser acquireUser(EntityManagerFactory emf, String nickName) {
+		EntityManager em = JPAEMProvider.getEntityManager();
+
+		BlogUser user = null;
+
+		try {
+			user = em.createQuery("select b from BlogUser as b where b.nickName=:nickName", BlogUser.class)
+					.setParameter("nickName", nickName).getSingleResult();
+		} catch (NoResultException ignorable) {
+		}
+
+		JPAEMProvider.close();
+		return user;
 	}
 
 }
