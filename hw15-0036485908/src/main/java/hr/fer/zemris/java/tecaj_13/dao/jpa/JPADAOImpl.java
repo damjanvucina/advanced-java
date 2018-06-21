@@ -17,14 +17,41 @@ import hr.fer.zemris.java.tecaj_13.model.BlogEntry;
 import hr.fer.zemris.java.tecaj_13.model.BlogUser;
 import hr.fer.zemris.java.tecaj_13.model.FormularForm;
 
+/**
+ * The class responsible for providing methods used for communicating with the
+ * database.
+ */
 public class JPADAOImpl implements DAO {
 
+	/**
+	 * Gets the blog entry specified by its id attribute.
+	 *
+	 * @param id
+	 *            the id of the blog entry
+	 * @return the blog entry
+	 * @throws DAOException
+	 *             the DAO exception
+	 */
 	@Override
 	public BlogEntry getBlogEntry(Long id) throws DAOException {
 		BlogEntry blogEntry = JPAEMProvider.getEntityManager().find(BlogEntry.class, id);
 		return blogEntry;
 	}
 
+	/**
+	 * Validates the login form by checking whether the provided nickname and
+	 * password match the values stored in the database. NOTICE: password is not
+	 * stored in plain text form, its value is digested using SHA1 algorithm and
+	 * stored as such
+	 *
+	 * @param req
+	 *            the request
+	 * @param nickName
+	 *            the nick name
+	 * @param password
+	 *            the password
+	 * @return the blog user
+	 */
 	@Override
 	public BlogUser validateLogin(HttpServletRequest req, String nickName, String password) {
 		EntityManager em = JPAEMProvider.getEntityManager();
@@ -44,6 +71,13 @@ public class JPADAOImpl implements DAO {
 		return user;
 	}
 
+	/**
+	 * Helper method used for transforming user's password to an unrecognizable form
+	 * prior to storing it to the database.
+	 * 
+	 * @param input
+	 * @return
+	 */
 	public String toSHA1(String input) {
 		MessageDigest mDigest = null;
 		try {
@@ -61,6 +95,18 @@ public class JPADAOImpl implements DAO {
 		return sb.toString();
 	}
 
+	/**
+	 * Creates a new blog user based on the parameters provided within the formular
+	 * form.
+	 *
+	 * @param req
+	 *            the request
+	 * @param resp
+	 *            the response
+	 * @param f
+	 *            the f
+	 * @return the blog user
+	 */
 	@Override
 	public BlogUser createNewUser(HttpServletRequest req, HttpServletResponse resp, FormularForm f) {
 
@@ -78,6 +124,13 @@ public class JPADAOImpl implements DAO {
 		return user;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.tecaj_13.dao.DAO#acquireRegisteredAuthors(javax.servlet.
+	 * http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	public List<BlogUser> acquireRegisteredAuthors(HttpServletRequest req, HttpServletResponse resp) {
 
@@ -93,6 +146,13 @@ public class JPADAOImpl implements DAO {
 		return registeredAuthors;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.tecaj_13.dao.DAO#acquireUserEntries(javax.servlet.http.
+	 * HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Long)
+	 */
 	@Override
 	public List<BlogEntry> acquireUserEntries(HttpServletRequest req, HttpServletResponse resp, Long authorID) {
 
@@ -112,6 +172,13 @@ public class JPADAOImpl implements DAO {
 		return userEntries;
 	}
 
+	/**
+	 * Acquire user's ID from its nickname.
+	 *
+	 * @param nickName
+	 *            the nick name of the user
+	 * @return the long
+	 */
 	@Override
 	public Long acquireUserID(String nickName) {
 		EntityManager em = JPAEMProvider.getEntityManager();
@@ -128,6 +195,12 @@ public class JPADAOImpl implements DAO {
 		return userID;
 	}
 
+	/**
+	 * Performs database input by storing the provided argument to the database.
+	 *
+	 * @param obj
+	 *            the obj
+	 */
 	@Override
 	public void performDatabaseInput(Object obj) {
 		EntityManager em = JPAEMProvider.getEntityManager();
@@ -135,6 +208,13 @@ public class JPADAOImpl implements DAO {
 		JPAEMProvider.close();
 	}
 
+	/**
+	 * Acquires reference to the used from its nickname.
+	 *
+	 * @param nickName
+	 *            the nick name
+	 * @return the blog user
+	 */
 	@Override
 	public BlogUser acquireUser(String nickName) {
 		EntityManager em = JPAEMProvider.getEntityManager();
@@ -151,6 +231,17 @@ public class JPADAOImpl implements DAO {
 		return user;
 	}
 
+	/**
+	 * Acquires list of blog comments for the blog entry specified by its id.
+	 *
+	 * @param req
+	 *            the req
+	 * @param resp
+	 *            the resp
+	 * @param entryID
+	 *            the entry ID
+	 * @return the list
+	 */
 	@Override
 	public List<BlogComment> acquireBlogComments(HttpServletRequest req, HttpServletResponse resp, Long entryID) {
 		EntityManager em = JPAEMProvider.getEntityManager();
@@ -169,14 +260,25 @@ public class JPADAOImpl implements DAO {
 		return blogComments;
 	}
 
+	/**
+	 * Updates blog entry by updating its title, text and lastModifiedAt timestamp.
+	 *
+	 * @param entryID
+	 *            the entry ID
+	 * @param updatedTitle
+	 *            the updated title
+	 * @param updatedText
+	 *            the updated text
+	 * @param now
+	 *            the now
+	 */
 	@Override
 	public void updateBlogEntry(Long entryID, String updatedTitle, String updatedText, Date now) {
 		EntityManager em = JPAEMProvider.getEntityManager();
-		int affectedRows = em
-				.createQuery(
-						"update BlogEntry as b set b.title=:updatedTitle, b.text=:updatedText, b.lastModifiedAt=:now where b.id =:entryID")
-				.setParameter("updatedTitle", updatedTitle).setParameter("updatedText", updatedText).setParameter("now", now)
-				.setParameter("entryID", entryID).executeUpdate();
+		int affectedRows = em.createQuery(
+				"update BlogEntry as b set b.title=:updatedTitle, b.text=:updatedText, b.lastModifiedAt=:now where b.id =:entryID")
+				.setParameter("updatedTitle", updatedTitle).setParameter("updatedText", updatedText)
+				.setParameter("now", now).setParameter("entryID", entryID).executeUpdate();
 		em.close();
 		if (affectedRows != 1) {
 			throw new DAOException("Invalid number of affected rows, was: " + affectedRows);

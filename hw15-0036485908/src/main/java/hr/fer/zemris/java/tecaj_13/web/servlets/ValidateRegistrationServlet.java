@@ -18,20 +18,49 @@ import hr.fer.zemris.java.tecaj_13.model.Record;
 
 import static hr.fer.zemris.java.tecaj_13.model.FormularForm.NICK_NAME_ERROR;
 
+/**
+ * The servlet class used for processing the registration action by validating
+ * the registration form and registering new users.
+ * 
+ * @author Damjan Vučina
+ */
 @WebServlet("/servleti/validateRegistration")
 public class ValidateRegistrationServlet extends HttpServlet {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Called by the server (via the service method) to allow a servlet to handle a
+	 * GET request. Processes the user's registration.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		process(req, resp);
 	}
 
+	/**
+	 * Called by the server (via the service method) to allow a servlet to handle a
+	 * POST request. Processes the user's registration.
+	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		process(req, resp);
 	}
 
+	/**
+	 * Validates the registration form and registers new users if the form is in
+	 * compliance with the specified format.
+	 *
+	 * @param req
+	 *            the request
+	 * @param resp
+	 *            the response
+	 * @throws ServletException
+	 *             the servlet exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	protected void process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
 
@@ -59,6 +88,18 @@ public class ValidateRegistrationServlet extends HttpServlet {
 		processRegister(emf, req, resp, f);
 	}
 
+	/**
+	 * Registers new user after the registration form has been validated.
+	 *
+	 * @param emf
+	 *            the emf
+	 * @param req
+	 *            the req
+	 * @param resp
+	 *            the resp
+	 * @param f
+	 *            the f
+	 */
 	private void processRegister(EntityManagerFactory emf, HttpServletRequest req, HttpServletResponse resp,
 			FormularForm f) {
 

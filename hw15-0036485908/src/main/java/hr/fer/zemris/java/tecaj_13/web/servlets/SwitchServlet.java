@@ -17,13 +17,33 @@ import hr.fer.zemris.java.tecaj_13.model.BlogEntry;
 import static hr.fer.zemris.java.tecaj_13.web.servlets.LoginServlet.SESSION_NICK_NAME;
 import static hr.fer.zemris.java.tecaj_13.web.servlets.LoginServlet.SESSION_ID;
 
+/**
+ * The servlet class that serves the purpose of redirecting the flow of the
+ * application depending on the last parts of the selected URL. It provides user
+ * with methods for creating a new blog entry, editing an existign blog entry as
+ * well as accessing user's profile pages.
+ * 
+ * @author Damjan Vučina
+ */
 @WebServlet("/servleti/author/*")
 public class SwitchServlet extends HttpServlet {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+
+	/** The Constant INVALID_POST. */
 	public static final String INVALID_POST = "invalidPost";
+
+	/** The Constant ENTERED_TITLE. */
 	public static final String ENTERED_TITLE = "enteredTitle";
+
+	/** The Constant ENTERED_TEXT. */
 	public static final String ENTERED_TEXT = "enteredText";
 
+	/**
+	 * Called by the server (via the service method) to allow a servlet to handle a
+	 * POST request. Method used for creating a new Blog Entry.
+	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String title = req.getParameter("title");
@@ -53,6 +73,13 @@ public class SwitchServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Called by the server (via the service method) to allow a servlet to handle a
+	 * GET request. Redirects the flow of the application depending on the last
+	 * parts of the selected url. Delegates to helper methods for creating a new
+	 * blog entry, editing an existign blog entry as well as accessing user's
+	 * profile pages.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -62,29 +89,58 @@ public class SwitchServlet extends HttpServlet {
 
 		if (indicator.equals("new")) {
 			processNew(req, resp, indicator);
-			
+
 		} else if (indicator.equals("edit")) {
 			processEdit(req, resp, indicator);
-			
+
 		} else if (isSelectedPost(indicator)) {
 			processViewPost(req, resp, indicator);
-			
+
 		} else {
 			processAuthor(req, resp, indicator);
 		}
 	}
 
-	private void processEdit(HttpServletRequest req, HttpServletResponse resp, String indicator) throws ServletException, IOException {
+	/**
+	 * Edits an existing blog entry.
+	 *
+	 * @param req
+	 *            the req
+	 * @param resp
+	 *            the resp
+	 * @param indicator
+	 *            the indicator
+	 * @throws ServletException
+	 *             the servlet exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private void processEdit(HttpServletRequest req, HttpServletResponse resp, String indicator)
+			throws ServletException, IOException {
 		Long entryID = Long.valueOf(req.getParameter("id"));
-		
+
 		BlogEntry entry = DAOProvider.getDAO().getBlogEntry(entryID);
 		req.setAttribute("enteredTitle", entry.getTitle());
 		req.setAttribute("enteredText", entry.getText());
 		req.setAttribute("enteredID", entryID);
-		
+
 		req.getRequestDispatcher("/WEB-INF/pages/edit.jsp").forward(req, resp);
 	}
 
+	/**
+	 * Prepares the data for viewing a specific BlogEntry as well as its comments.
+	 *
+	 * @param req
+	 *            the request
+	 * @param resp
+	 *            the response
+	 * @param indicator
+	 *            the indicator
+	 * @throws ServletException
+	 *             the servlet exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void processViewPost(HttpServletRequest req, HttpServletResponse resp, String indicator)
 			throws ServletException, IOException {
 		BlogEntry entry = DAOProvider.getDAO().getBlogEntry(Long.valueOf(indicator));
@@ -96,6 +152,14 @@ public class SwitchServlet extends HttpServlet {
 		req.getRequestDispatcher("/WEB-INF/pages/viewPost.jsp").forward(req, resp);
 	}
 
+	/**
+	 * Checks if the last part of the URL is a Long number, i.e. represents an id of
+	 * a BlogEntry.
+	 *
+	 * @param indicator
+	 *            the indicator
+	 * @return true, if is selected post
+	 */
 	private boolean isSelectedPost(String indicator) {
 		try {
 			Long.parseLong(indicator);
@@ -105,6 +169,21 @@ public class SwitchServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Prepares the data for viewing a user's profile page containing all
+	 * BlogEntries made by him.
+	 *
+	 * @param req
+	 *            the req
+	 * @param resp
+	 *            the resp
+	 * @param authorNick
+	 *            the author nick
+	 * @throws ServletException
+	 *             the servlet exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void processAuthor(HttpServletRequest req, HttpServletResponse resp, String authorNick)
 			throws ServletException, IOException {
 
@@ -126,14 +205,39 @@ public class SwitchServlet extends HttpServlet {
 		req.getRequestDispatcher("/WEB-INF/pages/author.jsp").forward(req, resp);
 	}
 
+	/**
+	 * Sets the up entries.
+	 *
+	 * @param req
+	 *            the req
+	 * @param resp
+	 *            the resp
+	 * @param authorID
+	 *            the author ID
+	 */
 	private void setUpEntries(HttpServletRequest req, HttpServletResponse resp, Long authorID) {
 
-		//BlogUser user = DAOProvider.getDAO().acquireUser((String) req.getSession().getAttribute(SESSION_NICK_NAME));
+		// BlogUser user = DAOProvider.getDAO().acquireUser((String)
+		// req.getSession().getAttribute(SESSION_NICK_NAME));
 
 		List<BlogEntry> userEntries = DAOProvider.getDAO().acquireUserEntries(req, resp, authorID);
 		req.setAttribute("userEntries", userEntries);
 	}
 
+	/**
+	 * Forwards application flow to the jsp page for creating a new BlogEntry.
+	 *
+	 * @param req
+	 *            the req
+	 * @param resp
+	 *            the resp
+	 * @param authorNick
+	 *            the author nick
+	 * @throws ServletException
+	 *             the servlet exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void processNew(HttpServletRequest req, HttpServletResponse resp, String authorNick)
 			throws ServletException, IOException {
 		req.getRequestDispatcher("/WEB-INF/pages/new.jsp").forward(req, resp);
