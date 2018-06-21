@@ -52,15 +52,17 @@ public class PostCommentServlet extends HttpServlet {
 		}
 
 		if (message.isEmpty()) {
-			req.setAttribute(INVALID_COMMENT, "invalid comment");
-			req.getRequestDispatcher("/WEB-INF/pages/viewPost.jsp").forward(req, resp);
+			req.setAttribute("errorMessage", "You cannot post an empty comment.");
+			req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
 			return;
 		}
 		if (objNick == null && commenterEmail.isEmpty()) {
-			req.setAttribute(INVALID_MAIL, "invalid comment");
-			req.setAttribute("enteredMessage", message);
-			req.setAttribute("blogEntryID", req.getAttribute("blogEntryID"));
-			req.getRequestDispatcher("/WEB-INF/pages/viewPost.jsp").forward(req, resp);
+//			req.setAttribute(INVALID_MAIL, "invalid comment");
+//			req.setAttribute("enteredMessage", message);
+//			req.setAttribute("blogEntryID", req.getAttribute("blogEntryID"));
+//			req.getRequestDispatcher("/WEB-INF/pages/viewPost.jsp").forward(req, resp);
+			req.setAttribute("errorMessage", "Anonymus users must provide a mail.");
+			req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
 			return;
 		}
 

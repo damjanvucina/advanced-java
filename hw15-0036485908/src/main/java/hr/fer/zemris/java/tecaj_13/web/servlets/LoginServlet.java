@@ -1,6 +1,7 @@
 package hr.fer.zemris.java.tecaj_13.web.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -79,9 +80,11 @@ public class LoginServlet extends HttpServlet {
 			}
 
 		} else {
-			req.getSession().setAttribute(SESSION_INVALID_LOGIN, "Invalid nickname or password.");
+			req.setAttribute(SESSION_INVALID_LOGIN, "Invalid nickname or password.");
 			try {
 				req.setAttribute("invalidNickname", nickName);
+				List<BlogUser> registeredAuthors = DAOProvider.getDAO().acquireRegisteredAuthors(req, resp);
+				req.setAttribute("registeredAuthors", registeredAuthors);
 				req.getRequestDispatcher("/WEB-INF/pages/index.jsp").forward(req, resp);
 			} catch (ServletException | IOException e) {
 				e.printStackTrace();

@@ -43,7 +43,8 @@ div {
 		<c:otherwise>
 			<c:forEach var="entry" items="${userEntries}">
 				<div>
-					<a href="${entry.creator.nickName}/${entry.id}">${entry.title}</a>
+					<b>Title:</b> <a href="${entry.creator.nickName}/${entry.id}">${entry.title}</a>
+					<br><b>Created at:</b> ${entry.createdAt}
 				</div>
 			</c:forEach>
 		</c:otherwise>
