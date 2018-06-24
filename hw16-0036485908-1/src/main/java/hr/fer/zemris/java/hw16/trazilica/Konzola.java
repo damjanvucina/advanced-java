@@ -1,7 +1,7 @@
 package hr.fer.zemris.java.hw16.trazilica;
 
 import java.io.IOException;
-
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +11,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -47,6 +49,7 @@ public class Konzola {
 		initializeIDFVector(documents, dictionary, idfVector);
 
 		Scanner sc = new Scanner(System.in);
+		Map<Double, String> results = null;
 		System.out.println("Veličina rječnika je " + vocabulary.getSize());
 
 		while (true) {
@@ -57,18 +60,18 @@ public class Konzola {
 			}
 
 			if (input.startsWith(QUERY)) {
-				processQuery(input, vocabulary);
+				results = processQuery(input, vocabulary, documents, idfVector, results);
 
 			} else if (input.startsWith(TYPE)) {
-				processType(input);
+				processType(input, results);
 
-			} else if (input.startsWith(RESULTS)) {
-				processResults(input);
+			} else if (input.equals(RESULTS)) {
+				processResults(results);
 
-			} else if (input.startsWith(EXIT)) {
+			} else if (input.equals(EXIT)) {
 				sc.close();
 				break;
-
+				
 			} else {
 				System.out.println("Nepoznata naredba.");
 			}
@@ -77,13 +80,52 @@ public class Konzola {
 
 	}
 
-	private static void processResults(String input) {
+	private static void processResults(Map<Double, String> results) {
+		if (results == null) {
+			System.out.println("Nije moguće ispisati rezultate prije izvršavanja upita");
+			return;
+		}
+		
+		printResults(results);
 	}
 
-	private static void processType(String input) {
+	private static void processType(String input, Map<Double, String> results) {
+		if (results == null) {
+			System.out.println("Nije moguće ispisati rezultate prije izvršavanja upita");
+			return;
+		}
+
+		int choice = 0;
+		
+		try {
+			choice = Integer.parseInt(input.split(" ")[1]);
+		} catch (NumberFormatException e) {
+			System.out.println("Pogrešno formatirana naredba.");
+			return;
+		}
+		
+		if (choice > results.size()) {
+			System.out.println("Mapa ima samo " + results.size() + " elemenata.");
+			return;
+		}
+
+		String result = results.entrySet().stream().skip(choice).findFirst().get().getValue();
+		System.out.println("Dokument " + result);
+		System.out.println();
+
+		try {
+			Files.newBufferedReader(Paths.get(result), StandardCharsets.UTF_8).lines()
+					.forEach(line -> System.out.println(line));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	private static void processQuery(String input, Vocabulary vocabulary) {
+	//@formatter:off
+	private static Map<Double, String> processQuery(String input, Vocabulary vocabulary,
+									 List<Document> documents, double[] idfVector,
+									 Map<Double, String> results) {
+
 		List<String> stopWords = new ArrayList<>();
 		stopWords.addAll(vocabulary.getStopWords());
 		List<String> queryList = Arrays.asList(input.split(WORD_REGEX))
@@ -92,9 +134,29 @@ public class Konzola {
 									   .map(String::toLowerCase)
 									   .filter(word -> !stopWords.contains(word))
 									   .collect(Collectors.toList());
-
+		
+		Document queryDocument = new Document(vocabulary, queryList);
+		results = Document.calculateSimilarity(documents, queryDocument, idfVector);
+		
 		System.out.println("Query is: " + queryList);
+		System.out.println("Najboljih 10 rezultata:");
+		
+		printResults(results);
+		
+		return results;
 	}
+	private static void printResults(Map<Double, String> results) {
+		int counter = 0;
+		for(Entry<Double, String> entry : results.entrySet()) {
+			System.out.print("[" + counter + "] ");
+			System.out.printf("(%.4f) ", entry.getKey());
+			System.out.println(entry.getValue());
+			
+			counter++;
+		}
+	}
+
+	//@formatter:on
 
 	private static void initializeIDFVector(List<Document> documents, List<String> dictionary, double[] idfVector) {
 		int numOfDocuments = documents.size();
