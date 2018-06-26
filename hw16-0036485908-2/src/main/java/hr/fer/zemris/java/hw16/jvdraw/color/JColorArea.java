@@ -83,5 +83,18 @@ public class JColorArea extends JComponent implements IColorProvider {
 
 		listeners.remove(l);
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("(");
+		sb.append(selectedColor.getRed()).append(", ");
+		sb.append(selectedColor.getGreen()).append(", ");
+		sb.append(selectedColor.getBlue());
+		sb.append(")");
+		
+		return sb.toString();
+	}
 
 }
