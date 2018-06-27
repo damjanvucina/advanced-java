@@ -19,12 +19,51 @@ import java.util.stream.Collectors;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static hr.fer.zemris.java.hw16.trazilica.Vocabulary.WORD_REGEX;
 
+/**
+ * Demonstration class that emulates a simple shell for communicating with the
+ * user. Responisble for performin initialization of the vocabulary, tf vector
+ * as well as idf vector.This class provides the user with the ability to find
+ * the most similar documents to the entered query.
+ * 
+ * Supported commands:
+ * 
+ * 1) QUERY (query word1 word2 ... wordn) Transforms user's query into a vector
+ * representation and prints most similar documents
+ * 
+ * 2) TYPE (type n) Obtains ordinal number of the document previously returned
+ * by the query command and prints its contents to the console
+ * 
+ * 3) RESULTS (results) Prints most similar documents to the console based on
+ * the query that has previously been entered.
+ * 
+ * $) EXIT (exit) Exits this program.
+ * 
+ * 
+ * @author Damjan Vučina
+ */
 public class Konzola {
+
+	/** The Constant QUERY. */
 	public static final String QUERY = "query";
+
+	/** The Constant TYPE. */
 	public static final String TYPE = "type";
+
+	/** The Constant RESULTS. */
 	public static final String RESULTS = "results";
+
+	/** The Constant EXIT. */
 	public static final String EXIT = "exit";
 
+	/**
+	 * The main method. Recives an argument that represent a path to the folder
+	 * containing the txt files used to build the vocabulary.
+	 *
+	 * @param args
+	 *            the arguments
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public static void main(String[] args) throws IOException {
 		if (args.length != 1) {
 			throw new IllegalArgumentException(
@@ -71,7 +110,7 @@ public class Konzola {
 			} else if (input.equals(EXIT)) {
 				sc.close();
 				break;
-				
+
 			} else {
 				System.out.println("Nepoznata naredba.");
 			}
@@ -80,15 +119,35 @@ public class Konzola {
 
 	}
 
+	/**
+	 * Processes the results command.
+	 * 
+	 * RESULTS (results) Prints most similar documents to the console based on the
+	 * query that has previously been entered.
+	 *
+	 * @param results
+	 *            the results
+	 */
 	private static void processResults(Map<Double, String> results) {
 		if (results == null) {
 			System.out.println("Nije moguće ispisati rezultate prije izvršavanja upita");
 			return;
 		}
-		
+
 		printResults(results);
 	}
 
+	/**
+	 * Processes the type comand.
+	 * 
+	 * TYPE (type n) Obtains ordinal number of the document previously returned by
+	 * the query command and prints its contents to the console
+	 *
+	 * @param input
+	 *            the input
+	 * @param results
+	 *            the results
+	 */
 	private static void processType(String input, Map<Double, String> results) {
 		if (results == null) {
 			System.out.println("Nije moguće ispisati rezultate prije izvršavanja upita");
@@ -96,14 +155,14 @@ public class Konzola {
 		}
 
 		int choice = 0;
-		
+
 		try {
 			choice = Integer.parseInt(input.split(" ")[1]);
 		} catch (NumberFormatException e) {
 			System.out.println("Pogrešno formatirana naredba.");
 			return;
 		}
-		
+
 		if (choice > results.size()) {
 			System.out.println("Mapa ima samo " + results.size() + " elemenata.");
 			return;
@@ -121,6 +180,24 @@ public class Konzola {
 		}
 	}
 
+	/**
+	 * Processes the query command.
+	 * 
+	 * QUERY (query word1 word2 ... wordn) Transforms user's query into a vector
+	 * representation and prints most similar documents
+	 *
+	 * @param input
+	 *            the user's input
+	 * @param vocabulary
+	 *            the reference to the used vocabulary
+	 * @param documents
+	 *            the list of the documents
+	 * @param idfVector
+	 *            the idf vector
+	 * @param results
+	 *            the results
+	 * @return the map
+	 */
 	//@formatter:off
 	private static Map<Double, String> processQuery(String input, Vocabulary vocabulary,
 									 List<Document> documents, double[] idfVector,
@@ -145,6 +222,12 @@ public class Konzola {
 		
 		return results;
 	}
+	
+	/**
+	 * Prints the results of the query command.
+	 *
+	 * @param results the results
+	 */
 	private static void printResults(Map<Double, String> results) {
 		int counter = 0;
 		for(Entry<Double, String> entry : results.entrySet()) {
@@ -158,14 +241,34 @@ public class Konzola {
 
 	//@formatter:on
 
+	/**
+	 * Initializes IDF vector based on the files that are used to build the
+	 * vocabulary.
+	 *
+	 * @param documents
+	 *            the documents
+	 * @param dictionary
+	 *            the dictionary
+	 * @param idfVector
+	 *            the idf vector
+	 */
 	private static void initializeIDFVector(List<Document> documents, List<String> dictionary, double[] idfVector) {
 		int numOfDocuments = documents.size();
 
 		for (int i = 0, size = dictionary.size(); i < size; i++) {
-			idfVector[i] = Math.log(numOfDocuments / calculateOccurences(documents, i));
+			idfVector[i] = Math.log(numOfDocuments * 1.0 / calculateOccurences(documents, i));
 		}
 	}
 
+	/**
+	 * Calculates occurences of each word in all of the documents.
+	 *
+	 * @param documents
+	 *            the documents
+	 * @param position
+	 *            the position
+	 * @return the int
+	 */
 	private static int calculateOccurences(List<Document> documents, int position) {
 		int numOfOccurences = 0;
 
@@ -178,6 +281,18 @@ public class Konzola {
 		return numOfOccurences;
 	}
 
+	/**
+	 * Initalizes term frequency vectors.
+	 *
+	 * @param directory
+	 *            the directory
+	 * @param documents
+	 *            the documents
+	 * @param vocabulary
+	 *            the vocabulary
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private static void initalizeTFVectors(Path directory, List<Document> documents, Vocabulary vocabulary)
 			throws IOException {
 		Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
@@ -190,6 +305,16 @@ public class Konzola {
 		});
 	}
 
+	/**
+	 * Initializes the vocabulary.
+	 *
+	 * @param directory
+	 *            the directory
+	 * @param vocabulary
+	 *            the vocabulary
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private static void initializeVocabulary(Path directory, Vocabulary vocabulary) throws IOException {
 		Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
 			@Override

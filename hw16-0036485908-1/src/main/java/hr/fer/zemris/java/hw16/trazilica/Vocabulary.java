@@ -17,15 +17,40 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+/**
+ * The class that represents a Vocabulary that is used for calucalting the
+ * similarity between the documents. This vocabulary consists of words that have
+ * been extracted from the directory provided on the application start-up.
+ * 
+ * @author Damjan Vučina
+ */
 public class Vocabulary {
+
+	/** The Constant WORD_REGEX. */
 	public static final String WORD_REGEX = "\\P{L}+";
+
+	/** The Constant STOP_WORDS_PATH. */
 	public static final String STOP_WORDS_PATH = "src/main/resources/hrvatski_stoprijeci.txt";
 
+	/** The set of known words. */
 	private Set<String> words;
+
+	/** The set of stop words. */
 	private Set<String> stopWords;
+
+	/** The list. */
 	private List<String> list;
+
+	/**
+	 * The occurences map that maps words to the number of times they occur in this
+	 * document.
+	 */
 	private Map<String, Integer> occurences;
 
+	/**
+	 * Instantiates a new vocabulary and delegates to a helper method for performing
+	 * stop words initialization.
+	 */
 	public Vocabulary() {
 		words = new TreeSet<>();
 		stopWords = new TreeSet<>();
@@ -34,6 +59,9 @@ public class Vocabulary {
 		initializeStopWords();
 	}
 
+	/**
+	 * Initialize stop words.
+	 */
 	private void initializeStopWords() {
 		Path path = Paths.get(STOP_WORDS_PATH);
 
@@ -44,22 +72,49 @@ public class Vocabulary {
 		}
 	}
 
+	/**
+	 * Gets the words.
+	 *
+	 * @return the words
+	 */
 	public Set<String> getWords() {
 		return words;
 	}
 
+	/**
+	 * Gets the stop words.
+	 *
+	 * @return the stop words
+	 */
 	public Set<String> getStopWords() {
 		return stopWords;
 	}
 
+	/**
+	 * Gets the list.
+	 *
+	 * @return the list
+	 */
 	public List<String> getList() {
 		return list;
 	}
 
+	/**
+	 * Adds the word to the set.
+	 *
+	 * @param word
+	 *            the word
+	 */
 	public void add(String word) {
 		words.add(word);
 	}
 
+	/**
+	 * Fills words from file.
+	 *
+	 * @param file
+	 *            the file
+	 */
 	public void fillFromFile(Path file) {
 		Objects.requireNonNull(file, "File path cannot be null.");
 
@@ -75,6 +130,14 @@ public class Vocabulary {
 		}
 	}
 
+	/**
+	 * Processes a single line of text file by extracting all its words, removing
+	 * stop words and duplicates.
+	 *
+	 * @param line
+	 *            the line
+	 * @return the collection
+	 */
 	//@formatter:off
 	private Collection<String> processLine(String line) {
 		List<String> temp = Arrays.asList(line.split(WORD_REGEX))
@@ -90,10 +153,18 @@ public class Vocabulary {
 	}
 	//@formatter:on
 
+	/**
+	 * Gets the size of the list.
+	 *
+	 * @return the size
+	 */
 	public int getSize() {
 		return list.size();
 	}
 
+	/**
+	 * Generates the list.
+	 */
 	public void generateList() {
 		list = new ArrayList<>();
 		list.addAll(words);
