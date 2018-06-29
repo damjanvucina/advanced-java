@@ -9,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import hr.fer.zemris.java.p12.dao.DAOProvider;
 
@@ -40,9 +39,6 @@ public class GlasanjeRezultatiServlet extends HttpServlet {
 
 		Long votesCount = sortedMap.entrySet().iterator().next().getValue();
 		Map<String, String> references = DAOProvider.getDao().acquireReferences(pollID, votesCount);
-
-		HttpSession session = req.getSession();
-		session.setAttribute("results", sortedMap);
 
 		req.getServletContext().setAttribute("results", sortedMap);
 		req.getServletContext().setAttribute("references", references);

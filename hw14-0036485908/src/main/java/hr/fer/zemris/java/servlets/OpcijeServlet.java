@@ -8,7 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import hr.fer.zemris.java.p12.dao.DAOProvider;
 import hr.fer.zemris.java.p12.model.Poll;
@@ -34,8 +33,7 @@ public class OpcijeServlet extends HttpServlet {
 
 		List<Poll> pollList = DAOProvider.getDao().acquirePolls();
 
-		HttpSession session = req.getSession();
-		session.setAttribute("pollList", pollList);
+		req.setAttribute("pollList", pollList);
 
 		req.getRequestDispatcher("/WEB-INF/pages/glasanjeOpcije.jsp").forward(req, resp);
 	}
