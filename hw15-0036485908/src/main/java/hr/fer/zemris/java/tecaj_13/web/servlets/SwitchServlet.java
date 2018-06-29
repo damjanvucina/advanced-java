@@ -123,6 +123,7 @@ public class SwitchServlet extends HttpServlet {
 		req.setAttribute("enteredTitle", entry.getTitle());
 		req.setAttribute("enteredText", entry.getText());
 		req.setAttribute("enteredID", entryID);
+		req.setAttribute("creator", entry.getCreator());
 
 		req.getRequestDispatcher("/WEB-INF/pages/edit.jsp").forward(req, resp);
 	}
@@ -216,10 +217,6 @@ public class SwitchServlet extends HttpServlet {
 	 *            the author ID
 	 */
 	private void setUpEntries(HttpServletRequest req, HttpServletResponse resp, Long authorID) {
-
-		// BlogUser user = DAOProvider.getDAO().acquireUser((String)
-		// req.getSession().getAttribute(SESSION_NICK_NAME));
-
 		List<BlogEntry> userEntries = DAOProvider.getDAO().acquireUserEntries(req, resp, authorID);
 		req.setAttribute("userEntries", userEntries);
 	}
@@ -240,6 +237,11 @@ public class SwitchServlet extends HttpServlet {
 	 */
 	private void processNew(HttpServletRequest req, HttpServletResponse resp, String authorNick)
 			throws ServletException, IOException {
+		String pathInfo = req.getPathInfo();
+		pathInfo = pathInfo.substring(1);
+		pathInfo = pathInfo.substring(0, pathInfo.indexOf("/"));
+
+		req.setAttribute("ownerNick", pathInfo);
 		req.getRequestDispatcher("/WEB-INF/pages/new.jsp").forward(req, resp);
 	}
 }

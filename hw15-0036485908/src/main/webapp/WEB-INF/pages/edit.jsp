@@ -20,18 +20,28 @@
 
 	<h2>Edit Existing Post</h2>
 
-	<form action="/blog/servleti/updatePost" method="POST">
-		Title:<br> <input type="text" name="title"
-			placeholder="Please enter post title" size="30" value="${enteredTitle}"><br> <br>
-		Text:<br> <input type="text" name="text" placeholder="Please enter post text"
-			size="30" value="${enteredText}"> <br>
-			 <br> <input type="hidden" name="entryID" value="${enteredID}"> <br>
-			
-		<c:if test="${not empty requestScope['invalidPost']}">
-			Invalid title or text
-		</c:if>
-		<br> <input type="submit" value="Post"> <input
-			type="reset" value="Clear">
-	</form>
+	<c:choose>
+		<c:when test="${sessionScope['current.user.id'] eq creator.id}">
+
+			<form action="./../../../servleti/updatePost" method="POST">
+				Title:<br> <input type="text" name="title"
+					placeholder="Please enter post title" size="30"
+					value="${enteredTitle}"><br> <br> Text:<br>
+				<input type="text" name="text" placeholder="Please enter post text"
+					size="30" value="${enteredText}"> <br> <br> <input
+					type="hidden" name="entryID" value="${enteredID}"> <br>
+
+				<c:if test="${not empty requestScope['invalidPost']}">
+					Invalid title or text
+				</c:if>
+				<br> <input type="submit" value="Post"> <input
+					type="reset" value="Clear">
+			</form>
+		</c:when>
+
+		<c:otherwise>
+		You do not have permission to edit this post
+		</c:otherwise>
+	</c:choose>
 </body>
 </html>

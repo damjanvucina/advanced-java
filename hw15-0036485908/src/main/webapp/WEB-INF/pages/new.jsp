@@ -20,17 +20,27 @@
 
 	<h2>Create New Post</h2>
 
-	<form action="SwitchServlet" method="POST">
-		Title:<br> <input type="text" name="title"
-			placeholder="Please enter post title" size="30" value="${enteredTitle}"><br> <br>Text:<br>
-		<input type="text" name="text" placeholder="Please enter post text"
-			size="30" value="${enteredText}"> <br>
-			
-		<c:if test="${not empty requestScope['invalidPost']}">
+	<c:choose>
+		<c:when test="${sessionScope['current.user.nick'] eq ownerNick}">
+			<form action="SwitchServlet" method="POST">
+				Title:<br> <input type="text" name="title"
+					placeholder="Please enter post title" size="30"
+					value="${enteredTitle}"><br> <br>Text:<br> <input
+					type="text" name="text" placeholder="Please enter post text"
+					size="30" value="${enteredText}"> <br>
+
+				<c:if test="${not empty requestScope['invalidPost']}">
 			Invalid title or text
 		</c:if>
-		<br> <input type="submit" value="Post"> <input
-			type="reset" value="Clear">
-	</form>
+				<br> <input type="submit" value="Post"> <input
+					type="reset" value="Clear">
+			</form>
+
+		</c:when>
+
+		<c:otherwise>
+		You do not have permission to access this page
+		</c:otherwise>
+	</c:choose>
 </body>
 </html>

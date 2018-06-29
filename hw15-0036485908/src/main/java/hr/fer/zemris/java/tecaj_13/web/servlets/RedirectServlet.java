@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Damjan Vučina
  */
-@WebServlet(urlPatterns = { "index.jsp", "/" })
+@WebServlet(urlPatterns = { "/index.jsp", "/" })
 public class RedirectServlet extends HttpServlet {
 
 	/** The Constant serialVersionUID. */

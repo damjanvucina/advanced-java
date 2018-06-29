@@ -59,7 +59,7 @@ div {
 
 
 	<h3>Post New Comment</h3>
-	<form action="/blog/servleti/postCommentServlet" method="POST">
+	<form action="./../../../servleti/postCommentServlet" method="POST">
 		<c:if test="${empty sessionScope['current.user.id']}">
 			Email:<br>
 			<input type="text" name="commenterEmail" placeholder="Enter mail"
