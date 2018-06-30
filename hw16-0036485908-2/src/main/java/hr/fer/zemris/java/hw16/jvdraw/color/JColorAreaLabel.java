@@ -4,11 +4,11 @@ import java.awt.Color;
 
 import javax.swing.JLabel;
 
-public class JColorAreaLabel extends JLabel implements ColorChangeListener{
+public class JColorAreaLabel extends JLabel implements ColorChangeListener {
 	private static final long serialVersionUID = 1L;
-	public static final String FOREGROUND_COLOR="Foreground color";
-	public static final String BACKGROUND_COLOR="Background color";
-	
+	public static final String FOREGROUND_COLOR = "Foreground color";
+	public static final String BACKGROUND_COLOR = "Background color";
+
 	private IColorProvider fgColorProvider;
 	private IColorProvider bgColorProvider;
 	private String text;
@@ -16,9 +16,11 @@ public class JColorAreaLabel extends JLabel implements ColorChangeListener{
 	public JColorAreaLabel(IColorProvider fgColorProvider, IColorProvider bgColorProvider) {
 		this.fgColorProvider = fgColorProvider;
 		this.bgColorProvider = bgColorProvider;
-		
+
 		fgColorProvider.addColorChangeListener(this);
 		bgColorProvider.addColorChangeListener(this);
+		
+		updateText();
 	}
 
 	public String getText() {
@@ -27,17 +29,19 @@ public class JColorAreaLabel extends JLabel implements ColorChangeListener{
 
 	@Override
 	public void newColorSelected(IColorProvider source, Color oldColor, Color newColor) {
-		updateText(oldColor, newColor);
+		updateText();
 	}
 
-	private void updateText(Color oldColor, Color newColor) {
+	private void updateText() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append(FOREGROUND_COLOR).append(": ");
 		sb.append(fgColorProvider.toString()).append(", ");
 		sb.append(BACKGROUND_COLOR).append(": ");
 		sb.append(bgColorProvider.toString()).append(".");
-		
+
 		text = sb.toString();
+
+		setText(text);
 	}
 }

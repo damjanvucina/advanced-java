@@ -1,5 +1,10 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
-public class GeometricalObjectEditor {
+import javax.swing.JPanel;
 
+public abstract class GeometricalObjectEditor extends JPanel {
+	
+	public abstract void checkEditing();
+
+	public abstract void acceptEditing();
 }
