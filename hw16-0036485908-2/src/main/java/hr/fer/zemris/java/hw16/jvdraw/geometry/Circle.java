@@ -6,4 +6,9 @@ public class Circle extends GeometricalObject{
 	public void accept(GeometricalObjectVisitor v) {
 	}
 
+	@Override
+	public GeometricalObjectEditor createGeometricalObjectEditor() {
+		return null;
+	}
+
 }

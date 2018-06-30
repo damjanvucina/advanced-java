@@ -52,4 +52,9 @@ public class Line extends GeometricalObject implements Tool {
 	public void accept(GeometricalObjectVisitor v) {
 	}
 
+	@Override
+	public GeometricalObjectEditor createGeometricalObjectEditor() {
+		return null;
+	}
+
 }

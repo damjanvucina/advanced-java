@@ -32,6 +32,7 @@ public class JVDraw extends JFrame {
 	private JToggleButton btnLine;
 	private JToggleButton btnCircle;
 	private JToggleButton btnFilledCircle;
+	private Tool currentTool;
 
 	public JVDraw() {
 		setSize(1000, 600);
