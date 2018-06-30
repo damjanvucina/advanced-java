@@ -24,6 +24,8 @@ public class JColorArea extends JButton implements IColorProvider {
 		
 		this.selectedColor = selectedColor;
 		setBackground(selectedColor);
+		setSize(getPreferredSize());
+		
 		setToolTipText(tooltip);
 		
 		addMouseListener(new MouseAdapter() {
