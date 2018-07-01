@@ -1,16 +1,41 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class GeometricalObject {
+import hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas;
+import hr.fer.zemris.java.hw16.jvdraw.Tool;
+import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
+import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
+
+public abstract class GeometricalObject implements Tool{
+	
 	private List<GeometricalObjectListener> listeners = new ArrayList<>();
 	private Point startPoint;
 	private Point endPoint;
 	boolean startPointSet;
+	private DocumentModel documentModel;
+	private IColorProvider fgColorProvider;
+	private JDrawingCanvas drawingCanvas;
+	
+	public GeometricalObject(DocumentModel documentModel, IColorProvider fgColorProvider, JDrawingCanvas drawingCanvas) {
+		this.documentModel = documentModel;
+		this.fgColorProvider = fgColorProvider;
+		this.drawingCanvas = drawingCanvas;
+	}
 
+	public IColorProvider getFgColorProvider() {
+		return fgColorProvider;
+	}
+
+	public void setFgColorProvider(IColorProvider fgColorProvider) {
+		this.fgColorProvider = fgColorProvider;
+	}
+	
 	public abstract void accept(GeometricalObjectVisitor v);
 
 	public abstract GeometricalObjectEditor createGeometricalObjectEditor();
@@ -51,6 +76,41 @@ public abstract class GeometricalObject {
 		for (GeometricalObjectListener listener : listeners) {
 			listener.geometricalObjectChanged(this);
 		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Point clickedPoint = e.getPoint();
+
+		if (!startPointSet) {
+			setStartPoint(clickedPoint);
+			startPointSet = true;
+
+		} else {
+			setEndPoint(clickedPoint);
+			startPointSet = false;
+			documentModel.add(this);
+		}
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if (startPointSet) {
+			setEndPoint(e.getPoint());
+			drawingCanvas.repaint();
+		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
 	}
 
 }

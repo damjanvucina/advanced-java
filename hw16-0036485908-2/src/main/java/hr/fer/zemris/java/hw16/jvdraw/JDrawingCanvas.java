@@ -44,6 +44,10 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 		});
 
 	}
+	
+	public JVDraw getInfo() {
+		return info;
+	}
 
 	@Override
 	public void objectsAdded(DrawingModel source, int index0, int index1) {

@@ -97,7 +97,7 @@ public class JVDraw extends JFrame {
 
 		tools.put(LINE_TOOL, new Line(documentModel, fgColorArea, drawingCanvas));
 		tools.put(CIRCLE_TOOL, new Circle(documentModel, fgColorArea, drawingCanvas));
-		// tools.put(FILLED_CIRCLE_TOOL, new FilledCircle(documentModel, fgColorArea, bgColorArea, drawingCanvas));
+		tools.put(FILLED_CIRCLE_TOOL, new FilledCircle(documentModel, fgColorArea, bgColorArea, drawingCanvas));
 	}
 
 	private void initializeDocumentModel() {

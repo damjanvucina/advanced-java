@@ -1,23 +1,28 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+import hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas;
 import hr.fer.zemris.java.hw16.jvdraw.Tool;
 import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
-public class FilledCircle extends GeometricalObject implements Tool{
-	private DocumentModel documentModel;
-	private IColorProvider fgColorProvider;
+public class FilledCircle extends GeometricalObject implements Tool {
 	private IColorProvider bgColorProvider;
 
-	public FilledCircle(DocumentModel documentModel, IColorProvider fgColorProvider, IColorProvider bgColorProvider) {
-		this.documentModel = documentModel;
-		this.fgColorProvider = fgColorProvider;
+	//@formatter:off
+	public FilledCircle(DocumentModel documentModel,
+						IColorProvider fgColorProvider,
+						IColorProvider bgColorProvider,
+						JDrawingCanvas drawingCanvas) {
+		
+		super(documentModel, fgColorProvider, drawingCanvas);
 		this.bgColorProvider = bgColorProvider;
 	}
-	
+	//@formatter:on
+
 	@Override
 	public void accept(GeometricalObjectVisitor v) {
 		v.visit(this);
@@ -26,26 +31,6 @@ public class FilledCircle extends GeometricalObject implements Tool{
 	@Override
 	public GeometricalObjectEditor createGeometricalObjectEditor() {
 		return null;
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
 	}
 
 	@Override

@@ -16,9 +16,7 @@ public class Circle extends GeometricalObject implements Tool {
 	private JDrawingCanvas drawingCanvas;
 
 	public Circle(DocumentModel documentModel, IColorProvider fgColorProvider, JDrawingCanvas drawingCanvas) {
-		this.documentModel = documentModel;
-		this.fgColorProvider = fgColorProvider;
-		this.drawingCanvas = drawingCanvas;
+		super(documentModel, fgColorProvider, drawingCanvas);
 	}
 
 	@Override
@@ -29,40 +27,6 @@ public class Circle extends GeometricalObject implements Tool {
 	@Override
 	public GeometricalObjectEditor createGeometricalObjectEditor() {
 		return null;
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		Point clickedPoint = e.getPoint();
-
-		if (!startPointSet) {
-			setStartPoint(clickedPoint);
-			startPointSet = true;
-		} else {
-			setEndPoint(clickedPoint);
-			startPointSet = false;
-			documentModel.add(this);
-		}
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		if (startPointSet) {
-			setEndPoint(e.getPoint());
-			drawingCanvas.repaint();
-		}
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
 	}
 
 	@Override
