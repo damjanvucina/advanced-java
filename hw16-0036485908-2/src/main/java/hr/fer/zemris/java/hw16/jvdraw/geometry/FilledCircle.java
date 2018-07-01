@@ -8,7 +8,6 @@ import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
 public class FilledCircle extends GeometricalObject implements Tool{
-
 	private DocumentModel documentModel;
 	private IColorProvider fgColorProvider;
 	private IColorProvider bgColorProvider;

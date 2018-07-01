@@ -11,15 +11,20 @@ public abstract class GeometricalObject {
 	private Point endPoint;
 	boolean startPointSet;
 
+	public abstract void accept(GeometricalObjectVisitor v);
+
+	public abstract GeometricalObjectEditor createGeometricalObjectEditor();
+
 	public Point getStartPoint() {
 		return startPoint;
 	}
 
+	public boolean isStartPointSet() {
+		return startPointSet;
+	}
+
 	public void setStartPoint(Point startPoint) {
 		this.startPoint = startPoint;
-		startPointSet = true;
-		
-		notifyListeners();
 	}
 
 	public Point getEndPoint() {
@@ -28,14 +33,7 @@ public abstract class GeometricalObject {
 
 	public void setEndPoint(Point endPoint) {
 		this.endPoint = endPoint;
-		startPointSet = false;
-		
-		notifyListeners();
 	}
-
-	public abstract void accept(GeometricalObjectVisitor v);
-
-	public abstract GeometricalObjectEditor createGeometricalObjectEditor();
 
 	public void addGeometricalObjectListener(GeometricalObjectListener l) {
 		Objects.requireNonNull(l, "Cannot add null listener.");
@@ -54,4 +52,5 @@ public abstract class GeometricalObject {
 			listener.geometricalObjectChanged(this);
 		}
 	}
+
 }

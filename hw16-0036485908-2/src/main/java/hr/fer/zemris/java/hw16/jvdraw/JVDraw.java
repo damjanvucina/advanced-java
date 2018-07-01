@@ -3,12 +3,9 @@ package hr.fer.zemris.java.hw16.jvdraw;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.ButtonGroup;
@@ -22,22 +19,21 @@ import hr.fer.zemris.java.hw16.jvdraw.color.JColorArea;
 import hr.fer.zemris.java.hw16.jvdraw.color.JColorAreaLabel;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Circle;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.FilledCircle;
-import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Line;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
 public class JVDraw extends JFrame {
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final String TITLE = "JVDraw";
 	private static final Color DEFAULT_FOREGROUND_COLOR = Color.RED;
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.BLUE;
-	private static final String FOREGROUND_TOOLTIP="Set foreground color";
-	private static final String BACKGROUND_TOOLTIP="Set background color";
+	private static final String FOREGROUND_TOOLTIP = "Set foreground color";
+	private static final String BACKGROUND_TOOLTIP = "Set background color";
 	private static final String LINE_TOOL = "line";
 	private static final String CIRCLE_TOOL = "circle";
 	private static final String FILLED_CIRCLE_TOOL = "filledCircle";
-	
+
 	private JPanel panel;
 	private JPanel colorAreaLabelPanel;
 	private JColorArea fgColorArea;
@@ -51,7 +47,7 @@ public class JVDraw extends JFrame {
 	private JDrawingCanvas drawingCanvas;
 	private DocumentModel documentModel;
 	private Map<String, Tool> tools;
-	
+
 	public JVDraw() {
 		setSize(500, 300);
 		setLocation(50, 50);
@@ -62,33 +58,30 @@ public class JVDraw extends JFrame {
 	private void initGui() {
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
-		
+
 		panel = new JPanel(new BorderLayout());
 		cp.add(panel, BorderLayout.CENTER);
-		
+
 		initializeColorAreas();
 		initializeColorAreaLabel();
 		initializeGeometricalObjectButtons();
 		initializeDocumentModel();
-		
+		initializeCanvas();
 		initializeTools();
+
 		setDefaultTool();
 		initializeButtonListeners();
-		
+
 		setUpColorAreaLabelPanel();
 		cp.add(colorAreaLabelPanel, BorderLayout.SOUTH);
-		
+
 		setUpToolbar();
 		panel.add(toolBar, BorderLayout.NORTH);
-		
-		
-		setUpCanvas();
+
 		panel.add(drawingCanvas, BorderLayout.CENTER);
-		
-		
+
 		setTitle(TITLE);
 	}
-	
 
 	private void setDefaultTool() {
 		btnLine.doClick();
@@ -98,20 +91,20 @@ public class JVDraw extends JFrame {
 	public Map<String, Tool> getTools() {
 		return tools;
 	}
-	
+
 	private void initializeTools() {
 		tools = new HashMap<>();
-		
-		tools.put(LINE_TOOL, new Line(documentModel, fgColorArea));
-		tools.put(CIRCLE_TOOL, new Circle(documentModel, fgColorArea));
-		tools.put(FILLED_CIRCLE_TOOL, new FilledCircle(documentModel, fgColorArea, bgColorArea));
+
+		tools.put(LINE_TOOL, new Line(documentModel, fgColorArea, drawingCanvas));
+		tools.put(CIRCLE_TOOL, new Circle(documentModel, fgColorArea, drawingCanvas));
+		// tools.put(FILLED_CIRCLE_TOOL, new FilledCircle(documentModel, fgColorArea, bgColorArea, drawingCanvas));
 	}
 
 	private void initializeDocumentModel() {
 		documentModel = new DocumentModel();
 	}
 
-	private void setUpCanvas() {
+	private void initializeCanvas() {
 		drawingCanvas = new JDrawingCanvas(this, documentModel);
 	}
 
@@ -123,7 +116,7 @@ public class JVDraw extends JFrame {
 
 	private ActionListener createActionListener(String newTool) {
 		return new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setCurrentTool(getTools().get(newTool));
@@ -143,7 +136,7 @@ public class JVDraw extends JFrame {
 		btnLine = new JToggleButton("Line");
 		btnCircle = new JToggleButton("Circle");
 		btnFilledCircle = new JToggleButton("Filled Circle");
-		
+
 		ButtonGroup btnGroup = new ButtonGroup();
 		btnGroup.add(btnLine);
 		btnGroup.add(btnCircle);
@@ -167,13 +160,13 @@ public class JVDraw extends JFrame {
 	private void setUpToolbar() {
 		toolBar = new JToolBar();
 		toolBar.setFloatable(true);
-		
+
 		toolBar.addSeparator();
 		toolBar.add(fgColorArea);
 		toolBar.addSeparator();
 		toolBar.add(bgColorArea);
 		toolBar.addSeparator();
-		
+
 		toolBar.addSeparator();
 		toolBar.add(btnLine);
 		toolBar.addSeparator();

@@ -1,6 +1,7 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 public class GeometricalObjectPainter implements GeometricalObjectVisitor{
 	
@@ -19,17 +20,22 @@ public class GeometricalObjectPainter implements GeometricalObjectVisitor{
 
 	@Override
 	public void visit(Line line) {
-		line.paint(g2d);
+		g2d.setColor(line.getFgColorProvider().getCurrentColor());
+		g2d.drawLine(line.getStartPoint().x, line.getStartPoint().y, line.getEndPoint().x, line.getEndPoint().y);
+		
+		g2d.dispose();
 	}
 
 	@Override
 	public void visit(Circle circle) {
-		circle.paint(g2d);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.drawOval(circle.getStartPoint().x, circle.getStartPoint().y, circle.getEndPoint().x, circle.getEndPoint().y);
+		g2d.dispose();
 	}
 
 	@Override
 	public void visit(FilledCircle filledCircle) {
-		filledCircle.paint(g2d);
+		//filledCircle.repaint();
 	}
 	
 	

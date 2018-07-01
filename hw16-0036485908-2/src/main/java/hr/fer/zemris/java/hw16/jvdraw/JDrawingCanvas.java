@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JComponent;
 
@@ -33,14 +34,15 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 			public void mouseClicked(MouseEvent e) {
 				info.getCurrentTool().mouseClicked(e);
 			}
+		});
 
+		addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				info.getCurrentTool().mouseMoved(e);
 			}
 		});
 
-		repaint();
 	}
 
 	@Override
@@ -61,14 +63,16 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		
+
 		g2d.setColor(Color.WHITE);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
-		
+
 		goPainter.setG2d(g2d);
-		for(GeometricalObject object : documentModel.getObjects()) {
+		for (GeometricalObject object : documentModel.getObjects()) {
 			object.accept(goPainter);
 		}
+
+		info.getCurrentTool().paint(g2d);
 	}
 
 }
