@@ -9,8 +9,24 @@ import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectListener;
 
 public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 
-	List<GeometricalObject> objects;
-	List<DrawingModelListener> listeners;
+	private List<GeometricalObject> objects;
+	private List<DrawingModelListener> listeners;
+
+	public List<GeometricalObject> getObjects() {
+		return objects;
+	}
+
+	public List<DrawingModelListener> getListeners() {
+		return listeners;
+	}
+
+	public void setObjects(List<GeometricalObject> objects) {
+		this.objects = objects;
+	}
+
+	public void setListeners(List<DrawingModelListener> listeners) {
+		this.listeners = listeners;
+	}
 
 	public DocumentModel() {
 		objects = new ArrayList<>();

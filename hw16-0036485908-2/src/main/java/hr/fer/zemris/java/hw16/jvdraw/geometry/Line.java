@@ -5,27 +5,21 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 import hr.fer.zemris.java.hw16.jvdraw.Tool;
+import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
+import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
 public class Line extends GeometricalObject implements Tool {
 
-	@SuppressWarnings("unused")
-	private Point startPoint;
-	@SuppressWarnings("unused")
-	private Point endPoint;
+	private DocumentModel documentModel;
+	private IColorProvider fgColorProvider;
 
-	public Line(Point startPoint, Point endPoint) {
-		this.startPoint = startPoint;
-		this.endPoint = endPoint;
+	public Line(DocumentModel documentModel, IColorProvider fgColorProvider) {
+		this.documentModel = documentModel;
+		this.fgColorProvider = fgColorProvider;
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		Point screenPoint = e.getPoint();
-		if (e.getClickCount() % 2 == 1) {
-			startPoint = screenPoint;
-		} else {
-			endPoint = screenPoint;
-		}
 	}
 
 	@Override
@@ -34,10 +28,23 @@ public class Line extends GeometricalObject implements Tool {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		Point clickedPoint = e.getPoint();
+
+		if (!startPointSet) {
+			setStartPoint(clickedPoint);
+		} else {
+			setEndPoint(clickedPoint);
+			documentModel.add(this);
+		}
+		
+		notifyListeners();
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		setEndPoint(e.getPoint());
+		
+		notifyListeners();
 	}
 
 	@Override
@@ -46,10 +53,13 @@ public class Line extends GeometricalObject implements Tool {
 
 	@Override
 	public void paint(Graphics2D g2d) {
+		g2d.setColor(fgColorProvider.getCurrentColor());
+		g2d.drawLine(getStartPoint().x, getStartPoint().y, getEndPoint().x, getEndPoint().y);
 	}
 
 	@Override
 	public void accept(GeometricalObjectVisitor v) {
+		v.visit(this);
 	}
 
 	@Override

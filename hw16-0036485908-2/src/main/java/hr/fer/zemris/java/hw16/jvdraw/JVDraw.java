@@ -3,6 +3,13 @@ package hr.fer.zemris.java.hw16.jvdraw;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
@@ -13,6 +20,11 @@ import javax.swing.SwingUtilities;
 
 import hr.fer.zemris.java.hw16.jvdraw.color.JColorArea;
 import hr.fer.zemris.java.hw16.jvdraw.color.JColorAreaLabel;
+import hr.fer.zemris.java.hw16.jvdraw.geometry.Circle;
+import hr.fer.zemris.java.hw16.jvdraw.geometry.FilledCircle;
+import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter;
+import hr.fer.zemris.java.hw16.jvdraw.geometry.Line;
+import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
 public class JVDraw extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -22,6 +34,9 @@ public class JVDraw extends JFrame {
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.BLUE;
 	private static final String FOREGROUND_TOOLTIP="Set foreground color";
 	private static final String BACKGROUND_TOOLTIP="Set background color";
+	private static final String LINE_TOOL = "line";
+	private static final String CIRCLE_TOOL = "circle";
+	private static final String FILLED_CIRCLE_TOOL = "filledCircle";
 	
 	private JPanel panel;
 	private JPanel colorAreaLabelPanel;
@@ -33,9 +48,12 @@ public class JVDraw extends JFrame {
 	private JToggleButton btnCircle;
 	private JToggleButton btnFilledCircle;
 	private Tool currentTool;
-
+	private JDrawingCanvas drawingCanvas;
+	private DocumentModel documentModel;
+	private Map<String, Tool> tools;
+	
 	public JVDraw() {
-		setSize(1000, 600);
+		setSize(500, 300);
 		setLocation(50, 50);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		initGui();
@@ -51,6 +69,11 @@ public class JVDraw extends JFrame {
 		initializeColorAreas();
 		initializeColorAreaLabel();
 		initializeGeometricalObjectButtons();
+		initializeDocumentModel();
+		
+		initializeTools();
+		setDefaultTool();
+		initializeButtonListeners();
 		
 		setUpColorAreaLabelPanel();
 		cp.add(colorAreaLabelPanel, BorderLayout.SOUTH);
@@ -58,9 +81,64 @@ public class JVDraw extends JFrame {
 		setUpToolbar();
 		panel.add(toolBar, BorderLayout.NORTH);
 		
+		
+		setUpCanvas();
+		panel.add(drawingCanvas, BorderLayout.CENTER);
+		
+		
 		setTitle(TITLE);
 	}
 	
+
+	private void setDefaultTool() {
+		btnLine.doClick();
+		currentTool = tools.get(LINE_TOOL);
+	}
+
+	public Map<String, Tool> getTools() {
+		return tools;
+	}
+	
+	private void initializeTools() {
+		tools = new HashMap<>();
+		
+		tools.put(LINE_TOOL, new Line(documentModel, fgColorArea));
+		tools.put(CIRCLE_TOOL, new Circle(documentModel, fgColorArea));
+		tools.put(FILLED_CIRCLE_TOOL, new FilledCircle(documentModel, fgColorArea, bgColorArea));
+	}
+
+	private void initializeDocumentModel() {
+		documentModel = new DocumentModel();
+	}
+
+	private void setUpCanvas() {
+		drawingCanvas = new JDrawingCanvas(this, documentModel);
+	}
+
+	private void initializeButtonListeners() {
+		btnLine.addActionListener(createActionListener(LINE_TOOL));
+		btnCircle.addActionListener(createActionListener(CIRCLE_TOOL));
+		btnFilledCircle.addActionListener(createActionListener(FILLED_CIRCLE_TOOL));
+	}
+
+	private ActionListener createActionListener(String newTool) {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setCurrentTool(getTools().get(newTool));
+			}
+		};
+	}
+
+	public Tool getCurrentTool() {
+		return currentTool;
+	}
+
+	public void setCurrentTool(Tool currentTool) {
+		this.currentTool = currentTool;
+	}
+
 	private void initializeGeometricalObjectButtons() {
 		btnLine = new JToggleButton("Line");
 		btnCircle = new JToggleButton("Circle");
@@ -91,9 +169,9 @@ public class JVDraw extends JFrame {
 		toolBar.setFloatable(true);
 		
 		toolBar.addSeparator();
-		toolBar.add(bgColorArea);
-		toolBar.addSeparator();
 		toolBar.add(fgColorArea);
+		toolBar.addSeparator();
+		toolBar.add(bgColorArea);
 		toolBar.addSeparator();
 		
 		toolBar.addSeparator();
