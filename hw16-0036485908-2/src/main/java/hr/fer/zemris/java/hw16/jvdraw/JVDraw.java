@@ -3,14 +3,20 @@ package hr.fer.zemris.java.hw16.jvdraw;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
@@ -19,8 +25,12 @@ import hr.fer.zemris.java.hw16.jvdraw.color.JColorArea;
 import hr.fer.zemris.java.hw16.jvdraw.color.JColorAreaLabel;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Circle;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.FilledCircle;
+import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
+import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Line;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
+import hr.fer.zemris.java.hw16.jvdraw.model.DrawingObjectListModel;
+import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
 
 public class JVDraw extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -33,8 +43,11 @@ public class JVDraw extends JFrame {
 	private static final String LINE_TOOL = "line";
 	private static final String CIRCLE_TOOL = "circle";
 	private static final String FILLED_CIRCLE_TOOL = "filledCircle";
+	private static final int JLIST_REQUIRED_CLICKS = 2;
+	private static final String DIALOG_MESSAGE = "Do you want to edit properties?";
 
 	private JPanel panel;
+	private JPanel canvasPanel;
 	private JPanel colorAreaLabelPanel;
 	private JColorArea fgColorArea;
 	private JColorArea bgColorArea;
@@ -46,7 +59,14 @@ public class JVDraw extends JFrame {
 	private Tool currentTool;
 	private JDrawingCanvas drawingCanvas;
 	private DocumentModel documentModel;
+
+	public JDrawingCanvas getDrawingCanvas() {
+		return drawingCanvas;
+	}
+
 	private Map<String, Tool> tools;
+	private JList<GeometricalObject> jList;
+	private DrawingObjectListModel jListModel;
 
 	public JVDraw() {
 		setSize(500, 300);
@@ -78,9 +98,55 @@ public class JVDraw extends JFrame {
 		setUpToolbar();
 		panel.add(toolBar, BorderLayout.NORTH);
 
-		panel.add(drawingCanvas, BorderLayout.CENTER);
+		setUpJList();
+		canvasPanel = new JPanel(new BorderLayout());
+		panel.add(canvasPanel);
+		canvasPanel.add(drawingCanvas, BorderLayout.CENTER);
+		canvasPanel.add(new JScrollPane(jList), BorderLayout.EAST);
 
 		setTitle(TITLE);
+	}
+
+	private void setUpJList() {
+		jListModel = new DrawingObjectListModel(documentModel);
+		jList = new JList<>(jListModel);
+
+		jList.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JList<GeometricalObject> list = (JList<GeometricalObject>) e.getSource();
+
+				if (e.getClickCount() == JLIST_REQUIRED_CLICKS) {
+					Rectangle r = list.getCellBounds(0, list.getLastVisibleIndex());
+
+					if (r != null && r.contains(e.getPoint())) {
+						int index = list.locationToIndex(e.getPoint());
+
+						GeometricalObject clickedObject = list.getModel().getElementAt(index);
+						GeometricalObjectEditor editor = clickedObject.createGeometricalObjectEditor();
+
+						//@formatter:off
+						if(JOptionPane.showConfirmDialog(getDrawingCanvas(),
+														 editor,
+														 DIALOG_MESSAGE,
+														 JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+						//@formatter:off
+								try {
+									editor.checkEditing();
+									editor.acceptEditing();
+								} catch (ObjectModelException exc) {
+									JOptionPane.showMessageDialog(getDrawingCanvas(), exc.getMessage(),"Warning", JOptionPane.WARNING_MESSAGE);
+									return;
+								}
+								
+								
+						}
+						
+					}
+				}
+			}
+		});
 	}
 
 	private void setDefaultTool() {
@@ -90,6 +156,10 @@ public class JVDraw extends JFrame {
 
 	public Map<String, Tool> getTools() {
 		return tools;
+	}
+
+	public DrawingObjectListModel getjListModel() {
+		return jListModel;
 	}
 
 	private void initializeTools() {

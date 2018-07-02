@@ -138,9 +138,11 @@ public abstract class GeometricalObject implements Tool {
 			startPointSet = true;
 
 		} else {
-			setEndPoint(clickedPoint);
-			startPointSet = false;
-			documentModel.add(cloneCurrentObject());
+			if (!getStartPoint().equals(clickedPoint)) {
+				setEndPoint(clickedPoint);
+				startPointSet = false;
+				documentModel.add(cloneCurrentObject());
+			}
 		}
 	}
 

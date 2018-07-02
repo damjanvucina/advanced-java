@@ -9,6 +9,8 @@ import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
 public class FilledCircle extends GeometricalObject {
+	private static final String FILLED_CIRCLE = "Filled circle";
+
 	//@formatter:off
 	public FilledCircle(DocumentModel documentModel,
 						IColorProvider fgColorProvider,
@@ -60,4 +62,17 @@ public class FilledCircle extends GeometricalObject {
 	}
 	//@formatter:on
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		Color color = getBgColor();
+
+		sb.append(FILLED_CIRCLE);
+		sb.append(" (").append(getStartPoint().x).append(",");
+		sb.append(getEndPoint().y).append("), ");
+		sb.append(calculateRadius()).append(", ");
+		sb.append(String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue()));
+
+		return sb.toString();
+	}
 }

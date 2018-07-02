@@ -44,7 +44,7 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 			throw new IllegalArgumentException(
 					"Valid indices are from 0 to " + (objects.size() - 1) + ", was: " + index);
 		}
-		
+
 		return objects.get(index);
 	}
 
@@ -54,6 +54,7 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 
 		objects.add(object);
 		object.addGeometricalObjectListener(this);
+		geometricalObjectChanged(object);
 	}
 
 	@Override

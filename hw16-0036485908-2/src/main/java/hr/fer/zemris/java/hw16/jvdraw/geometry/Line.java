@@ -8,6 +8,7 @@ import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
 public class Line extends GeometricalObject {
+	private static final String LINE = "Line";
 
 	public Line(DocumentModel documentModel, IColorProvider fgColorProvider, JDrawingCanvas drawingCanvas) {
 		super(documentModel, fgColorProvider, null, drawingCanvas);
@@ -26,7 +27,7 @@ public class Line extends GeometricalObject {
 
 	@Override
 	public GeometricalObjectEditor createGeometricalObjectEditor() {
-		return null;
+		return new LineEditor(this);
 	}
 
 	@Override
@@ -41,5 +42,19 @@ public class Line extends GeometricalObject {
 			goPainter.setG2d(g2d);
 			goPainter.visit(this);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(LINE);
+		sb.append(" (").append(getStartPoint().x).append(",");
+		sb.append(getEndPoint().y).append(")-");
+		
+		sb.append("(").append(getEndPoint().x).append(",");
+		sb.append(getEndPoint().y).append(")");
+		
+		return sb.toString();
 	}
 }

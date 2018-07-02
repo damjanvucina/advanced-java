@@ -9,6 +9,7 @@ import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
 public class Circle extends GeometricalObject {
+	private static final String CIRCLE ="Circle";
 
 	public Circle(DocumentModel documentModel, IColorProvider fgColorProvider, JDrawingCanvas drawingCanvas) {
 		super(documentModel, fgColorProvider, null, drawingCanvas);
@@ -47,6 +48,18 @@ public class Circle extends GeometricalObject {
 			goPainter.setG2d(g2d);
 			goPainter.visit(this);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(CIRCLE);
+		sb.append(" (").append(getStartPoint().x).append(",");
+		sb.append(getEndPoint().y).append("), ");
+		sb.append(calculateRadius());
+		
+		return sb.toString();
 	}
 
 }
