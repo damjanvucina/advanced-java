@@ -1,6 +1,5 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -12,8 +11,8 @@ import hr.fer.zemris.java.hw16.jvdraw.Tool;
 import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
-public abstract class GeometricalObject implements Tool{
-	
+public abstract class GeometricalObject implements Tool {
+
 	private List<GeometricalObjectListener> listeners = new ArrayList<>();
 	private Point startPoint;
 	private Point endPoint;
@@ -21,12 +20,23 @@ public abstract class GeometricalObject implements Tool{
 	private DocumentModel documentModel;
 	private IColorProvider fgColorProvider;
 	private JDrawingCanvas drawingCanvas;
-	
-	public GeometricalObject(DocumentModel documentModel, IColorProvider fgColorProvider, JDrawingCanvas drawingCanvas) {
+	private GeometricalObject temporary;
+
+	public GeometricalObject(DocumentModel documentModel, IColorProvider fgColorProvider,
+			JDrawingCanvas drawingCanvas) {
 		this.documentModel = documentModel;
 		this.fgColorProvider = fgColorProvider;
 		this.drawingCanvas = drawingCanvas;
 	}
+
+	public GeometricalObject() {
+	}
+
+	public abstract void accept(GeometricalObjectVisitor v);
+
+	public abstract GeometricalObjectEditor createGeometricalObjectEditor();
+
+	public abstract GeometricalObject cloneCurrentObject();
 
 	public IColorProvider getFgColorProvider() {
 		return fgColorProvider;
@@ -35,10 +45,6 @@ public abstract class GeometricalObject implements Tool{
 	public void setFgColorProvider(IColorProvider fgColorProvider) {
 		this.fgColorProvider = fgColorProvider;
 	}
-	
-	public abstract void accept(GeometricalObjectVisitor v);
-
-	public abstract GeometricalObjectEditor createGeometricalObjectEditor();
 
 	public Point getStartPoint() {
 		return startPoint;
@@ -97,7 +103,7 @@ public abstract class GeometricalObject implements Tool{
 		} else {
 			setEndPoint(clickedPoint);
 			startPointSet = false;
-			documentModel.add(this);
+			documentModel.add(cloneCurrentObject());
 		}
 	}
 
