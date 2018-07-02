@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
@@ -8,34 +9,22 @@ import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
 public class FilledCircle extends GeometricalObject {
-	private IColorProvider bgColorProvider;
-
 	//@formatter:off
 	public FilledCircle(DocumentModel documentModel,
 						IColorProvider fgColorProvider,
 						IColorProvider bgColorProvider,
 						JDrawingCanvas drawingCanvas) {
 		
-		super(documentModel, fgColorProvider, drawingCanvas);
-		this.bgColorProvider = bgColorProvider;
+		super(documentModel, fgColorProvider, bgColorProvider, drawingCanvas);
 	}
 	
-	public FilledCircle(Point startPoint, Point endPoint, IColorProvider fgColorProvider, IColorProvider bgColorProvider) {
+	public FilledCircle(Point startPoint, Point endPoint, Color fgColor, Color bgColor) {
 		setStartPoint(startPoint);
 		setEndPoint(endPoint);
-		setFgColorProvider(fgColorProvider);
-		setBgColorProvider(bgColorProvider);
+		setFgColor(fgColor);
+		setBgColor(bgColor);
 	}
-	
 	//@formatter:on
-
-	public IColorProvider getBgColorProvider() {
-		return bgColorProvider;
-	}
-
-	public void setBgColorProvider(IColorProvider bgColorProvider) {
-		this.bgColorProvider = bgColorProvider;
-	}
 
 	@Override
 	public void accept(GeometricalObjectVisitor v) {
@@ -47,13 +36,28 @@ public class FilledCircle extends GeometricalObject {
 		return null;
 	}
 
-	@Override
-	public void paint(Graphics2D g2d) {
+	public int calculateRadius() {
+		return (int) Math.sqrt(Math.pow((getStartPoint().x - getEndPoint().x), 2)
+				+ Math.pow((getStartPoint().y - getEndPoint().y), 2));
 	}
 
 	@Override
-	public GeometricalObject cloneCurrentObject() {
-		return new FilledCircle(getStartPoint(), getEndPoint(), getFgColorProvider(), getBgColorProvider());
+	public void paint(Graphics2D g2d) {
+		if (startPointSet) {
+			GeometricalObjectPainter goPainter = getDrawingCanvas().getGoPainter();
+			goPainter.setG2d(g2d);
+			goPainter.visit(this);
+		}
 	}
+
+	//@formatter:off
+	@Override
+	public GeometricalObject cloneCurrentObject() {
+		return new FilledCircle(getStartPoint(), 
+								getEndPoint(), 
+								getFgColorProvider().getCurrentColor(),
+								getBgColorProvider().getCurrentColor());
+	}
+	//@formatter:on
 
 }

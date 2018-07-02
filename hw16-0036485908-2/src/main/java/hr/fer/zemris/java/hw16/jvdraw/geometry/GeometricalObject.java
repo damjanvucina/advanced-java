@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -19,15 +20,23 @@ public abstract class GeometricalObject implements Tool {
 	boolean startPointSet;
 	private DocumentModel documentModel;
 	private IColorProvider fgColorProvider;
+	private IColorProvider bgColorProvider;
 	private JDrawingCanvas drawingCanvas;
-	private GeometricalObject temporary;
+	private Color fgColor;
+	private Color bgColor;
 
-	public GeometricalObject(DocumentModel documentModel, IColorProvider fgColorProvider,
-			JDrawingCanvas drawingCanvas) {
+	//@formatter:off
+	public GeometricalObject(DocumentModel documentModel,
+							 IColorProvider fgColorProvider,
+							 IColorProvider bgColorProvider,
+							 JDrawingCanvas drawingCanvas) {
+		
 		this.documentModel = documentModel;
 		this.fgColorProvider = fgColorProvider;
+		this.bgColorProvider = bgColorProvider;
 		this.drawingCanvas = drawingCanvas;
 	}
+	//@formatter:off
 
 	public GeometricalObject() {
 	}
@@ -38,12 +47,40 @@ public abstract class GeometricalObject implements Tool {
 
 	public abstract GeometricalObject cloneCurrentObject();
 
+	public void setFgColor(Color fgColor) {
+		this.fgColor = fgColor;
+	}
+
+	public Color getFgColor() {
+		return fgColor != null ? fgColor : fgColorProvider.getCurrentColor();
+	}
+
+	public void setBgColor(Color bgColor) {
+		this.bgColor = bgColor;
+	}
+
+	public Color getBgColor() {
+		return bgColor != null ? bgColor : bgColorProvider.getCurrentColor();
+	}
+
+	public JDrawingCanvas getDrawingCanvas() {
+		return drawingCanvas;
+	}
+
 	public IColorProvider getFgColorProvider() {
 		return fgColorProvider;
 	}
 
 	public void setFgColorProvider(IColorProvider fgColorProvider) {
 		this.fgColorProvider = fgColorProvider;
+	}
+	
+	public IColorProvider getBgColorProvider() {
+		return bgColorProvider;
+	}
+
+	public void setBgColorProvider(IColorProvider bgColorProvider) {
+		this.bgColorProvider = bgColorProvider;
 	}
 
 	public Point getStartPoint() {
@@ -111,6 +148,7 @@ public abstract class GeometricalObject implements Tool {
 	public void mouseMoved(MouseEvent e) {
 		if (startPointSet) {
 			setEndPoint(e.getPoint());
+			setFgColor(fgColorProvider.getCurrentColor());
 			drawingCanvas.repaint();
 		}
 	}
@@ -118,5 +156,4 @@ public abstract class GeometricalObject implements Tool {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 	}
-
 }

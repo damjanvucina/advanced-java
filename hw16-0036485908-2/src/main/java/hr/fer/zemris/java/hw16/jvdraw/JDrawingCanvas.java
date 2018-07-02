@@ -9,6 +9,8 @@ import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JComponent;
 
+import hr.fer.zemris.java.hw16.jvdraw.color.ColorChangeListener;
+import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
@@ -21,6 +23,10 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 	private DocumentModel documentModel;
 	private GeometricalObjectPainter goPainter;
 	private JVDraw info;
+
+	public GeometricalObjectPainter getGoPainter() {
+		return goPainter;
+	}
 
 	public JDrawingCanvas(JVDraw info, DocumentModel documentModel) {
 		this.info = info;
@@ -44,7 +50,7 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 		});
 
 	}
-	
+
 	public JVDraw getInfo() {
 		return info;
 	}
@@ -78,5 +84,4 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 
 		info.getCurrentTool().paint(g2d);
 	}
-
 }

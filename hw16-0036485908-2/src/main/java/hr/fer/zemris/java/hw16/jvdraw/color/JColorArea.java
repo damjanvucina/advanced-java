@@ -16,35 +16,35 @@ public class JColorArea extends JButton implements IColorProvider {
 	public static final int DEFAULT_DIMENSION = 15;
 
 	private Color selectedColor;
-	
+
 	private List<ColorChangeListener> listeners;
 
 	public JColorArea(Color selectedColor, String tooltip) {
 		listeners = new ArrayList<>();
-		
+
 		this.selectedColor = selectedColor;
 		setBackground(selectedColor);
 		setSize(getPreferredSize());
-		
+
 		setToolTipText(tooltip);
-		
+
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Color newColor = JColorChooser.showDialog(JColorArea.this, "Please choose a color", getCurrentColor());
-				if(newColor == null) {
+				if (newColor == null) {
 					return;
 				}
-				
-				Color oldColor = getCurrentColor(); 
+
+				Color oldColor = getCurrentColor();
 				setSelectedColor(newColor);
 				repaint();
-				
+
 				notifyListeners(oldColor, newColor);
 			}
 		});
 	}
-	
+
 	private void notifyListeners(Color oldColor, Color newColor) {
 		for (ColorChangeListener listener : listeners) {
 			listener.newColorSelected(this, oldColor, newColor);
@@ -57,7 +57,7 @@ public class JColorArea extends JButton implements IColorProvider {
 
 	public void setSelectedColor(Color selectedColor) {
 		this.selectedColor = selectedColor;
-		
+
 		setBackground(selectedColor);
 	}
 
@@ -84,17 +84,17 @@ public class JColorArea extends JButton implements IColorProvider {
 
 		listeners.remove(l);
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("(");
 		sb.append(selectedColor.getRed()).append(", ");
 		sb.append(selectedColor.getGreen()).append(", ");
 		sb.append(selectedColor.getBlue());
 		sb.append(")");
-		
+
 		return sb.toString();
 	}
 
