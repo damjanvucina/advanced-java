@@ -137,11 +137,13 @@ public class JVDraw extends JFrame {
 									editor.acceptEditing();
 								} catch (ObjectModelException exc) {
 									JOptionPane.showMessageDialog(getDrawingCanvas(), exc.getMessage(),"Warning", JOptionPane.WARNING_MESSAGE);
+									list.clearSelection();
 									return;
 								}
 								
 								
 						}
+						list.clearSelection();
 						
 					}
 				}

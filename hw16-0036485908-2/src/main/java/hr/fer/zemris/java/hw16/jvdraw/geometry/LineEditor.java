@@ -1,27 +1,27 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
+import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Point;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class LineEditor extends GeometricalObjectEditor{
+public class LineEditor extends GeometricalObjectEditor {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Line line;
 	private JTextField startPointX;
 	private JTextField startPointY;
 	private JTextField endPointX;
 	private JTextField endPointY;
-	private JTextField colorR;
-	private JTextField colorG;
-	private JTextField colorB;
+	private JTextField fgColor;
 
 	public LineEditor(Line line) {
 		this.line = line;
-		
+
 		initialize();
 		setUp();
 	}
@@ -29,44 +29,38 @@ public class LineEditor extends GeometricalObjectEditor{
 	private void initialize() {
 		startPointX = new JTextField(String.valueOf(line.getStartPoint().x));
 		startPointY = new JTextField(String.valueOf(line.getStartPoint().y));
-		
+
 		endPointX = new JTextField(String.valueOf(line.getEndPoint().x));
 		endPointY = new JTextField(String.valueOf(line.getEndPoint().y));
-		
-		colorR = new JTextField(String.valueOf(line.getFgColor().getRed()));
-		colorG = new JTextField(String.valueOf(line.getFgColor().getGreen()));
-		colorB = new JTextField(String.valueOf(line.getFgColor().getBlue()));
+
+		fgColor = new JTextField(colorToHexString(line.getFgColor()));
 	}
 
 	private void setUp() {
 		setLayout(new GridLayout(1, 0));
-		
+
 		JPanel startPointPanel = new JPanel();
 		startPointPanel.setBorder(BorderFactory.createTitledBorder("Edit Start Point"));
-		
+
 		startPointPanel.add(new JLabel("x:"));
 		startPointPanel.add(startPointX);
 		startPointPanel.add(new JLabel("y:"));
 		startPointPanel.add(startPointY);
-		
+
 		JPanel endPointPanel = new JPanel();
 		endPointPanel.setBorder(BorderFactory.createTitledBorder("Edit End Point"));
-		
+
 		endPointPanel.add(new JLabel("x:"));
 		endPointPanel.add(endPointX);
 		endPointPanel.add(new JLabel("y:"));
 		endPointPanel.add(endPointY);
-		
+
 		JPanel colorPanel = new JPanel();
 		colorPanel.setBorder(BorderFactory.createTitledBorder("Edit Color"));
-		
-		colorPanel.add(new JLabel("red:"));
-		colorPanel.add(colorR);
-		colorPanel.add(new JLabel("green:"));
-		colorPanel.add(colorG);
-		colorPanel.add(new JLabel("blue:"));
-		colorPanel.add(colorB);
-		
+
+		colorPanel.add(new JLabel("color:"));
+		colorPanel.add(fgColor);
+
 		add(startPointPanel);
 		add(endPointPanel);
 		add(colorPanel);
@@ -78,14 +72,21 @@ public class LineEditor extends GeometricalObjectEditor{
 		validateCoordinates(startPointY.getText());
 		validateCoordinates(endPointX.getText());
 		validateCoordinates(endPointY.getText());
-		
-		validateColorValue(colorR.getText());
-		validateColorValue(colorG.getText());
-		validateColorValue(colorB.getText());
+
+		validateColorValue(fgColor.getText());
 	}
 
 	@Override
 	public void acceptEditing() {
+		line.setStartPoint(new Point(Integer.parseInt(startPointX.getText()), Integer.parseInt(startPointY.getText())));
+		line.setEndPoint(new Point(Integer.parseInt(endPointX.getText()), Integer.parseInt(endPointY.getText())));
+		line.setFgColor(Color.decode(fgColor.getText()));
+		
+		line.notifyListeners();
+	}
+
+	private String colorToHexString(Color color) {
+		return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
 	}
 
 }

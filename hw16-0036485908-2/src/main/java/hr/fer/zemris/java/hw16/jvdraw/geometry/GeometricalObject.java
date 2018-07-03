@@ -50,6 +50,10 @@ public abstract class GeometricalObject implements Tool {
 	public void setFgColor(Color fgColor) {
 		this.fgColor = fgColor;
 	}
+	
+	public DocumentModel getDocumentModel() {
+		return documentModel;
+	}
 
 	public Color getFgColor() {
 		return fgColor != null ? fgColor : fgColorProvider.getCurrentColor();

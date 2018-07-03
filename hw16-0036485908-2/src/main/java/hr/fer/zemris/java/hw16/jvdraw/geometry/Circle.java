@@ -28,7 +28,7 @@ public class Circle extends GeometricalObject {
 
 	@Override
 	public GeometricalObjectEditor createGeometricalObjectEditor() {
-		return null;
+		return new CircleEditor(this);
 	}
 
 	public int calculateRadius() {

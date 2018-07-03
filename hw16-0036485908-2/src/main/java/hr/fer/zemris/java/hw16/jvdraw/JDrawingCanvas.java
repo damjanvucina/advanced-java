@@ -9,8 +9,6 @@ import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JComponent;
 
-import hr.fer.zemris.java.hw16.jvdraw.color.ColorChangeListener;
-import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
