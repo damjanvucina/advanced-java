@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Galerija</title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="js/htmlescaping.js"></script>
+<script type="text/javascript">
+<!--
+	$(document).ready(function() {
+		$.get("servlets/get-tags", function(data) {
+			html = ""
+			$.each(data, function(index, value) {
+				html += "<input type='button' value=" + value + " /><br>";
+			});
+			$("#button").html(html);
+		}, "json"); 
+	});
+
+	var trenutniTekst = "";
+	var registriraniTimer = null;
+
+	function obradiKeyUp(noviTekst) {
+		trenutniTekst = noviTekst;
+		if (registriraniTimer) {
+			window.clearTimeout(registriraniTimer);
+			registriraniTimer = null;
+		}
+		if (noviTekst.length == 0) {
+			return;
+		}
+		registriraniTimer = window.setTimeout(traziCitate, 5000);
+	}
+
+	function traziCitate() {
+		$
+				.ajax({
+					url : "servlets/porukef",
+					data : {
+						filter : trenutniTekst,
+						dummy : Math.random()
+					},
+					dataType : "json",
+					success : function(data) {
+						var quotes = data; // već je JSON zbog dataType gore...
+						var html = "";
+						if (quotes.length == 0) {
+							html = "Nema rezultata..."
+						} else {
+							for (var i = 0; i < quotes.length; i++) {
+								html += "<div class='quoteBox'><div class='quoteText'>"
+										+ htmlEscape(quotes[i].text)
+										+ "</div><div class='quoteAuthor'>"
+										+ htmlEscape(quotes[i].author)
+										+ "</div></div>";
+							}
+						}
+						$("#citat").html(html);
+					}
+				});
+	}
+//-->
+</script>
+</head>
+<body>
+	<h1>Welcome to the US Cities Gallery!</h1>
+
+
+	<div id="button">&nbsp;</div>
+	<br>
+	<div id="thumbnail">&nbsp;</div>
+	<br>
+	<div id="picture">&nbsp;</div>
+
+
+</body>
+</html>
