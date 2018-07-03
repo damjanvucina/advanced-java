@@ -50,6 +50,10 @@ public class Circle extends GeometricalObject {
 		}
 	}
 	
+	protected Point getCenter() {
+		return getStartPoint();
+	}
+		
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

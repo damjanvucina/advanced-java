@@ -69,7 +69,7 @@ public class JVDraw extends JFrame {
 	private DrawingObjectListModel jListModel;
 
 	public JVDraw() {
-		setSize(500, 300);
+		setSize(1000, 600);
 		setLocation(50, 50);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		initGui();

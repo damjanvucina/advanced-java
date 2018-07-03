@@ -1,5 +1,6 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
+import java.awt.Color;
 import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
@@ -28,6 +29,17 @@ public abstract class GeometricalObjectEditor extends JPanel {
 		if (parsed < 0) {
 			throw new ObjectModelException("Invalid cooridinates");
 		}
+	}
+
+	public void validateRadius(String value) {
+		int radius = parse(value);
+		if (radius <= 0) {
+			throw new ObjectModelException("Invalid radius");
+		}
+	}
+	
+	protected String colorToHexString(Color color) {
+		return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
 	}
 
 	private int parse(String value) {

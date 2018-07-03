@@ -84,9 +84,4 @@ public class LineEditor extends GeometricalObjectEditor {
 		
 		line.notifyListeners();
 	}
-
-	private String colorToHexString(Color color) {
-		return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
-	}
-
 }
