@@ -102,6 +102,11 @@ public abstract class GeometricalObject implements Tool {
 	public Point getEndPoint() {
 		return endPoint;
 	}
+	
+	public int calculatePointsDistance() {
+		return (int) Math.sqrt(Math.pow((getStartPoint().x - getEndPoint().x), 2)
+				+ Math.pow((getStartPoint().y - getEndPoint().y), 2));
+	}
 
 	public void setEndPoint(Point endPoint) {
 		this.endPoint = endPoint;

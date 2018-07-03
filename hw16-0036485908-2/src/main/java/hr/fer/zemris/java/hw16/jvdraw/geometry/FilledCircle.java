@@ -35,7 +35,7 @@ public class FilledCircle extends GeometricalObject {
 
 	@Override
 	public GeometricalObjectEditor createGeometricalObjectEditor() {
-		return null;
+		return new FilledCircleEditor(this);
 	}
 
 	public int calculateRadius() {
