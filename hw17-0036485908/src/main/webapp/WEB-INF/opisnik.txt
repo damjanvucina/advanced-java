@@ -1,0 +1,60 @@
+atlanta.jpg
+Hollywood of the South
+hot, segregated
+boston.jpg
+Puritan City
+college, sports, europeanlike
+chicago.jpg
+The Windy City
+cold, food, sports
+cleveland.jpg
+City of Champions
+cavs, lebron
+dallas.jpg
+Metroplex
+oil, jfk
+detroit.jpg
+Motown
+poor, cars
+houston.jpg
+Space City
+hot, humid, fat
+indianapolis.jpg
+Indy
+pacers
+lasvegas.jpg
+Sin City
+gambling, valley
+losangeles.jpg
+La-La Land
+weather, celebrities
+miami.jpg
+The Magic City
+humid, scarface
+minneapolis.jpg
+City of Lakes
+friendly, fargo
+neworleans.jpg
+NOLA
+port, vodoo
+newyork.jpg
+The Big Apple
+flashy, cosmopolitan, money
+orlando.jpg
+O-Town
+disney, universal, nightlife
+philadelphia.jpg
+Philly
+historic, rocky
+portland.jpg
+Rip City
+windsurfing, trailblazers
+sanantonio.jpg
+Alamo City
+spurs, military, patriotism
+sanfrancisco.jpg
+Fog City
+liberal, expensive, tech
+washington.jpg
+DC
+traffic, capital
