@@ -17,7 +17,7 @@ import hr.fer.zemris.java.models.Photo;
 
 @WebListener
 public class InitializationServlet implements ServletContextListener {
-	private static final String RESOURCE_FILE = "/WEB-INF/opisnik.txt";
+	public static final String RESOURCE_FILE = "/WEB-INF/opisnik.txt";
 	public static final String PHOTOS = "photos";
 
 	@Override

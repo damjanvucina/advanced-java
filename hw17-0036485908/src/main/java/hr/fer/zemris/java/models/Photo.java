@@ -1,7 +1,5 @@
 package hr.fer.zemris.java.models;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,12 +7,12 @@ import java.util.List;
 public class Photo {
 	private static final String TAG_SPLITTER = ", ";
 
-	private Path path;
+	private String name;
 	private String description;
 	private List<String> tags;
 
-	public Photo(String path, String description, String nonFormattedTags) {
-		this.path = Paths.get(path);
+	public Photo(String name, String description, String nonFormattedTags) {
+		this.name = name;
 		this.description = description;
 
 		tags = new ArrayList<>();
@@ -25,8 +23,8 @@ public class Photo {
 		return Arrays.asList(nonFormattedTags.split(TAG_SPLITTER));
 	}
 
-	public Path getPath() {
-		return path;
+	public String getName() {
+		return name;
 	}
 
 	public String getDescription() {
@@ -37,8 +35,8 @@ public class Photo {
 		return tags;
 	}
 
-	public void setPath(Path path) {
-		this.path = path;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setDescription(String description) {
