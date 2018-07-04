@@ -10,14 +10,13 @@
 		$.get("servlets/get-tags", function(data) {
 			html = ""
 			$.each(data, function(index, value) {
-				html += "<input type='button' onclick=dohvatiThumb(this.value); value=" + value + " />";
+				html += "<input type='button' onclick='dohvatiThumb(this.value)'; value=" + value + " />";
 			});
 			$("#button").html(html);
 		}); 
 	});
 	
 function dohvatiThumb(name){
-    var abc='hello';                
     $.ajax({
         type: "GET",
         url: "servlets/get-thumbnails",                
@@ -27,8 +26,9 @@ function dohvatiThumb(name){
         	html = ""
             if(data){
             	$.each(data, function(index, value) {
-    				html += "<img src='servlets/display-thumbnail?name="+ value +"' onclick='showFullSize(value)'  />";
+    				html += "<img src='servlets/display-thumbnail?name="+ value +"'  name=" + value + " onclick='displayImage(this.name)'; />";
     			});
+            	$("#picture").empty();
             	$("#thumbnail").empty();
             	$("#thumbnail").html(html);
             }
@@ -37,15 +37,32 @@ function dohvatiThumb(name){
     })       
 };
 
-	function acquireThumbnail(name) {
-		$.get("servlets/get-thumbnails?tag=" + name, function(data) {
-			html = ""
-			$.each(data, function(index, value) {
-				html += "<img src='servlets/display-thumbnail?name="+ value +" onclick='showFullSize(value);' alt=" + value + " width='150' height='150' />";
-			});
-			$("#button").html(html);
-		}); 
-	}
+function displayImage(name){
+    $.ajax({
+        type: "GET",
+        url: "servlets/display-image",                
+        dataType: "json",
+        data: {"arg" : name},
+        success:function(data){
+        	html = ""
+            if(data){
+            		html+="name:"
+            		html += data.name + "<br>"
+            		html+="description:"
+                	html += data.description + "<br>"
+            		html+="tags:"
+                    html += data.tags + "<br>"
+    			
+            	$("#picture").empty();
+            	$("#picture").html(html);
+            }
+        },
+        error:function(data,status,er) {
+            alert("bug neki: "+name);
+        }
+
+    })       
+};
 
 	
 //-->
