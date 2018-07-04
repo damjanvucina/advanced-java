@@ -26,7 +26,7 @@ function dohvatiThumb(name){
         	html = ""
             if(data){
             	$.each(data, function(index, value) {
-    				html += "<img src='servlets/display-thumbnail?name="+ value +"'  name=" + value + " onclick='displayImage(this.name)'; />";
+    				html += "<img src='servlets/display-thumbnail?name="+ value +"&size=" + "thumbnail" +"'  name=" + value + " onclick='displayImage(this.name)'; />";
     			});
             	$("#picture").empty();
             	$("#thumbnail").empty();
@@ -52,6 +52,7 @@ function displayImage(name){
                 	html += data.description + "<br>"
             		html+="tags:"
                     html += data.tags + "<br>"
+                    html += "<img src='servlets/display-thumbnail?name="+ data.name +"&size="+"image" +"' />";
     			
             	$("#picture").empty();
             	$("#picture").html(html);
