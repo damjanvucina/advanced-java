@@ -16,10 +16,26 @@ import javax.servlet.annotation.WebListener;
 import hr.fer.zemris.java.hw17.rest.PhotoDB;
 import hr.fer.zemris.java.models.Photo;
 
+/**
+ * The listener class used for creating mappings for the images stored in the
+ * dummy database txt file.
+ * 
+ * @author Damjan Vučina
+ */
 @WebListener
 public class InitializationListener implements ServletContextListener {
+
+	/** The Constant RESOURCE_FILE. */
 	public static final String RESOURCE_FILE = "/WEB-INF/opisnik.txt";
+
+	/** The Constant PHOTOS. */
 	public static final String PHOTOS = "photos";
+
+	/**
+	 * Receives notification that the web application initialization process is
+	 * starting. Creates mappings for the images stored in the dummy database txt
+	 * file.
+	 */
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -37,10 +53,13 @@ public class InitializationListener implements ServletContextListener {
 			photos.put(lines.get(i), new Photo(lines.get(i), lines.get(i + 1), lines.get(i + 2)));
 		}
 
-		sce.getServletContext().setAttribute(PHOTOS, photos);
 		PhotoDB.setPhotos(photos);
 	}
 
+	/**
+	 * Receives notification that the ServletContext is about to be shut down.
+	 * NOTICE: Not implemented here.
+	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 	}

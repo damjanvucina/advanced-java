@@ -14,10 +14,25 @@ import org.json.JSONArray;
 
 import hr.fer.zemris.java.models.Photo;
 
+/**
+ * Class that is used for acquiring all the tags from the dummy database txt
+ * file. This class is built upon Jersey RESTful Web Services framework.
+ * 
+ * @author Damjan Vučina
+ */
 @Path("/tags")
 public class TagsJSON {
+
+	/** The Constant RESOURCE_FILE. */
 	public static final String RESOURCE_FILE = "/WEB-INF/opisnik.txt";
 
+	/**
+	 * Gets all the tags. from the dummy database txt file.
+	 *
+	 * @return the tags
+	 */
+	// NOTICE:GetTagsServlet serves the same purpose but does not offer
+	// RESTful Web service support. This class is used by default.
 	@GET
 	@Produces("application/json")
 	public Response getTags() {

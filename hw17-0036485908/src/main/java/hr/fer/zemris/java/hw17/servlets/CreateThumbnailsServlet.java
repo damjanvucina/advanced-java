@@ -24,24 +24,43 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import hr.fer.zemris.java.hw17.rest.PhotoDB;
 import hr.fer.zemris.java.models.Photo;
 
-import static hr.fer.zemris.java.hw17.servlets.InitializationListener.PHOTOS;
-
+/**
+ * The servlet class that is used for creating thumbnails for the designated
+ * images had they not previously been generated and stored.
+ * 
+ * @author Damjan Vučina
+ */
 @WebServlet("/servlets/get-thumbnails")
-public class GetThumbnailsServlet extends HttpServlet {
+public class CreateThumbnailsServlet extends HttpServlet {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+
+	/** The Constant TAG. */
 	public static final String TAG = "tag";
+
+	/** The Constant THUMBNAILS_FILE. */
 	public static final String THUMBNAILS_FILE = "/WEB-INF/thumbnails";
+
+	/** The Constant BASE_RESOURCES. */
 	public static final String BASE_RESOURCES = "/WEB-INF/slike";
+
+	/** The Constant THUMBNAIL_DIMENSION. */
 	private static final int THUMBNAIL_DIMENSION = 150;
 
+	/**
+	 * Called by the server (via the service method) to allow a servlet to handle a
+	 * GET request. Generates and stores a thumbnail for the images defined by the
+	 * corresponding tag.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String tag = req.getParameter(TAG);
-		@SuppressWarnings("unchecked")
-		Map<String, Photo> photos = (Map<String, Photo>) req.getServletContext().getAttribute(PHOTOS);
-
+		Map<String, Photo> photos = PhotoDB.getPhotos();
+		
 		Path thumbnailsFolder = Paths.get(req.getServletContext().getRealPath(THUMBNAILS_FILE));
 		if (Files.notExists(thumbnailsFolder)) {
 			Files.createDirectory(thumbnailsFolder);
@@ -66,7 +85,6 @@ public class GetThumbnailsServlet extends HttpServlet {
 			}
 		}
 
-
 		Gson gson = new Gson();
 		String jsonText = gson.toJson(selectedPhotosNames);
 
@@ -74,6 +92,13 @@ public class GetThumbnailsServlet extends HttpServlet {
 		resp.getWriter().flush();
 	}
 
+	/**
+	 * Helper method used for scaling the image.
+	 *
+	 * @param source
+	 *            the source
+	 * @return the buffered image
+	 */
 	private BufferedImage scale(BufferedImage source) {
 		int dim = THUMBNAIL_DIMENSION;
 		BufferedImage bi = getCompatibleImage(dim, dim);
@@ -86,6 +111,15 @@ public class GetThumbnailsServlet extends HttpServlet {
 		return bi;
 	}
 
+	/**
+	 * Helper method used for creating a compatible image.
+	 *
+	 * @param w
+	 *            the width
+	 * @param h
+	 *            the height
+	 * @return the compatible image
+	 */
 	private BufferedImage getCompatibleImage(int w, int h) {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd = ge.getDefaultScreenDevice();
