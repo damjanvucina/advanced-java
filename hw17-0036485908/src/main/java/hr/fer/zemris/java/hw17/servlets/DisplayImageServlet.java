@@ -22,8 +22,8 @@ import static hr.fer.zemris.java.hw17.servlets.CreateThumbnailsServlet.BASE_RESO
  * 
  * @author Damjan Vučina
  */
-@WebServlet("/servlets/display-thumbnail")
-public class DisplayThumbnailServlet extends HttpServlet {
+@WebServlet("/servlets/display-image")
+public class DisplayImageServlet extends HttpServlet {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

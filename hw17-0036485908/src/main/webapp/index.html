@@ -28,7 +28,7 @@ function acquireThumbnail(name){
         	html = ""
             if(data){
             	$.each(data, function(index, value) {
-    				html += "<img class='thumbnail' src='servlets/display-thumbnail?name="+ value +"&size=" + "thumbnail" +"'  name=" + value + " onclick='displayImage(this.name)'; />";
+    				html += "<img class='thumbnail' src='servlets/display-image?name="+ value +"&size=" + "thumbnail" +"'  name=" + value + " onclick='displayImage(this.name)'; />";
     			});
             	$("#picture").empty();
             	$("#thumbnail").empty();
@@ -62,7 +62,7 @@ function displayImage(name){
             		html+="</div>"
                     html += data.tags + "<br>"
                     html+="</div>"
-                    html += "<img src='servlets/display-thumbnail?name="+ data.name +"&size="+"image" +"' />";
+                    html += "<img src='servlets/display-image?name="+ data.name +"&size="+"image" +"' />";
     				
             	$("#picture").empty();
             	$("#picture").html(html);
