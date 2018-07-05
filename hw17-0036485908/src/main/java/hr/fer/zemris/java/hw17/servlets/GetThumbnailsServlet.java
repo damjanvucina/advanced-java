@@ -26,7 +26,7 @@ import com.google.gson.Gson;
 
 import hr.fer.zemris.java.models.Photo;
 
-import static hr.fer.zemris.java.hw17.servlets.InitializationServlet.PHOTOS;
+import static hr.fer.zemris.java.hw17.servlets.InitializationListener.PHOTOS;
 
 @WebServlet("/servlets/get-thumbnails")
 public class GetThumbnailsServlet extends HttpServlet {

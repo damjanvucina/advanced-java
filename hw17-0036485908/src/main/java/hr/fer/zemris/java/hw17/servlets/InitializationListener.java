@@ -13,10 +13,11 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import hr.fer.zemris.java.hw17.rest.PhotoDB;
 import hr.fer.zemris.java.models.Photo;
 
 @WebListener
-public class InitializationServlet implements ServletContextListener {
+public class InitializationListener implements ServletContextListener {
 	public static final String RESOURCE_FILE = "/WEB-INF/opisnik.txt";
 	public static final String PHOTOS = "photos";
 
@@ -37,6 +38,7 @@ public class InitializationServlet implements ServletContextListener {
 		}
 
 		sce.getServletContext().setAttribute(PHOTOS, photos);
+		PhotoDB.setPhotos(photos);
 	}
 
 	@Override

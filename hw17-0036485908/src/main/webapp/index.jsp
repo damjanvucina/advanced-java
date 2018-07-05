@@ -9,16 +9,16 @@
 <script type="text/javascript">
 <!--
 	$(document).ready(function() {
-		$.get("servlets/get-tags", function(data) {
+		$.get("rest/tags", function(data) {
 			html = ""
 			$.each(data, function(index, value) {
-				html += "<input class='mybutton mybutton2' type='button' onclick='dohvatiThumb(this.value)'; value=" + value + " />";
+				html += "<input class='mybutton mybutton2' type='button' onclick='acquireThumbnail(this.value)'; value=" + value + " />";
 			});
 			$("#button").html(html);
 		}); 
 	});
 	
-function dohvatiThumb(name){
+function acquireThumbnail(name){
     $.ajax({
         type: "GET",
         url: "servlets/get-thumbnails",                
@@ -42,7 +42,7 @@ function dohvatiThumb(name){
 function displayImage(name){
     $.ajax({
         type: "GET",
-        url: "servlets/display-image",                
+        url: "rest/info/"+name,                
         dataType: "json",
         data: {"arg" : name},
         success:function(data){

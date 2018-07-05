@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 
 import hr.fer.zemris.java.models.Photo;
 
-import static hr.fer.zemris.java.hw17.servlets.InitializationServlet.PHOTOS;
+import static hr.fer.zemris.java.hw17.servlets.InitializationListener.PHOTOS;
 @WebServlet("/servlets/display-image")
 public class DisplayImageServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
