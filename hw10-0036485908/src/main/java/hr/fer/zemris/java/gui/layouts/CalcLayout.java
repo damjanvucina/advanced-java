@@ -97,6 +97,10 @@ public class CalcLayout implements LayoutManager2 {
 		this(DEFAULT_GAP);
 	}
 
+	public int getGap() {
+		return gap;
+	}
+
 	/**
 	 * If the layout manager uses a per-component string, adds the component comp to
 	 * the layout, associating it with the string specified by name.
@@ -257,7 +261,9 @@ public class CalcLayout implements LayoutManager2 {
 			}
 
 			currentHeight = max(currentHeight, currentSize.height);
-			currentWidth = max(currentWidth, (isCalcScreen(entry.getValue())) ? currentWidth : currentSize.width);
+			currentWidth = max(currentWidth, (isCalcScreen(entry.getValue())) ?
+							  (currentSize.width - CALC_GAPS * getGap()) / CALC_SCREEN_WIDTH_FACTOR :
+							   currentSize.width);
 		}
 
 		return new Dimension(currentWidth, currentHeight);

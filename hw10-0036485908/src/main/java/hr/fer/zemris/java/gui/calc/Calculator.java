@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -387,13 +388,14 @@ public class Calculator extends JFrame {
 			try {
 				CalcModelImpl model = Calculator.this.model;
 				double currentNumber = Calculator.this.model.getValue();
+				double result = model.getValue();
 
 				if (!model.isActiveOperandSet()) {
 					performSuccesiveCalculation(model, currentNumber);
 
 				} else {
 				//@formatter:off
-				double result = model.getPendingBinaryOperation()
+				result = model.getPendingBinaryOperation()
 									 .applyAsDouble(model.getActiveOperand(), currentNumber);
 				//@formatter:on
 
@@ -408,6 +410,7 @@ public class Calculator extends JFrame {
 
 				if (this.value.equals("=")) {
 					model.clearAllWithoutNotifying();
+					model.setValue(result);
 				}
 			} catch (CalculatorException e) {
 				showWarningMessage(e.getMessage());
