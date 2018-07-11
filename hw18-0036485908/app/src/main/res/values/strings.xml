@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">OPJJ1</string>
+    <string name="activity_name">Lifecycle Activity</string>
+    <string name="label_enter_text">Unesite brojeve</string>
+    <string name="unesite_djeljitelj">Unesite djeljitelj</string>
+    <string name="Calculate">Izračunaj</string>
+    <string name="send_back">Povratak</string>
+    <string name="send">Pošalji</string>
+    <string name="SEND_TO">Primatelj:</string>
+    <string name="TITLE">Naslov:</string>
+    <string name="MESSAGE">Poruka:</string>
+    <string name="INVALID_MAIL">Neispravna adresa pošte.</string>
+    <string name="INVALID_PROPERTY">Nepotpun unos. Molimo provjerite polja</string>
+    <string name="SEND">Pošalji</string>
+    <string name="COMPOSE_MAIL">Sastavi poruku</string>
+    <string name="ENTER_DIVIDEND">Unesite djeljenik</string>
+</resources>

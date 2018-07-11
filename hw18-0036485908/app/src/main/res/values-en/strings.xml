@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">OPJJ1</string>
+    <string name="activity_name">Lifecycle Activity</string>
+    <string name="label_enter_text">Enter numbers</string>
+    <string name="unesite_djeljitelj">Enter divisor</string>
+    <string name="Calculate">Calculate</string>
+    <string name="send_back">Send Back</string>
+    <string name="send">Send</string>
+    <string name="SEND_TO">Send to:</string>
+    <string name="TITLE">Title:</string>
+    <string name="MESSAGE">Message:</string>
+    <string name="INVALID_MAIL">Invalid email address</string>
+    <string name="INVALID_PROPERTY">Invalid input. All fields are mandatory.</string>
+    <string name="SEND">SEND</string>
+    <string name="COMPOSE_MAIL">Compose email</string>
+    <string name="ENTER_DIVIDEND">Enter dividend</string>
+</resources>

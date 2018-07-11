@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_enter_text"
+        android:textSize="18sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="16dp"
+        />
+
+    <EditText
+        android:id="@+id/input_first"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/ENTER_DIVIDEND"
+        android:textColor="@color/colorPrimary"
+        android:layout_margin="16dp"
+        android:layout_gravity="center_horizontal"
+        android:inputType="number"/>
+
+    <EditText
+        android:id="@+id/input_second"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/unesite_djeljitelj"
+        android:inputType="number"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="16dp"/>
+
+    <TextView
+        android:id="@+id/label_result"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/colorPrimary"/>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"></View>
+
+    <Button
+        android:id="@+id/btn_calculate"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Calculate"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/btn_send"
+        android:text="@string/send"/>
+
+    <Button
+        android:id="@+id/composeMailButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/COMPOSE_MAIL" />
+
+</LinearLayout>
