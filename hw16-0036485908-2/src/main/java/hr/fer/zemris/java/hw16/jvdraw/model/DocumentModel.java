@@ -54,7 +54,24 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 
 		objects.add(object);
 		object.addGeometricalObjectListener(this);
-		geometricalObjectChanged(object);
+
+		int modificationIndex = objects.size() - 1;
+		for (DrawingModelListener listener : listeners) {
+			listener.objectsAdded(this, modificationIndex, modificationIndex);
+		}
+
+	}
+	
+	@Override
+	public void remove(GeometricalObject object) {
+		Objects.requireNonNull(object, "Cannot remove null object.");
+
+		int modificationIndex = objects.indexOf(object);
+		for (DrawingModelListener listener : listeners) {
+			listener.objectsRemoved(this, modificationIndex, modificationIndex);
+		}
+		
+		objects.remove(object);
 	}
 
 	@Override
@@ -74,18 +91,11 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 	@Override
 	public void geometricalObjectChanged(GeometricalObject o) {
 		Objects.requireNonNull(o, "Geometrical object cannot be null");
+		
 		int modificationIndex = objects.indexOf(o);
-
 		for (DrawingModelListener listener : listeners) {
 			listener.objectsChanged(this, modificationIndex, modificationIndex);
 		}
-	}
-
-	@Override
-	public void remove(GeometricalObject object) {
-		Objects.requireNonNull(object, "Cannot remove null object.");
-
-		objects.remove(object);
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class JVDraw extends JFrame {
 	private static final String LINE_TOOL = "line";
 	private static final String CIRCLE_TOOL = "circle";
 	private static final String FILLED_CIRCLE_TOOL = "filledCircle";
-	private static final int JLIST_REQUIRED_CLICKS = 2;
+	private static final int OPEN_EDITOR = 2;
 	private static final String DIALOG_MESSAGE = "Do you want to edit properties?";
 
 	private JPanel panel;
@@ -103,7 +103,7 @@ public class JVDraw extends JFrame {
 
 		setTitle(TITLE);
 	}
-	
+
 	public JDrawingCanvas getDrawingCanvas() {
 		return drawingCanvas;
 	}
@@ -120,15 +120,16 @@ public class JVDraw extends JFrame {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				JList<GeometricalObject> list = (JList<GeometricalObject>) e.getSource();
+				JList<GeometricalObject> jList = (JList<GeometricalObject>) e.getSource();
+				int numOfClicks = e.getClickCount();
 
-				if (e.getClickCount() == JLIST_REQUIRED_CLICKS) {
-					Rectangle r = list.getCellBounds(0, list.getLastVisibleIndex());
+				if (numOfClicks == OPEN_EDITOR) {
+					Rectangle r = jList.getCellBounds(0, jList.getLastVisibleIndex());
 
 					if (r != null && r.contains(e.getPoint())) {
-						int index = list.locationToIndex(e.getPoint());
+						int index = jList.locationToIndex(e.getPoint());
 
-						GeometricalObject clickedObject = list.getModel().getElementAt(index);
+						GeometricalObject clickedObject = jList.getModel().getElementAt(index);
 						GeometricalObjectEditor editor = clickedObject.createGeometricalObjectEditor();
 
 						//@formatter:off
@@ -142,33 +143,48 @@ public class JVDraw extends JFrame {
 									editor.acceptEditing();
 								} catch (ObjectModelException exc) {
 									JOptionPane.showMessageDialog(getDrawingCanvas(), exc.getMessage(),"Warning", JOptionPane.WARNING_MESSAGE);
-									list.clearSelection();
+									jList.clearSelection();
 									return;
 								}
 								
 								
 						}
-						list.clearSelection();
+						jList.clearSelection();
 						
 					}
-				}
+				} 
 			}
 		});
 		
 		jList.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_DELETE ) {
-					JList<?> jList = ((JList<?>)e.getComponent());
+				@SuppressWarnings("unchecked")
+				JList<GeometricalObject> jList = (JList<GeometricalObject>) e.getSource();
+				
+				if(jList.isFocusOwner()) {
+					int selectedIndex = jList.getSelectedIndex();
+					GeometricalObject object = documentModel.getObject(selectedIndex);
 					
-					if(jList.isFocusOwner()) {
-						int selectedIndex = ((JList<?>)e.getComponent()).getSelectedIndex();
-						getDocumentModel().remove(documentModel.getObject(selectedIndex));
-						
+					switch (e.getKeyCode()) {
+					case KeyEvent.VK_DELETE:
+						getDocumentModel().remove(object);
 						jList.clearSelection();
+						break;
+						
+					case KeyEvent.VK_PLUS:
+						System.out.println("Pritisnut je plus");
+						break;
+						
+					case KeyEvent.VK_MINUS:
+						System.out.println("Pritisnut je minus");
+						break;
+
+					default:
+						break;
 					}
-					
 				}
+
 			}
 		});
 	}

@@ -3,6 +3,7 @@ package hr.fer.zemris.java.hw16.jvdraw.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import javax.swing.AbstractListModel;
 import javax.swing.event.ListDataEvent;
@@ -51,22 +52,28 @@ public class DrawingObjectListModel extends AbstractListModel<GeometricalObject>
 
 	@Override
 	public void objectsAdded(DrawingModel source, int index0, int index1) {
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, index0, index1);
+		
+		notifyListeners(event, l -> l.intervalAdded(event));
 	}
 
 	@Override
 	public void objectsRemoved(DrawingModel source, int index0, int index1) {
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index0, index1);
+		
+		notifyListeners(event, l -> l.intervalRemoved(event));
 	}
 
 	@Override
 	public void objectsChanged(DrawingModel source, int index0, int index1) {
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, index0, index1);
 		
-		notifyListeners(event);
+		notifyListeners(event, l -> l.contentsChanged(event));
 	}
 
-	private void notifyListeners(ListDataEvent event) {
+	private void notifyListeners(ListDataEvent event, Consumer<ListDataListener> action) {
 		for (ListDataListener l : listeners) {
-			l.intervalAdded(event);
+			action.accept(l);
 		}
 	}
 
