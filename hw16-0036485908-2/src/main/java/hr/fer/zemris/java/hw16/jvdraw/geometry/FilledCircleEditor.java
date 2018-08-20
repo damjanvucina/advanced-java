@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class FilledCircleEditor extends AbstractCircleEditor {
+public class FilledCircleEditor extends CircleEditor {
 	private static final long serialVersionUID = 1L;
 
 	private FilledCircle filledCircle;
@@ -17,21 +17,15 @@ public class FilledCircleEditor extends AbstractCircleEditor {
 		super(filledCircle);
 		this.filledCircle = filledCircle;
 		
-		initialize();
-		setUp();
+		initializeFilledCircle();
+		setUpFilledCircle();
 	}
 	
-	@Override
-	protected void initialize() {
-		super.initialize();
-		
-		bgColor = new JTextField(colorToHexString(filledCircle.getFgColor()));
+	protected void initializeFilledCircle() {
+		bgColor = new JTextField(colorToHexString(filledCircle.getBgColor()));
 	}
 	
-	@Override
-	protected void setUp() {
-		super.setUp();
-		
+	protected void setUpFilledCircle() {
 		JPanel bgColorPanel = new JPanel();
 		bgColorPanel.setBorder(BorderFactory.createTitledBorder("Background"));
 
