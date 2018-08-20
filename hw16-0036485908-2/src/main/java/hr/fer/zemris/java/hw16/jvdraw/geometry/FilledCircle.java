@@ -38,10 +38,13 @@ public class FilledCircle extends GeometricalObject {
 		return new FilledCircleEditor(this);
 	}
 
+	//@formatter:off
 	public int calculateRadius() {
-		return (int) Math.sqrt(Math.pow((getStartPoint().x - getEndPoint().x), 2)
-				+ Math.pow((getStartPoint().y - getEndPoint().y), 2));
+		return (int) Math.sqrt(
+					 Math.pow((getStartPoint().x - getEndPoint().x), 2) + 
+					 Math.pow((getStartPoint().y - getEndPoint().y), 2));
 	}
+	//@formatter:on
 
 	@Override
 	public void paint(Graphics2D g2d) {

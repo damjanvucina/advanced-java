@@ -45,11 +45,11 @@ public class GeometricalObjectPainter implements GeometricalObjectVisitor {
 		g2d.setStroke(new BasicStroke(2));
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		g2d.setColor(filledCircle.getFgColor());
-		g2d.drawOval(filledCircle.getStartPoint().x - radius, filledCircle.getStartPoint().y - radius, 2 * radius, 2 * radius);
-		
 		g2d.setColor(filledCircle.getBgColor());
 		g2d.fillOval(filledCircle.getStartPoint().x - radius, filledCircle.getStartPoint().y - radius, 2 * radius, 2 * radius);
+		
+		g2d.setColor(filledCircle.getFgColor());
+		g2d.drawOval(filledCircle.getStartPoint().x - radius, filledCircle.getStartPoint().y - radius, 2 * radius, 2 * radius);
 	}
 
 }

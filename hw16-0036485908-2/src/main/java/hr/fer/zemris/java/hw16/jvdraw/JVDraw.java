@@ -6,6 +6,8 @@ import java.awt.Container;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -59,11 +61,6 @@ public class JVDraw extends JFrame {
 	private Tool currentTool;
 	private JDrawingCanvas drawingCanvas;
 	private DocumentModel documentModel;
-
-	public JDrawingCanvas getDrawingCanvas() {
-		return drawingCanvas;
-	}
-
 	private Map<String, Tool> tools;
 	private JList<GeometricalObject> jList;
 	private DrawingObjectListModel jListModel;
@@ -106,6 +103,14 @@ public class JVDraw extends JFrame {
 
 		setTitle(TITLE);
 	}
+	
+	public JDrawingCanvas getDrawingCanvas() {
+		return drawingCanvas;
+	}
+
+	public DocumentModel getDocumentModel() {
+		return documentModel;
+	}
 
 	private void setUpJList() {
 		jListModel = new DrawingObjectListModel(documentModel);
@@ -146,6 +151,23 @@ public class JVDraw extends JFrame {
 						list.clearSelection();
 						
 					}
+				}
+			}
+		});
+		
+		jList.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_DELETE ) {
+					JList<?> jList = ((JList<?>)e.getComponent());
+					
+					if(jList.isFocusOwner()) {
+						int selectedIndex = ((JList<?>)e.getComponent()).getSelectedIndex();
+						getDocumentModel().remove(documentModel.getObject(selectedIndex));
+						
+						jList.clearSelection();
+					}
+					
 				}
 			}
 		});
