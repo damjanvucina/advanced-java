@@ -12,7 +12,7 @@ public class Circle extends GeometricalObject {
 	private static final String CIRCLE ="Circle";
 
 	public Circle(DocumentModel documentModel, IColorProvider fgColorProvider, JDrawingCanvas drawingCanvas) {
-		super(documentModel, fgColorProvider, null, drawingCanvas);
+		super(documentModel, fgColorProvider, drawingCanvas);
 	}
 
 	public Circle(Point startPoint, Point endPoint, Color fgColor) {

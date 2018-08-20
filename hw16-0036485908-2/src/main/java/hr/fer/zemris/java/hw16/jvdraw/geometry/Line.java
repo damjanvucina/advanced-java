@@ -11,7 +11,7 @@ public class Line extends GeometricalObject {
 	private static final String LINE = "Line";
 
 	public Line(DocumentModel documentModel, IColorProvider fgColorProvider, JDrawingCanvas drawingCanvas) {
-		super(documentModel, fgColorProvider, null, drawingCanvas);
+		super(documentModel, fgColorProvider, drawingCanvas);
 	}
 
 	public Line(Point startPoint, Point endPoint, Color fgColor) {

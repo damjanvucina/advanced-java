@@ -8,8 +8,11 @@ import hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas;
 import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
-public class FilledCircle extends GeometricalObject {
+public class FilledCircle extends Circle {
 	private static final String FILLED_CIRCLE = "Filled circle";
+	
+	private Color bgColor;
+	private IColorProvider bgColorProvider;
 
 	//@formatter:off
 	public FilledCircle(DocumentModel documentModel,
@@ -17,16 +20,32 @@ public class FilledCircle extends GeometricalObject {
 						IColorProvider bgColorProvider,
 						JDrawingCanvas drawingCanvas) {
 		
-		super(documentModel, fgColorProvider, bgColorProvider, drawingCanvas);
+		super(documentModel, fgColorProvider, drawingCanvas);
+		this.bgColorProvider = bgColorProvider;
 	}
 	
 	public FilledCircle(Point startPoint, Point endPoint, Color fgColor, Color bgColor) {
-		setStartPoint(startPoint);
-		setEndPoint(endPoint);
-		setFgColor(fgColor);
+		super(startPoint, endPoint, fgColor);
+
 		setBgColor(bgColor);
 	}
 	//@formatter:on
+	
+	public void setBgColor(Color bgColor) {
+		this.bgColor = bgColor;
+	}
+
+	public Color getBgColor() {
+		return bgColor != null ? bgColor : bgColorProvider.getCurrentColor();
+	}
+	
+	public IColorProvider getBgColorProvider() {
+		return bgColorProvider;
+	}
+
+	public void setBgColorProvider(IColorProvider bgColorProvider) {
+		this.bgColorProvider = bgColorProvider;
+	}
 
 	@Override
 	public void accept(GeometricalObjectVisitor v) {
@@ -37,14 +56,6 @@ public class FilledCircle extends GeometricalObject {
 	public GeometricalObjectEditor createGeometricalObjectEditor() {
 		return new FilledCircleEditor(this);
 	}
-
-	//@formatter:off
-	public int calculateRadius() {
-		return (int) Math.sqrt(
-					 Math.pow((getStartPoint().x - getEndPoint().x), 2) + 
-					 Math.pow((getStartPoint().y - getEndPoint().y), 2));
-	}
-	//@formatter:on
 
 	@Override
 	public void paint(Graphics2D g2d) {

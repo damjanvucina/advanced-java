@@ -20,20 +20,16 @@ public abstract class GeometricalObject implements Tool {
 	boolean startPointSet;
 	private DocumentModel documentModel;
 	private IColorProvider fgColorProvider;
-	private IColorProvider bgColorProvider;
 	private JDrawingCanvas drawingCanvas;
 	private Color fgColor;
-	private Color bgColor;
 
 	//@formatter:off
 	public GeometricalObject(DocumentModel documentModel,
 							 IColorProvider fgColorProvider,
-							 IColorProvider bgColorProvider,
 							 JDrawingCanvas drawingCanvas) {
 		
 		this.documentModel = documentModel;
 		this.fgColorProvider = fgColorProvider;
-		this.bgColorProvider = bgColorProvider;
 		this.drawingCanvas = drawingCanvas;
 	}
 	//@formatter:off
@@ -59,14 +55,6 @@ public abstract class GeometricalObject implements Tool {
 		return fgColor != null ? fgColor : fgColorProvider.getCurrentColor();
 	}
 
-	public void setBgColor(Color bgColor) {
-		this.bgColor = bgColor;
-	}
-
-	public Color getBgColor() {
-		return bgColor != null ? bgColor : bgColorProvider.getCurrentColor();
-	}
-
 	public JDrawingCanvas getDrawingCanvas() {
 		return drawingCanvas;
 	}
@@ -79,14 +67,6 @@ public abstract class GeometricalObject implements Tool {
 		this.fgColorProvider = fgColorProvider;
 	}
 	
-	public IColorProvider getBgColorProvider() {
-		return bgColorProvider;
-	}
-
-	public void setBgColorProvider(IColorProvider bgColorProvider) {
-		this.bgColorProvider = bgColorProvider;
-	}
-
 	public Point getStartPoint() {
 		return startPoint;
 	}
