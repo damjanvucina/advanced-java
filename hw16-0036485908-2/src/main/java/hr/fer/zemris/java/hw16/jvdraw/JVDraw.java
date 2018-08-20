@@ -10,12 +10,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,6 +28,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import hr.fer.zemris.java.hw16.jvdraw.actions.OpenAction;
 import hr.fer.zemris.java.hw16.jvdraw.color.JColorArea;
 import hr.fer.zemris.java.hw16.jvdraw.color.JColorAreaLabel;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Circle;
@@ -66,6 +72,8 @@ public class JVDraw extends JFrame {
 	private Map<String, Tool> tools;
 	private JList<GeometricalObject> jList;
 	private DrawingObjectListModel jListModel;
+	private JMenuBar jMenuBar;
+	private OpenAction openAction;
 
 	public JVDraw() {
 		setSize(1000, 600);
@@ -80,6 +88,8 @@ public class JVDraw extends JFrame {
 
 		panel = new JPanel(new BorderLayout());
 		cp.add(panel, BorderLayout.CENTER);
+		
+		setTitle(TITLE);
 
 		initializeColorAreas();
 		initializeColorAreaLabel();
@@ -102,8 +112,35 @@ public class JVDraw extends JFrame {
 		panel.add(canvasPanel);
 		canvasPanel.add(drawingCanvas, BorderLayout.CENTER);
 		canvasPanel.add(new JScrollPane(jList), BorderLayout.EAST);
+		
+		jMenuBar = new JMenuBar();
+		setJMenuBar(jMenuBar);
+		setUpActions();
+	}
 
-		setTitle(TITLE);
+	private void setUpActions() {
+		openAction = new OpenAction(this);
+		openAction.putValue(Action.SMALL_ICON, acquireIcon("open.png"));
+	}
+	
+	public ImageIcon acquireIcon(String iconName) {
+		StringBuilder sb = new StringBuilder("icons");
+		sb.append("/").append(iconName);
+
+		InputStream is = this.getClass().getResourceAsStream(sb.toString());
+
+		if (is == null) {
+			throw new IllegalArgumentException("Cannot access icon " + sb.toString());
+		}
+
+		byte[] bytes = null;
+		try {
+			bytes = is.readAllBytes();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return new ImageIcon(bytes);
 	}
 
 	public JDrawingCanvas getDrawingCanvas() {
