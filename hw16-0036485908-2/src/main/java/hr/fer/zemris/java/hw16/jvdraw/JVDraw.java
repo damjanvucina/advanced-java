@@ -47,6 +47,8 @@ public class JVDraw extends JFrame {
 	private static final String FILLED_CIRCLE_TOOL = "filledCircle";
 	private static final int OPEN_EDITOR = 2;
 	private static final String DIALOG_MESSAGE = "Do you want to edit properties?";
+	public static final int SHIFT_UP = 1;
+	public static final int SHIFT_DOWN = -1;
 
 	private JPanel panel;
 	private JPanel canvasPanel;
@@ -162,7 +164,7 @@ public class JVDraw extends JFrame {
 				@SuppressWarnings("unchecked")
 				JList<GeometricalObject> jList = (JList<GeometricalObject>) e.getSource();
 				
-				if(jList.isFocusOwner()) {
+				if(jList.isFocusOwner() && !jList.isSelectionEmpty()) {
 					int selectedIndex = jList.getSelectedIndex();
 					GeometricalObject object = documentModel.getObject(selectedIndex);
 					
@@ -173,11 +175,13 @@ public class JVDraw extends JFrame {
 						break;
 						
 					case KeyEvent.VK_PLUS:
-						System.out.println("Pritisnut je plus");
+						getDocumentModel().changeOrder(object, SHIFT_UP);
+						jList.clearSelection();
 						break;
 						
 					case KeyEvent.VK_MINUS:
-						System.out.println("Pritisnut je minus");
+						getDocumentModel().changeOrder(object, SHIFT_DOWN);
+						jList.clearSelection();
 						break;
 
 					default:

@@ -1,16 +1,23 @@
 package hr.fer.zemris.java.hw16.jvdraw.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectListener;
+import static hr.fer.zemris.java.hw16.jvdraw.JVDraw.SHIFT_UP;
+import static hr.fer.zemris.java.hw16.jvdraw.JVDraw.SHIFT_DOWN;
 
 public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 
 	private List<GeometricalObject> objects;
 	private List<DrawingModelListener> listeners;
+
+	public DocumentModel() {
+		objects = new ArrayList<>();
+		listeners = new ArrayList<>();
+	}
 
 	public List<GeometricalObject> getObjects() {
 		return objects;
@@ -26,11 +33,6 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 
 	public void setListeners(List<DrawingModelListener> listeners) {
 		this.listeners = listeners;
-	}
-
-	public DocumentModel() {
-		objects = new ArrayList<>();
-		listeners = new ArrayList<>();
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 		}
 
 	}
-	
+
 	@Override
 	public void remove(GeometricalObject object) {
 		Objects.requireNonNull(object, "Cannot remove null object.");
@@ -70,7 +72,7 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 		for (DrawingModelListener listener : listeners) {
 			listener.objectsRemoved(this, modificationIndex, modificationIndex);
 		}
-		
+
 		objects.remove(object);
 	}
 
@@ -91,7 +93,7 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 	@Override
 	public void geometricalObjectChanged(GeometricalObject o) {
 		Objects.requireNonNull(o, "Geometrical object cannot be null");
-		
+
 		int modificationIndex = objects.indexOf(o);
 		for (DrawingModelListener listener : listeners) {
 			listener.objectsChanged(this, modificationIndex, modificationIndex);
@@ -100,10 +102,18 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 
 	@Override
 	public void changeOrder(GeometricalObject object, int offset) {
-		if (offset <= 0) {
-			return;
+		if (offset != SHIFT_UP && offset != SHIFT_DOWN) {
+			throw new IllegalArgumentException("Shifting offset must be 1 or -1, was: " + offset);
 		}
 
-		objects.add(offset, object);
+		int oldIndex = objects.indexOf(object);
+		int newIndex = oldIndex + offset;
+		if (newIndex >= 0 && newIndex < objects.size()) {
+			Collections.swap(objects, oldIndex, newIndex);
+
+			for (DrawingModelListener listener : listeners) {
+				listener.objectsChanged(this, Math.min(oldIndex, newIndex), Math.max(oldIndex, newIndex));
+			}
+		}
 	}
 }
