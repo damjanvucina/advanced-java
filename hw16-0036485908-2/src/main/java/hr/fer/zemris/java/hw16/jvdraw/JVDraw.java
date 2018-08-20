@@ -20,15 +20,21 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import hr.fer.zemris.java.hw16.jvdraw.actions.ExitAction;
+import hr.fer.zemris.java.hw16.jvdraw.actions.ExportAction;
 import hr.fer.zemris.java.hw16.jvdraw.actions.OpenAction;
+import hr.fer.zemris.java.hw16.jvdraw.actions.SaveAction;
+import hr.fer.zemris.java.hw16.jvdraw.actions.SaveAsAction;
 import hr.fer.zemris.java.hw16.jvdraw.color.JColorArea;
 import hr.fer.zemris.java.hw16.jvdraw.color.JColorAreaLabel;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Circle;
@@ -41,6 +47,8 @@ import hr.fer.zemris.java.hw16.jvdraw.model.DrawingObjectListModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
 
 public class JVDraw extends JFrame {
+	private static final String FILE_MENU = "File";
+
 	private static final long serialVersionUID = 1L;
 
 	private static final String TITLE = "JVDraw";
@@ -74,6 +82,10 @@ public class JVDraw extends JFrame {
 	private DrawingObjectListModel jListModel;
 	private JMenuBar jMenuBar;
 	private OpenAction openAction;
+	private SaveAction saveAction;
+	private SaveAsAction saveAsAction;
+	private ExportAction exportAction;
+	private ExitAction exitAction;
 
 	public JVDraw() {
 		setSize(1000, 600);
@@ -116,11 +128,59 @@ public class JVDraw extends JFrame {
 		jMenuBar = new JMenuBar();
 		setJMenuBar(jMenuBar);
 		setUpActions();
+		setUpMenu();
+	}
+
+	private void setUpMenu() {
+		JMenu fileMenu = new JMenu(FILE_MENU);
+		jMenuBar.add(fileMenu);
+		
+		fileMenu.add(openAction);
+		fileMenu.addSeparator();
+		fileMenu.add(saveAction);
+		fileMenu.add(saveAsAction);
+		fileMenu.addSeparator();
+		fileMenu.add(exportAction);
+		fileMenu.addSeparator();
+		fileMenu.add(exitAction);
+		
 	}
 
 	private void setUpActions() {
 		openAction = new OpenAction(this);
+		openAction.putValue(Action.NAME, "Open");
 		openAction.putValue(Action.SMALL_ICON, acquireIcon("open.png"));
+		openAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
+		openAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
+		openAction.putValue(Action.SHORT_DESCRIPTION, "Opens existing file.");
+		
+		saveAction = new SaveAction(this);
+		saveAction.putValue(Action.NAME, "Save");
+		saveAction.putValue(Action.SMALL_ICON, acquireIcon("save.png"));
+		saveAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
+		saveAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
+		saveAction.putValue(Action.SHORT_DESCRIPTION, "Saves current file.");
+		
+		saveAsAction = new SaveAsAction(this);
+		saveAsAction.putValue(Action.NAME, "Save As");
+		saveAsAction.putValue(Action.SMALL_ICON, acquireIcon("saveas.png"));
+		saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt S"));
+		saveAsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
+		saveAsAction.putValue(Action.SHORT_DESCRIPTION, "Saves file to new location.");
+		
+		exportAction = new ExportAction(this);
+		exportAction.putValue(Action.NAME, "Export");
+		exportAction.putValue(Action.SMALL_ICON, acquireIcon("export.png"));
+		exportAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control E"));
+		exportAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_E);
+		exportAction.putValue(Action.SHORT_DESCRIPTION, "Exports file.");
+		
+		exitAction = new ExitAction(this);
+		exitAction.putValue(Action.NAME, "Exit");
+		exitAction.putValue(Action.SMALL_ICON, acquireIcon("open.png"));
+		exitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
+		exitAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_X);
+		exitAction.putValue(Action.SHORT_DESCRIPTION, "Closes current file.");
 	}
 	
 	public ImageIcon acquireIcon(String iconName) {

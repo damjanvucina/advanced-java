@@ -6,17 +6,17 @@ import javax.swing.AbstractAction;
 
 import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
 
-public class ExitAction extends AbstractAction{
+public class ExportAction extends AbstractAction{
 	private static final long serialVersionUID = 1L;
-	
+
 	private JVDraw window;
 	
-	public ExitAction(JVDraw window) {
+	public ExportAction(JVDraw window) {
 		this.window = window;
 	}
-
+	
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent arg0) {
 	}
 
 }
