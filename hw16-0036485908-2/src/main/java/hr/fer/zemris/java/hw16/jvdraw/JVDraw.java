@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,6 +87,7 @@ public class JVDraw extends JFrame {
 	private SaveAsAction saveAsAction;
 	private ExportAction exportAction;
 	private ExitAction exitAction;
+	private Path imagePath;
 
 	public JVDraw() {
 		setSize(1000, 600);
@@ -129,6 +131,18 @@ public class JVDraw extends JFrame {
 		setJMenuBar(jMenuBar);
 		setUpActions();
 		setUpMenu();
+	}
+	
+	public SaveAsAction getSaveAsAction() {
+		return saveAsAction;
+	}
+
+	public Path getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(Path imagePath) {
+		this.imagePath = imagePath;
 	}
 
 	private void setUpMenu() {

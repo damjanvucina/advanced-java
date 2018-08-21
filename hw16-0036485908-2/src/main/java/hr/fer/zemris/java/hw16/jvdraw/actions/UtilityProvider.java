@@ -3,6 +3,7 @@ package hr.fer.zemris.java.hw16.jvdraw.actions;
 import java.awt.Color;
 import java.awt.Point;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -106,7 +107,10 @@ public class UtilityProvider {
 		return sbCoordinates.toString();
 	}
 
-	public static void saveJVD(Path savePath, byte[] bytes) {
+	public static void saveJVD(Path savePath, List<GeometricalObject> objects) {
+		String jvdRepresentation = UtilityProvider.toJVD(objects);
+		byte[] bytes = jvdRepresentation.getBytes(StandardCharsets.UTF_8);
+		
 		try {
 			Files.write(savePath, bytes);
 		} catch (IOException e1) {

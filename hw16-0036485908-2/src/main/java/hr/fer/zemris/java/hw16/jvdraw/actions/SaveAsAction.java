@@ -1,7 +1,6 @@
 package hr.fer.zemris.java.hw16.jvdraw.actions;
 
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,9 +60,8 @@ public class SaveAsAction extends AbstractAction {
 			}
 		}
 
-		String jvdRepresentation = UtilityProvider.toJVD(window.getDocumentModel().getObjects());
-		byte[] bytes = jvdRepresentation.getBytes(StandardCharsets.UTF_8);
-		UtilityProvider.saveJVD(savePath, bytes);
+		UtilityProvider.saveJVD(savePath, window.getDocumentModel().getObjects());
+		window.setImagePath(savePath);
 		
 		JOptionPane.showMessageDialog(window, "File saved successfully.", "File Saved", JOptionPane.INFORMATION_MESSAGE);
 	}

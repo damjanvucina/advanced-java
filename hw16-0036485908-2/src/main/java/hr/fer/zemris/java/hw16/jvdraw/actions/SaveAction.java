@@ -16,7 +16,13 @@ public class SaveAction extends AbstractAction{
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent e) {
+		if(window.getImagePath() == null) {
+			window.getSaveAsAction().actionPerformed(e);
+			return;
+		}
+		
+		UtilityProvider.saveJVD(window.getImagePath(), window.getDocumentModel().getObjects());
 	}
 
 }
