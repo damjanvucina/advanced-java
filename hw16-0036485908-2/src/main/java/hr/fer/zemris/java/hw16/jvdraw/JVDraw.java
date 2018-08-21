@@ -10,6 +10,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -92,7 +94,15 @@ public class JVDraw extends JFrame {
 	public JVDraw() {
 		setSize(1000, 600);
 		setLocation(50, 50);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				exitAction.actionPerformed(null);
+			}
+		});
+		
 		initGui();
 	}
 
@@ -135,6 +145,10 @@ public class JVDraw extends JFrame {
 	
 	public SaveAsAction getSaveAsAction() {
 		return saveAsAction;
+	}
+	
+	public SaveAction getSaveAction() {
+		return saveAction;
 	}
 
 	public Path getImagePath() {

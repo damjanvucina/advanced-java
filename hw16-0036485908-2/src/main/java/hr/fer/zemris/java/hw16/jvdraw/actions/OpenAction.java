@@ -2,8 +2,6 @@ package hr.fer.zemris.java.hw16.jvdraw.actions;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -46,14 +44,9 @@ public class OpenAction extends AbstractAction {
 			return;
 		}
 		
-		List<String> jvdLines = null;
-		try {
-			jvdLines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		List<String> lines = UtilityProvider.loadFile(filePath);
+		List<GeometricalObject> loadedObjects = UtilityProvider.fromFile(lines);
 		
-		List<GeometricalObject> loadedObjects = UtilityProvider.fromJVD(jvdLines);
 		if(loadedObjects == null) {
 			JOptionPane.showMessageDialog(window,
 										  "Requested file name is not valid. Supported file extension: .jvd",
@@ -64,6 +57,7 @@ public class OpenAction extends AbstractAction {
 		//@formatter:on
 		
 		window.getDocumentModel().getObjects().clear();
+		window.setImagePath(filePath);
 		for(GeometricalObject object : loadedObjects) {
 			window.getDocumentModel().add(object);
 		}

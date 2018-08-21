@@ -67,7 +67,7 @@ public class UtilityProvider {
 		return sbImage.toString();
 	}
 
-	public static List<GeometricalObject> fromJVD(List<String> jvdLines) {
+	public static List<GeometricalObject> fromFile(List<String> jvdLines) {
 		List<GeometricalObject> objects = new ArrayList<>();
 
 		for (String jvdLine : jvdLines) {
@@ -95,43 +95,7 @@ public class UtilityProvider {
 					 .mapToInt(Integer::parseInt)
 					 .toArray();
 	}
-	//@formatter:on
 
-	// public static List<GeometricalObject> fromJVD(List<String> jvdLines){
-	// List<GeometricalObject> objects = new ArrayList<>();
-	//
-	// for(String jvdLine : jvdLines) {
-	//
-	// String objectID = jvdLine.split(WHITESPACE)[0];
-//			//@formatter:off
-//			int[] elements = Arrays.stream(jvdLine.split(WHITESPACE))
-//								.skip(1) //skip LINE/CIRCLE/FCIRCLE identifier
-//								.mapToInt(Integer::parseInt)
-//								.toArray();
-//			//@formatter:on
-	//
-	// switch (objectID) {
-	// case LINE:
-	// objects.add(createLine(elements));
-	// break;
-	//
-	// case CIRCLE:
-	// objects.add(createCircle(elements));
-	// break;
-	//
-	// case FILLED_CIRCLE:
-	// objects.add(createFilledCircle(elements));
-	// break;
-	//
-	// default:
-	// return null;
-	// }
-	// }
-	//
-	// return objects;
-	// }
-
-	//@formatter:off
 	private static FilledCircle createFilledCircle(int[] elements) {
 		return new FilledCircle(new Point(elements[0], elements[1]),
 				  				new Point(elements[0], elements[1] + elements[2]),
@@ -226,6 +190,44 @@ public class UtilityProvider {
 		int numOfDots = p.length() - p.replace(".", "").length();
 
 		return numOfDots > 1 || (numOfDots == 1 && !p.endsWith(JVD_EXTENSION));
+	}
+
+	public static boolean isImageEdited(Path savedPath, List<GeometricalObject> currentlyDrawnObjects) {
+		if(currentlyDrawnObjects.isEmpty()) {//canvas is empty
+			return false;
+			
+		} else {
+			if(savedPath == null) {//canvas is not empty and not saved
+				return true;
+				
+			} else {
+				return areJvdRepresentationsDifferent(savedPath, currentlyDrawnObjects);
+			}
+		}
+	}
+
+	private static boolean areJvdRepresentationsDifferent(Path savedPath,
+						   List<GeometricalObject> currentlyDrawnObjects) {
+		
+		String currentlyDrawnJvd = UtilityProvider.toJVD(currentlyDrawnObjects);
+		
+		List<String> jvdLines = UtilityProvider.loadFile(savedPath);
+		List<GeometricalObject> savedObjects = UtilityProvider.fromFile(jvdLines);
+		String savedJvd = UtilityProvider.toJVD(savedObjects);
+		
+		return !savedJvd.equals(currentlyDrawnJvd);		
+	}
+
+	public static List<String> loadFile(Path filePath) {
+		List<String> jvdLines = null;
+		
+		try {
+			jvdLines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		return jvdLines;
 	}
 
 }
