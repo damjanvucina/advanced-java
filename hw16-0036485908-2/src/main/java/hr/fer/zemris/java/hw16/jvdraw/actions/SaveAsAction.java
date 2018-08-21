@@ -1,36 +1,29 @@
 package hr.fer.zemris.java.hw16.jvdraw.actions;
 
 import java.awt.event.ActionEvent;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
+import static hr.fer.zemris.java.hw16.jvdraw.actions.UtilityProvider.JVD_EXTENSION;
 
 public class SaveAsAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
-	private static final String JVD_EXTENSION = ".jvd";
 
 	private JVDraw window;
-	private FileNameExtensionFilter jvdFilter;
-
+	
 	public SaveAsAction(JVDraw window) {
 		this.window = window;
-		
-		jvdFilter = new FileNameExtensionFilter(".jvd", "jvd");
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JFileChooser jfc = new JFileChooser();
 		jfc.setDialogTitle("Save document");
-		jfc.setFileFilter(jvdFilter);
+		jfc.setFileFilter(UtilityProvider.getJvdFilter());
 		int dialogResult = jfc.showSaveDialog(window);
 
 		if (dialogResult == JFileChooser.CANCEL_OPTION) {
@@ -40,7 +33,7 @@ public class SaveAsAction extends AbstractAction {
 		} 
 		
 		Path savePath = jfc.getSelectedFile().toPath();
-		if(isInvalidPath(savePath)) {
+		if(UtilityProvider.isInvalidPath(savePath)) {
 			JOptionPane.showMessageDialog(window, "Requested file name is not valid. Supported file extension: .jvd",
 												  "Invalid file name", JOptionPane.INFORMATION_MESSAGE);
 			return;
@@ -70,13 +63,6 @@ public class SaveAsAction extends AbstractAction {
 		return !String.valueOf(savePath).contains(".");
 	}
 
-	//@formatter:off
-	private boolean isInvalidPath(Path path) {
-		String p = String.valueOf(path);
-		int numOfDots = p.length() - p.replace(".", "").length();
-		
-		return numOfDots > 1 || (numOfDots == 1 && !p.endsWith(JVD_EXTENSION));
-	}
-	//@formatter:on
+
 
 }

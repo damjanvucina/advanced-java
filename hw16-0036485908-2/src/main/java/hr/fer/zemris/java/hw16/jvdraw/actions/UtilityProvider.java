@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Circle;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.FilledCircle;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
@@ -19,6 +21,13 @@ public class UtilityProvider {
 	private static final String FILLED_CIRCLE = "FCIRCLE";
 	private static final String ATTRIBUTE_SEPARATOR = " ";
 	private static final String GEOM_OBJECT_SEPARATOR = "\n";
+	public static final String JVD_EXTENSION = ".jvd";
+	
+	private static FileNameExtensionFilter jvdFilter  = new FileNameExtensionFilter(".jvd", "jvd");;
+	
+	public static FileNameExtensionFilter getJvdFilter() {
+		return jvdFilter;
+	}
 
 	public static String toJVD(List<GeometricalObject> objects) {
 		StringBuilder sbImage = new StringBuilder();
@@ -45,11 +54,10 @@ public class UtilityProvider {
 			sbImage.append(GEOM_OBJECT_SEPARATOR);
 		}
 
-		//remove last \n symbol ?
-
 		return sbImage.toString();
 	}
-
+	
+	
 	private static String acquireCircleRepresentation(Circle object) {
 		StringBuilder sbCircle = new StringBuilder();
 
@@ -116,6 +124,13 @@ public class UtilityProvider {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	public static boolean isInvalidPath(Path path) {
+		String p = String.valueOf(path);
+		int numOfDots = p.length() - p.replace(".", "").length();
+		
+		return numOfDots > 1 || (numOfDots == 1 && !p.endsWith(JVD_EXTENSION));
 	}
 
 }
