@@ -53,7 +53,7 @@ public class Circle extends GeometricalObject {
 		}
 	}
 	
-	protected Point getCenter() {
+	public Point getCenter() {
 		return getStartPoint();
 	}
 		
