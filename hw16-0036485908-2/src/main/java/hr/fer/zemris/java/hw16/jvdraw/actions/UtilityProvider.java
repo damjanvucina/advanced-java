@@ -2,6 +2,9 @@ package hr.fer.zemris.java.hw16.jvdraw.actions;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Circle;
@@ -101,6 +104,14 @@ public class UtilityProvider {
 		sbCoordinates.append(point.y);
 
 		return sbCoordinates.toString();
+	}
+
+	public static void saveJVD(Path savePath, byte[] bytes) {
+		try {
+			Files.write(savePath, bytes);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 }

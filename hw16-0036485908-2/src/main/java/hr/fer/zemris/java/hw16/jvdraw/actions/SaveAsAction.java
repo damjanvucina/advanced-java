@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
@@ -64,12 +63,7 @@ public class SaveAsAction extends AbstractAction {
 
 		String jvdRepresentation = UtilityProvider.toJVD(window.getDocumentModel().getObjects());
 		byte[] bytes = jvdRepresentation.getBytes(StandardCharsets.UTF_8);
-		
-		try {
-			Files.write(savePath, bytes);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		UtilityProvider.saveJVD(savePath, bytes);
 		
 		JOptionPane.showMessageDialog(window, "File saved successfully.", "File Saved", JOptionPane.INFORMATION_MESSAGE);
 	}
