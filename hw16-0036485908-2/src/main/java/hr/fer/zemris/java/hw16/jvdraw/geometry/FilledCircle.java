@@ -82,8 +82,8 @@ public class FilledCircle extends Circle {
 		Color color = getBgColor();
 
 		sb.append(FILLED_CIRCLE);
-		sb.append(" (").append(getStartPoint().x).append(",");
-		sb.append(getEndPoint().y).append("), ");
+		sb.append(" (").append(getCenter().x).append(",");
+		sb.append(getCenter().y).append("), ");
 		sb.append(calculateRadius()).append(", ");
 		sb.append(String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue()));
 

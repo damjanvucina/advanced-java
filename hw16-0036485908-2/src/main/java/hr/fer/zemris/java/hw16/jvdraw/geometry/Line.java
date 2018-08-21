@@ -50,7 +50,7 @@ public class Line extends GeometricalObject {
 		
 		sb.append(LINE);
 		sb.append(" (").append(getStartPoint().x).append(",");
-		sb.append(getEndPoint().y).append(")-");
+		sb.append(getStartPoint().y).append(")-");
 		
 		sb.append("(").append(getEndPoint().x).append(",");
 		sb.append(getEndPoint().y).append(")");

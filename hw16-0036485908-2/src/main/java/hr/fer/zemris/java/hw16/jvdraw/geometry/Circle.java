@@ -62,8 +62,8 @@ public class Circle extends GeometricalObject {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(CIRCLE);
-		sb.append(" (").append(getStartPoint().x).append(",");
-		sb.append(getEndPoint().y).append("), ");
+		sb.append(" (").append(getCenter().x).append(",");
+		sb.append(getCenter().y).append("), ");
 		sb.append(calculateRadius());
 		
 		return sb.toString();
