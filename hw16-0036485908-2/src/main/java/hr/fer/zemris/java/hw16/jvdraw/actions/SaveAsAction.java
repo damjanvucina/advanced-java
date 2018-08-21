@@ -35,7 +35,7 @@ public class SaveAsAction extends AbstractAction {
 		Path savePath = jfc.getSelectedFile().toPath();
 		if(UtilityProvider.isInvalidPath(savePath)) {
 			JOptionPane.showMessageDialog(window, "Requested file name is not valid. Supported file extension: .jvd",
-												  "Invalid file name", JOptionPane.INFORMATION_MESSAGE);
+												  "Invalid file name", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		if(extensionNotSet(savePath)) {

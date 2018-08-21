@@ -2,14 +2,18 @@ package hr.fer.zemris.java.hw16.jvdraw.actions;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
+import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
 
 public class OpenAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
@@ -41,7 +45,28 @@ public class OpenAction extends AbstractAction {
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+		
+		List<String> jvdLines = null;
+		try {
+			jvdLines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		List<GeometricalObject> loadedObjects = UtilityProvider.fromJVD(jvdLines);
+		if(loadedObjects == null) {
+			JOptionPane.showMessageDialog(window,
+										  "Requested file name is not valid. Supported file extension: .jvd",
+										  "Invalid file name",
+										  JOptionPane.WARNING_MESSAGE);
+			return;
+		}
 		//@formatter:on
+		
+		window.getDocumentModel().getObjects().clear();
+		for(GeometricalObject object : loadedObjects) {
+			window.getDocumentModel().add(object);
+		}
 	}
 
 }
