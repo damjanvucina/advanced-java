@@ -16,6 +16,8 @@ import hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener;
 
 public class JDrawingCanvas extends JComponent implements DrawingModelListener {
+	public static final Color CANVAS_COLOR = Color.WHITE;
+
 	private static final long serialVersionUID = 1L;
 
 	private DocumentModel documentModel;
@@ -72,7 +74,7 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 
-		g2d.setColor(Color.WHITE);
+		g2d.setColor(CANVAS_COLOR);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
 		goPainter.setG2d(g2d);

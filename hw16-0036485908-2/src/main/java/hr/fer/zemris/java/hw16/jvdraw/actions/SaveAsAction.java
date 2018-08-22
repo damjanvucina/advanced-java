@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
@@ -35,12 +36,12 @@ public class SaveAsAction extends AbstractAction {
 		} 
 		
 		Path savePath = jfc.getSelectedFile().toPath();
-		if(UtilityProvider.isInvalidPath(savePath)) {
+		if(UtilityProvider.isInvalidExtension(savePath, Arrays.asList(UtilityProvider.getJvdExtension()))) {
 			JOptionPane.showMessageDialog(window, "Requested file name is not valid. Supported file extension: .jvd",
 												  "Invalid file name", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		if(extensionNotSet(savePath)) {
+		if(UtilityProvider.extensionNotSet(savePath)) {
 			savePath = Paths.get(String.valueOf(savePath) + JVD_EXTENSION);
 		}
 		
@@ -61,9 +62,7 @@ public class SaveAsAction extends AbstractAction {
 		JOptionPane.showMessageDialog(window, "File saved successfully.", "File Saved", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	private boolean extensionNotSet(Path savePath) {
-		return !String.valueOf(savePath).contains(".");
-	}
+
 
 
 

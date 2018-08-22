@@ -70,5 +70,9 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 	public Rectangle getBoundingBox() {
 		return boundingRectangle;
 	}
+	
+	public void resetBoundingRectangle() {
+		boundingRectangle = null;
+	}
 
 }

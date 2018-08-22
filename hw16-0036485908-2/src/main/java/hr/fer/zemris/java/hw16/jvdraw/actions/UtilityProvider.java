@@ -25,18 +25,34 @@ public class UtilityProvider {
 	private static final String ATTRIBUTE_SEPARATOR = " ";
 	private static final String GEOM_OBJECT_SEPARATOR = "\n";
 	public static final String JVD_EXTENSION = ".jvd";
+	public static final String[] EXPORT_EXTENSIONS = new String[] {"jpg", "jpeg", "gif", "png"};
 	private static final String WHITESPACE = " ";
 	public static final String LINE_REGEX = "LINE\\s(\\d+\\s){2}(\\d+\\s){2}(\\d+\\s\\d+\\s\\d+)";
 	public static final String CIRCLE_REGEX = "CIRCLE\\s(\\d+\\s){2}(\\d+\\s){1}(\\d+\\s\\d+\\s\\d+)";
 	public static final String FILLED_CIRCLE_REGEX = "FCIRCLE\\s(\\d+\\s){2}(\\d+\\s){1}(\\d+\\s){3}(\\d+\\s\\d+\\s\\d+)";
 
 	private static FileNameExtensionFilter jvdFilter = new FileNameExtensionFilter(".jvd", "jvd");
+	private static FileNameExtensionFilter exportFilter = new FileNameExtensionFilter("jpg, png and gif files", "jpg",
+			"jpeg", "png", "gif");
+
 	private static Pattern linePattern = Pattern.compile(LINE_REGEX);
 	private static Pattern circlePattern = Pattern.compile(CIRCLE_REGEX);
 	private static Pattern filledCirclePattern = Pattern.compile(FILLED_CIRCLE_REGEX);
 
 	public static FileNameExtensionFilter getJvdFilter() {
 		return jvdFilter;
+	}
+
+	public static FileNameExtensionFilter getExportFilter() {
+		return exportFilter;
+	}
+
+	public static String getJvdExtension() {
+		return JVD_EXTENSION;
+	}
+	
+	public static String[] getExportExtensions() {
+		return EXPORT_EXTENSIONS;
 	}
 
 	public static String toJVD(List<GeometricalObject> objects) {
@@ -185,21 +201,30 @@ public class UtilityProvider {
 		}
 	}
 
-	public static boolean isInvalidPath(Path path) {
+	public static boolean isInvalidExtension(Path path, List<String> validExtensions) {
 		String p = String.valueOf(path);
 		int numOfDots = p.length() - p.replace(".", "").length();
+		
+		String requestedExtension = null;
+		if (numOfDots == 1) {
+			requestedExtension = acquireExtension(p);
+		}
 
-		return numOfDots > 1 || (numOfDots == 1 && !p.endsWith(JVD_EXTENSION));
+		return numOfDots > 1 || (numOfDots == 1 && validExtensions.contains(requestedExtension));
+	}
+
+	public static String acquireExtension(String p) {
+		return p.substring(p.indexOf(".") + 1);
 	}
 
 	public static boolean isImageEdited(Path savedPath, List<GeometricalObject> currentlyDrawnObjects) {
-		if(currentlyDrawnObjects.isEmpty()) {//canvas is empty
+		if (currentlyDrawnObjects.isEmpty()) {// canvas is empty
 			return false;
-			
+
 		} else {
-			if(savedPath == null) {//canvas is not empty and not saved
+			if (savedPath == null) {// canvas is not empty and not saved
 				return true;
-				
+
 			} else {
 				return areJvdRepresentationsDifferent(savedPath, currentlyDrawnObjects);
 			}
@@ -207,27 +232,31 @@ public class UtilityProvider {
 	}
 
 	private static boolean areJvdRepresentationsDifferent(Path savedPath,
-						   List<GeometricalObject> currentlyDrawnObjects) {
-		
+			List<GeometricalObject> currentlyDrawnObjects) {
+
 		String currentlyDrawnJvd = UtilityProvider.toJVD(currentlyDrawnObjects);
-		
+
 		List<String> jvdLines = UtilityProvider.loadFile(savedPath);
 		List<GeometricalObject> savedObjects = UtilityProvider.fromFile(jvdLines);
 		String savedJvd = UtilityProvider.toJVD(savedObjects);
-		
-		return !savedJvd.equals(currentlyDrawnJvd);		
+
+		return !savedJvd.equals(currentlyDrawnJvd);
 	}
 
 	public static List<String> loadFile(Path filePath) {
 		List<String> jvdLines = null;
-		
+
 		try {
 			jvdLines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		return jvdLines;
+	}
+	
+	public static boolean extensionNotSet(Path savePath) {
+		return !String.valueOf(savePath).contains(".");
 	}
 
 }
