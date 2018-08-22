@@ -10,29 +10,33 @@ import javax.swing.JOptionPane;
 import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ExitAction.
+ * The class responsible for exiting the program making sure the currently drawn
+ * image does not get lost in the process.
+ * 
+ * @author Damjan Vučina
  */
 public class ExitAction extends AbstractAction {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The window. */
+	/** The main window. */
 	private JVDraw window;
 
 	/**
 	 * Instantiates a new exit action.
 	 *
-	 * @param window the window
+	 * @param window
+	 *            the window
 	 */
 	public ExitAction(JVDraw window) {
 		this.window = window;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/**
+	 * Method invoked when exit action occured. Exits the program making sure the
+	 * currently drawn image does not get lost in the process.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -47,7 +51,7 @@ public class ExitAction extends AbstractAction {
 										 savedPath == null ? "File not saved" : "File edited",
 										 JOptionPane.YES_NO_OPTION);
 			//@formatter:on
-			
+
 			if (saveResult == JOptionPane.YES_OPTION) {
 				if (savedPath == null) {
 					window.getSaveAsAction().actionPerformed(e);

@@ -13,29 +13,34 @@ import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
 
 import static hr.fer.zemris.java.hw16.jvdraw.actions.UtilityProvider.JVD_EXTENSION;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class SaveAsAction.
+ * The class responsible for saving the current image as new document in jvd
+ * format.
+ * 
+ * @author Damjan Vučina
  */
 public class SaveAsAction extends AbstractAction {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The window. */
+	/** The main window. */
 	private JVDraw window;
-	
+
 	/**
 	 * Instantiates a new save as action.
 	 *
-	 * @param window the window
+	 * @param window
+	 *            the window
 	 */
 	public SaveAsAction(JVDraw window) {
 		this.window = window;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/**
+	 * Method invoked when save action occured. Saves the current image as new
+	 * document in jvd format.
+	 * 
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -48,18 +53,18 @@ public class SaveAsAction extends AbstractAction {
 			JOptionPane.showMessageDialog(window, "Saving cancelled.", "Info", JOptionPane.INFORMATION_MESSAGE);
 			return;
 
-		} 
-		
+		}
+
 		Path savePath = jfc.getSelectedFile().toPath();
-		if(UtilityProvider.isInvalidExtension(savePath, Arrays.asList(UtilityProvider.getJvdExtension()))) {
+		if (UtilityProvider.isInvalidExtension(savePath, Arrays.asList(UtilityProvider.getJvdExtension()))) {
 			JOptionPane.showMessageDialog(window, "Requested file name is not valid. Supported file extension: .jvd",
-												  "Invalid file name", JOptionPane.WARNING_MESSAGE);
+					"Invalid file name", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		if(UtilityProvider.extensionNotSet(savePath)) {
+		if (UtilityProvider.extensionNotSet(savePath)) {
 			savePath = Paths.get(String.valueOf(savePath) + "." + JVD_EXTENSION);
 		}
-		
+
 		if (dialogResult == JFileChooser.APPROVE_OPTION) {
 			int overwriteResult = 0;
 			if (Files.exists(savePath)) {
@@ -73,12 +78,9 @@ public class SaveAsAction extends AbstractAction {
 
 		UtilityProvider.saveJVD(savePath, window.getDocumentModel().getObjects());
 		window.setImagePath(savePath);
-		
-		JOptionPane.showMessageDialog(window, "File saved successfully.", "File Saved", JOptionPane.INFORMATION_MESSAGE);
+
+		JOptionPane.showMessageDialog(window, "File saved successfully.", "File Saved",
+				JOptionPane.INFORMATION_MESSAGE);
 	}
-
-
-
-
 
 }

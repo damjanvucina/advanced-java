@@ -23,25 +23,31 @@ import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter;
 
 import static hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas.CANVAS_COLOR;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ExportAction.
+ * The object responsible for exporting the currently drawn image in jpg, png or
+ * gif format.
+ * 
+ * @author Damjan Vučina
  */
 public class ExportAction extends AbstractAction {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The window. */
+	/** The main window. */
 	private JVDraw window;
-	
-	/** The bb calculator. */
+
+	/**
+	 * The object reponsible for calcualting the minimal bounding rectangle that
+	 * covers all the drawn objects.
+	 */
 	private GeometricalObjectBBCalculator bbCalculator;
 
 	/**
 	 * Instantiates a new export action.
 	 *
-	 * @param window the window
+	 * @param window
+	 *            the window
 	 */
 	public ExportAction(JVDraw window) {
 		this.window = window;
@@ -49,8 +55,9 @@ public class ExportAction extends AbstractAction {
 		bbCalculator = new GeometricalObjectBBCalculator();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/**
+	 * Method invoked when export action occured. Exports the currently drawn image
+	 * in jpg, png or gif format.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -80,10 +87,11 @@ public class ExportAction extends AbstractAction {
 					"Invalid file name", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		
-		if(UtilityProvider.extensionNotSet(savePath)) {
+
+		if (UtilityProvider.extensionNotSet(savePath)) {
 			savePath = Paths.get(String.valueOf(savePath) + "." + UtilityProvider.getExportExtensions()[0]);
-			JOptionPane.showMessageDialog(window, "JPG extension will be set by default.", "Extension info", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(window, "JPG extension will be set by default.", "Extension info",
+					JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		for (GeometricalObject object : objects) {
@@ -106,7 +114,7 @@ public class ExportAction extends AbstractAction {
 			object.accept(goPainter);
 		}
 		g2d.dispose();
-		
+
 		if (dialogResult == JFileChooser.APPROVE_OPTION) {
 			int overwriteResult = 0;
 			if (Files.exists(savePath)) {
@@ -117,14 +125,16 @@ public class ExportAction extends AbstractAction {
 				}
 			}
 		}
-		
+
 		try {
 			ImageIO.write(bufferedImage, UtilityProvider.acquireExtension(String.valueOf(savePath)), savePath.toFile());
 		} catch (IOException e1) {
-			JOptionPane.showMessageDialog(window, "Error exporting image.", "Error occurred", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(window, "Error exporting image.", "Error occurred",
+					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		JOptionPane.showMessageDialog(window, "Image successfully exported.", "Image exported", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(window, "Image successfully exported.", "Image exported",
+				JOptionPane.INFORMATION_MESSAGE);
 	}
 
 }

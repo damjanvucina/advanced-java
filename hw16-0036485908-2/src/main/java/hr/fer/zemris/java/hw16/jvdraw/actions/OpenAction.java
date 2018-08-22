@@ -14,29 +14,32 @@ import javax.swing.JOptionPane;
 import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class OpenAction.
+ * The class responsible for opening an existing image stored in jvd format.
+ * 
+ * @author Damjan Vučina
  */
 public class OpenAction extends AbstractAction {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The window. */
+	/** The main window. */
 	private JVDraw window;
 
 	/**
 	 * Instantiates a new open action.
 	 *
-	 * @param window the window
+	 * @param window
+	 *            the window
 	 */
 	public OpenAction(JVDraw window) {
 		this.window = window;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/**
+	 * Method invoked when open action occured. Opens an existing image stored in
+	 * jvd format.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -71,10 +74,10 @@ public class OpenAction extends AbstractAction {
 			return;
 		}
 		//@formatter:on
-		
+
 		window.getDocumentModel().getObjects().clear();
 		window.setImagePath(filePath);
-		for(GeometricalObject object : loadedObjects) {
+		for (GeometricalObject object : loadedObjects) {
 			window.getDocumentModel().add(object);
 		}
 	}

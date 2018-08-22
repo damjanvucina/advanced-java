@@ -192,14 +192,13 @@ public class JVDraw extends JFrame {
 	private OpenAction openAction;
 
 	/**
-	 * The reference to the object responsible for saving the current image as new
-	 * document in jvd format.
+	 * The reference to the object responsible for updating the currently drawn image.
 	 */
 	private SaveAction saveAction;
 
 	/**
-	 * The reference to the object responsible for saving the currently drawn image
-	 * stored in jvd format.
+	 * The reference to the object responsible for saving the current image as new
+	 * document in jvd format.
 	 */
 	private SaveAsAction saveAsAction;
 
@@ -210,8 +209,8 @@ public class JVDraw extends JFrame {
 	private ExportAction exportAction;
 
 	/**
-	 * The reference to the object responsible for opening an exiting the program
-	 * making sure the currenty drawn image does not get lost in the process.
+	 * The reference to the object responsible for exiting the program making sure
+	 * the currently drawn image does not get lost in the process.
 	 */
 	private ExitAction exitAction;
 

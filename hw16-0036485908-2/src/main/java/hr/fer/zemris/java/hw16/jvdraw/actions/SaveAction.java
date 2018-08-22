@@ -6,37 +6,40 @@ import javax.swing.AbstractAction;
 
 import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class SaveAction.
+ * The class responsible for updating the currently drawn image.
+ * 
+ * @author Damjan Vučina
  */
-public class SaveAction extends AbstractAction{
-	
+public class SaveAction extends AbstractAction {
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The window. */
+	/** The main window. */
 	private JVDraw window;
-	
+
 	/**
 	 * Instantiates a new save action.
 	 *
-	 * @param window the window
+	 * @param window
+	 *            the window
 	 */
 	public SaveAction(JVDraw window) {
 		this.window = window;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+
+	/**
+	 * Method invoked when save action occured. Updates the currently drawn image.
+	 * 
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(window.getImagePath() == null) {
+		if (window.getImagePath() == null) {
 			window.getSaveAsAction().actionPerformed(e);
 			return;
 		}
-		
+
 		UtilityProvider.saveJVD(window.getImagePath(), window.getDocumentModel().getObjects());
 	}
 
