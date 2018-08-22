@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 public class GeometricalObjectPainter implements GeometricalObjectVisitor {
-	private static final int DEFAULT_STROKE = 2;
+	public static final int DEFAULT_STROKE = 2;
 
 	private Graphics2D g2d;
 

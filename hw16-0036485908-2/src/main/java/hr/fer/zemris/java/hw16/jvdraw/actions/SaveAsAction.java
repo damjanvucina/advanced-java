@@ -42,7 +42,7 @@ public class SaveAsAction extends AbstractAction {
 			return;
 		}
 		if(UtilityProvider.extensionNotSet(savePath)) {
-			savePath = Paths.get(String.valueOf(savePath) + JVD_EXTENSION);
+			savePath = Paths.get(String.valueOf(savePath) + "." + JVD_EXTENSION);
 		}
 		
 		if (dialogResult == JFileChooser.APPROVE_OPTION) {

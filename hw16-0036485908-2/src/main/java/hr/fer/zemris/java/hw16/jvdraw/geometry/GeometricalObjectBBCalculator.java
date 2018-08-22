@@ -5,13 +5,11 @@ import static java.lang.Math.min;
 import java.awt.Point;
 import java.awt.Rectangle;
 import static java.lang.Math.abs;
+import static hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter.DEFAULT_STROKE;
 
 public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
+	private static final int MARGIN = 1;
 
-	// private int topLeftX;
-	// private int topLeftY;
-	// private int width;
-	// private int height;
 	private Rectangle boundingRectangle;
 
 	@Override
@@ -53,9 +51,21 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 	}
 
 	public Rectangle getBoundingBox() {
-		return boundingRectangle;
+		//return boundingRectangle;
+		return considerMarginPixels();
 	}
 	
+	//@formatter:off
+	private Rectangle considerMarginPixels() {
+		Rectangle result = new Rectangle(boundingRectangle.x - MARGIN,
+										 boundingRectangle.y - MARGIN,
+										 boundingRectangle.width + DEFAULT_STROKE + MARGIN,
+										 boundingRectangle.height + DEFAULT_STROKE + MARGIN);
+		resetBoundingRectangle();
+		return result;
+	}
+	//@formatter:off
+
 	public void resetBoundingRectangle() {
 		boundingRectangle = null;
 	}

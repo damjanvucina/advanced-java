@@ -24,7 +24,7 @@ public class UtilityProvider {
 	private static final String FILLED_CIRCLE = "FCIRCLE";
 	private static final String ATTRIBUTE_SEPARATOR = " ";
 	private static final String GEOM_OBJECT_SEPARATOR = "\n";
-	public static final String JVD_EXTENSION = ".jvd";
+	public static final String JVD_EXTENSION = "jvd";
 	public static final String[] EXPORT_EXTENSIONS = new String[] {"jpg", "jpeg", "gif", "png"};
 	private static final String WHITESPACE = " ";
 	public static final String LINE_REGEX = "LINE\\s(\\d+\\s){2}(\\d+\\s){2}(\\d+\\s\\d+\\s\\d+)";
