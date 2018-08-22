@@ -11,15 +11,19 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class JColorArea.
+ * The class representing the button used for changing the foreground/background
+ * color. The class that implements this interface is responsible for notifying
+ * all registered listeners whenever the user performs a color update. Observer
+ * pattern is in use.
+ * 
+ * @author Damjan Vučina
  */
 public class JColorArea extends JButton implements IColorProvider {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The Constant DEFAULT_DIMENSION. */
 	public static final int DEFAULT_DIMENSION = 15;
 
@@ -32,8 +36,10 @@ public class JColorArea extends JButton implements IColorProvider {
 	/**
 	 * Instantiates a new j color area.
 	 *
-	 * @param selectedColor the selected color
-	 * @param tooltip the tooltip
+	 * @param selectedColor
+	 *            the selected color
+	 * @param tooltip
+	 *            the tooltip
 	 */
 	public JColorArea(Color selectedColor, String tooltip) {
 		listeners = new ArrayList<>();
@@ -64,8 +70,10 @@ public class JColorArea extends JButton implements IColorProvider {
 	/**
 	 * Notify listeners.
 	 *
-	 * @param oldColor the old color
-	 * @param newColor the new color
+	 * @param oldColor
+	 *            the old color
+	 * @param newColor
+	 *            the new color
 	 */
 	private void notifyListeners(Color oldColor, Color newColor) {
 		for (ColorChangeListener listener : listeners) {
@@ -85,7 +93,8 @@ public class JColorArea extends JButton implements IColorProvider {
 	/**
 	 * Sets the selected color.
 	 *
-	 * @param selectedColor the new selected color
+	 * @param selectedColor
+	 *            the new selected color
 	 */
 	public void setSelectedColor(Color selectedColor) {
 		this.selectedColor = selectedColor;
@@ -93,7 +102,9 @@ public class JColorArea extends JButton implements IColorProvider {
 		setBackground(selectedColor);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.JComponent#getPreferredSize()
 	 */
 	@Override
@@ -101,7 +112,9 @@ public class JColorArea extends JButton implements IColorProvider {
 		return new Dimension(DEFAULT_DIMENSION, DEFAULT_DIMENSION);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider#getCurrentColor()
 	 */
 	@Override
@@ -109,8 +122,12 @@ public class JColorArea extends JButton implements IColorProvider {
 		return selectedColor;
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider#addColorChangeListener(hr.fer.zemris.java.hw16.jvdraw.color.ColorChangeListener)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider#addColorChangeListener(hr
+	 * .fer.zemris.java.hw16.jvdraw.color.ColorChangeListener)
 	 */
 	@Override
 	public void addColorChangeListener(ColorChangeListener l) {
@@ -119,8 +136,12 @@ public class JColorArea extends JButton implements IColorProvider {
 		listeners.add(l);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider#removeColorChangeListener(hr.fer.zemris.java.hw16.jvdraw.color.ColorChangeListener)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider#removeColorChangeListener
+	 * (hr.fer.zemris.java.hw16.jvdraw.color.ColorChangeListener)
 	 */
 	@Override
 	public void removeColorChangeListener(ColorChangeListener l) {
@@ -129,7 +150,9 @@ public class JColorArea extends JButton implements IColorProvider {
 		listeners.remove(l);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Component#toString()
 	 */
 	@Override

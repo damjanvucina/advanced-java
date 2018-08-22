@@ -2,26 +2,24 @@ package hr.fer.zemris.java.hw16.jvdraw.color;
 
 import java.awt.Color;
 
-// TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving colorChange events.
- * The class that is interested in processing a colorChange
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addColorChangeListener<code> method. When
- * the colorChange event occurs, that object's appropriate
- * method is invoked.
+ * The interface that defines the methods that need to be implemented by objects
+ * that desire to be notified when user changes the foreground or background
+ * color using the toolbar. Observer pattern is in action.
  *
- * @see ColorChangeEvent
+ * @author Damjan Vučina
  */
 public interface ColorChangeListener {
-	
+
 	/**
-	 * New color selected.
+	 * Method invoked when a new color has been selected.
 	 *
-	 * @param source the source
-	 * @param oldColor the old color
-	 * @param newColor the new color
+	 * @param source
+	 *            the source of the update
+	 * @param oldColor
+	 *            the old color
+	 * @param newColor
+	 *            the new color
 	 */
 	void newColorSelected(IColorProvider source, Color oldColor, Color newColor);
 }
