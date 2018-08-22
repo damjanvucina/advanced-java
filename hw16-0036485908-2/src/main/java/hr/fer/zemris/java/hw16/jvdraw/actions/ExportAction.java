@@ -72,10 +72,10 @@ public class ExportAction extends AbstractAction {
 				BufferedImage.TYPE_3BYTE_BGR);
 		Graphics2D g2d = bufferedImage.createGraphics();
 
-		g2d.translate(boundingBox.x, -boundingBox.y);
+		g2d.translate(-boundingBox.x, -boundingBox.y);
 
 		g2d.setColor(CANVAS_COLOR);
-		g2d.fillRect(0, 0, boundingBox.width, boundingBox.height);
+		g2d.fillRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
 
 		GeometricalObjectPainter goPainter = window.getDrawingCanvas().getGoPainter();
 		goPainter.setG2d(g2d);

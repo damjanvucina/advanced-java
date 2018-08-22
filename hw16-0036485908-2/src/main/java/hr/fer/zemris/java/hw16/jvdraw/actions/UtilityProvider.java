@@ -210,7 +210,7 @@ public class UtilityProvider {
 			requestedExtension = acquireExtension(p);
 		}
 
-		return numOfDots > 1 || (numOfDots == 1 && validExtensions.contains(requestedExtension));
+		return numOfDots > 1 || (numOfDots == 1 && !validExtensions.contains(requestedExtension));
 	}
 
 	public static String acquireExtension(String p) {

@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -37,7 +38,7 @@ public class OpenAction extends AbstractAction {
 		Path filePath = fileName.toPath();
 
 		//@formatter:off
-		if (!Files.isReadable(filePath) || UtilityProvider.isInvalidPath(filePath)) {
+		if (!Files.isReadable(filePath) || UtilityProvider.isInvalidExtension(filePath, Arrays.asList(UtilityProvider.getJvdExtension()))) {
 			JOptionPane.showMessageDialog(window, fileName.getAbsolutePath() +
 					" is not readable. Supported extensions: .jvd", "File not readable",
 					JOptionPane.ERROR_MESSAGE);
