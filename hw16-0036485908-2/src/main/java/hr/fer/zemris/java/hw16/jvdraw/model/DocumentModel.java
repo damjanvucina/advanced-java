@@ -9,15 +9,28 @@ import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectListener;
 import static hr.fer.zemris.java.hw16.jvdraw.JVDraw.SHIFT_UP;
 import static hr.fer.zemris.java.hw16.jvdraw.JVDraw.SHIFT_DOWN;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class DocumentModel.
+ * The class that represents a collection of geometrical objects currently drawn
+ * on the canvas.
+ * 
+ *  This class acts as an Observer pattern Listener over the
+ * GeometrialObject instance which operates as a Subject. Whenever a new
+ * geometrical object is drawn on the canvas, instance of this class registers
+ * itself as a listener on that object, so it can get notified whenever an
+ * update is made to that object's attributes.
+ * 
+ *  This class also acts as a Subject
+ * in the above mentioned pattern since it notifies an instance of DrawingCanvas
+ * class that a new object has been added to the collection so it can be drawn
+ * on the canvas.
+ * 
+ * @author Damjan Vučina
  */
 public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 
-	/** The objects. */
+	/** The currently drawn objects. */
 	private List<GeometricalObject> objects;
-	
+
 	/** The listeners. */
 	private List<DrawingModelListener> listeners;
 
@@ -30,9 +43,9 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 	}
 
 	/**
-	 * Gets the objects.
+	 * Gets the currently drawn objects.
 	 *
-	 * @return the objects
+	 * @return the currently drawn objects
 	 */
 	public List<GeometricalObject> getObjects() {
 		return objects;
@@ -48,9 +61,10 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 	}
 
 	/**
-	 * Sets the objects.
+	 * Sets the currently drawn objects.
 	 *
-	 * @param objects the new objects
+	 * @param objects
+	 *            the currently drawn objects
 	 */
 	public void setObjects(List<GeometricalObject> objects) {
 		this.objects = objects;
@@ -59,22 +73,29 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 	/**
 	 * Sets the listeners.
 	 *
-	 * @param listeners the new listeners
+	 * @param listeners
+	 *            the new listeners
 	 */
 	public void setListeners(List<DrawingModelListener> listeners) {
 		this.listeners = listeners;
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel#getSize()
+	/**
+	 * Gets the size of the collection of objects.
+	 *
+	 * @return the size
 	 */
 	@Override
 	public int getSize() {
 		return objects.size();
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel#getObject(int)
+	/**
+	 * Gets the specific object.
+	 *
+	 * @param index
+	 *            the index
+	 * @return the object
 	 */
 	@Override
 	public GeometricalObject getObject(int index) {
@@ -86,8 +107,11 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 		return objects.get(index);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel#add(hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject)
+	/**
+	 * Adds the object to the collection.
+	 *
+	 * @param object
+	 *            the to be added object
 	 */
 	@Override
 	public void add(GeometricalObject object) {
@@ -103,8 +127,11 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel#remove(hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject)
+	/**
+	 * Removes the specified object from the collection.
+	 *
+	 * @param object
+	 *            the object to be removed from the collection
 	 */
 	@Override
 	public void remove(GeometricalObject object) {
@@ -118,8 +145,11 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 		objects.remove(object);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel#addDrawingModelListener(hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener)
+	/**
+	 * Adds the drawing model listener.
+	 *
+	 * @param l
+	 *            the listener
 	 */
 	@Override
 	public void addDrawingModelListener(DrawingModelListener l) {
@@ -128,8 +158,11 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 		listeners.add(l);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel#removeDrawingModelListener(hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener)
+	/**
+	 * Removes the drawing model listener.
+	 *
+	 * @param l
+	 *            the listener
 	 */
 	@Override
 	public void removeDrawingModelListener(DrawingModelListener l) {
@@ -138,8 +171,11 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 		listeners.remove(l);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectListener#geometricalObjectChanged(hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject)
+	/**
+	 * Method invoked whenever a geometrical object's attribute change.
+	 *
+	 * @param o
+	 *            the object whose attributes have changed
 	 */
 	@Override
 	public void geometricalObjectChanged(GeometricalObject o) {
@@ -151,8 +187,15 @@ public class DocumentModel implements DrawingModel, GeometricalObjectListener {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel#changeOrder(hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject, int)
+	/**
+	 * Changes the ordinal number of the specified object in the collection by a
+	 * chosen offset. NOTICE: Objects are drawn on the canvas starting from the
+	 * object that was first inserted to the collection
+	 *
+	 * @param object
+	 *            the object
+	 * @param offset
+	 *            the offset
 	 */
 	@Override
 	public void changeOrder(GeometricalObject object, int offset) {

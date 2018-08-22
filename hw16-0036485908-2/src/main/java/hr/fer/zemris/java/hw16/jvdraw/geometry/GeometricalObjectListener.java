@@ -1,23 +1,19 @@
 package hr.fer.zemris.java.hw16.jvdraw.geometry;
 
-// TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving geometricalObject events.
- * The class that is interested in processing a geometricalObject
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addGeometricalObjectListener<code> method. When
- * the geometricalObject event occurs, that object's appropriate
- * method is invoked.
+ * The interface that defines the methods that need to be implemented by an
+ * object that desires to be notified when an update to some object's attributes
+ * occurs.
  *
- * @see GeometricalObjectEvent
+ * @author Damjan Vučina
  */
 public interface GeometricalObjectListener {
-	
+
 	/**
-	 * Geometrical object changed.
+	 * Method invoked whenever a geometrical object's attribute change.
 	 *
-	 * @param o the o
+	 * @param o
+	 *            the object whose attributes have changed
 	 */
 	void geometricalObjectChanged(GeometricalObject o);
 }
