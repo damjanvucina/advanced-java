@@ -22,7 +22,6 @@ import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectBBCalculator;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter;
 
 import static hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas.CANVAS_COLOR;
-import static hr.fer.zemris.java.hw16.jvdraw.actions.UtilityProvider.JVD_EXTENSION;
 
 public class ExportAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;

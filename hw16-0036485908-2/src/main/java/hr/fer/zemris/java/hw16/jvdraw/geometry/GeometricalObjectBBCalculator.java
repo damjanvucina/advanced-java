@@ -16,16 +16,6 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 
 	@Override
 	public void visit(Line line) {
-		// int topLeftCandidateX = min(line.getStartPoint().x, line.getEndPoint().x);
-		// int topLeftCandidateY = min(line.getStartPoint().y, line.getEndPoint().y);
-		//
-		// topLeftX = min(topLeftX, topLeftCandidateX);
-		// topLeftY = min(topLeftY, topLeftCandidateY);
-		//
-		// width = max(width, max(line.getStartPoint().x, line.getEndPoint().x) -
-		// topLeftX);
-		// height = max(height, max(line.getStartPoint().y, line.getEndPoint().y) -
-		// topLeftY);
 		int topLeftX = min(line.getStartPoint().x, line.getEndPoint().x);
 		int topLeftY = min(line.getStartPoint().y, line.getEndPoint().y);
 		int width = abs(line.getStartPoint().x - line.getEndPoint().x);
@@ -48,11 +38,6 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 	public void visit(Circle circle) {
 		int radius = circle.calculateRadius();
 		Point center = circle.getCenter();
-
-//		Point top = new Point(center.x, center.y - radius);
-//		Point down = new Point(center.x, center.y + radius);
-//		Point left = new Point(center.x - radius, center.y);
-//		Point right = new Point(center.x + radius, center.y);
 		
 		int topLeftX = center.x - radius;
 		int topLeftY = center.y - radius;
