@@ -9,9 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-// TODO: Auto-generated Javadoc
+import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
+
 /**
- * The Class CircleEditor.
+ * The class that represents an editor used for editing the attributes of a
+ * circle previously drawn on the canvas.
+ * 
+ * @author Damjan Vučina
  */
 public class CircleEditor extends GeometricalObjectEditor {
 
@@ -20,33 +24,34 @@ public class CircleEditor extends GeometricalObjectEditor {
 
 	/** The object. */
 	private GeometricalObject object;
-	
-	/** The center X. */
+
+	/** The abcissa of the circle's center. */
 	private JTextField centerX;
-	
-	/** The center Y. */
+
+	/** The ordinate of the circle's center*/
 	private JTextField centerY;
-	
+
 	/** The radius. */
 	private JTextField radius;
-	
-	/** The fg color. */
+
+	/** The foreground color. */
 	private JTextField fgColor;
 
 	/**
 	 * Instantiates a new circle editor.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 */
 	public CircleEditor(GeometricalObject object) {
 		this.object = object;
-		
+
 		initializeCircle();
 		setUpCircle();
 	}
 
 	/**
-	 * Sets the up circle.
+	 * Sets the up circle editor.
 	 */
 	protected void setUpCircle() {
 		setLayout(new GridLayout(1, 0));
@@ -87,8 +92,12 @@ public class CircleEditor extends GeometricalObjectEditor {
 		fgColor = new JTextField(colorToHexString(object.getFgColor()));
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor#checkEditing()
+	/**
+	 * Checks if f fields are correctly filled and if not, throws an instance of
+	 * ObjectModelException.
+	 * 
+	 * @throws ObjectModelException
+	 *             if fields are not correctly filled
 	 */
 	@Override
 	public void checkEditing() {
@@ -98,8 +107,9 @@ public class CircleEditor extends GeometricalObjectEditor {
 		validateColorValue(fgColor.getText());
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor#acceptEditing()
+	/**
+	 * Accepts editing by writing values from all fields back into given
+	 * corresponding object.
 	 */
 	//@formatter:off
 	@Override

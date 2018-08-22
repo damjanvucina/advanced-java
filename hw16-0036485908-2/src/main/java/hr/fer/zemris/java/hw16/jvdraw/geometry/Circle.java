@@ -8,21 +8,27 @@ import hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas;
 import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Circle.
+ * The class that represents a circle drawn on the canvas that is defined by its
+ * startPoint(i.e. center), endPoint(i.e. a Point that belongs to the circle),
+ * and fgColor(i.e. color of the circular).
+ * 
+ * @author Damjan Vučina
  */
 public class Circle extends GeometricalObject {
-	
+
 	/** The Constant CIRCLE. */
-	private static final String CIRCLE ="Circle";
+	private static final String CIRCLE = "Circle";
 
 	/**
 	 * Instantiates a new circle.
 	 *
-	 * @param documentModel the document model
-	 * @param fgColorProvider the fg color provider
-	 * @param drawingCanvas the drawing canvas
+	 * @param documentModel
+	 *            the document model
+	 * @param fgColorProvider
+	 *            the fg color provider
+	 * @param drawingCanvas
+	 *            the drawing canvas
 	 */
 	public Circle(DocumentModel documentModel, IColorProvider fgColorProvider, JDrawingCanvas drawingCanvas) {
 		super(documentModel, fgColorProvider, drawingCanvas);
@@ -31,9 +37,12 @@ public class Circle extends GeometricalObject {
 	/**
 	 * Instantiates a new circle.
 	 *
-	 * @param startPoint the start point
-	 * @param endPoint the end point
-	 * @param fgColor the fg color
+	 * @param startPoint
+	 *            the start point(i.e. center)
+	 * @param endPoint
+	 *            the end point(i.e. a Point that belongs to the circle)
+	 * @param fgColor
+	 *            the fg color(i.e. color of the circle)
 	 */
 	public Circle(Point startPoint, Point endPoint, Color fgColor) {
 		setStartPoint(startPoint);
@@ -41,16 +50,23 @@ public class Circle extends GeometricalObject {
 		setFgColor(fgColor);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject#accept(hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor)
+	/**
+	 * Method used by GeometricalObjects allowing them to send references to the
+	 * object in charge of drawing on the canvas. Necessary since Visitor pattern is
+	 * in use.
+	 *
+	 * @param v
+	 *            the visitor
 	 */
 	@Override
 	public void accept(GeometricalObjectVisitor v) {
 		v.visit(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject#createGeometricalObjectEditor()
+	/**
+	 * Creates the geometrical object editor.
+	 *
+	 * @return the geometrical object editor
 	 */
 	@Override
 	public GeometricalObjectEditor createGeometricalObjectEditor() {
@@ -58,9 +74,9 @@ public class Circle extends GeometricalObject {
 	}
 
 	/**
-	 * Calculate radius.
+	 * Calculates radius.
 	 *
-	 * @return the int
+	 * @return the radius
 	 */
 	//@formatter:off
 	public int calculateRadius() {
@@ -70,16 +86,22 @@ public class Circle extends GeometricalObject {
 	}
 	//@formatter:on
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject#cloneCurrentObject()
+	/**
+	 * Clones current object. Used when adding new objects to the document model's
+	 * collection
+	 *
+	 * @return the geometrical object
 	 */
 	@Override
 	public GeometricalObject cloneCurrentObject() {
 		return new Circle(getStartPoint(), getEndPoint(), getFgColorProvider().getCurrentColor());
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.Tool#paint(java.awt.Graphics2D)
+	/**
+	 * Paints the geometrical object on the canvas.
+	 *
+	 * @param g2d
+	 *            the g 2 d
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {
@@ -89,7 +111,7 @@ public class Circle extends GeometricalObject {
 			goPainter.visit(this);
 		}
 	}
-	
+
 	/**
 	 * Gets the center.
 	 *
@@ -98,19 +120,19 @@ public class Circle extends GeometricalObject {
 	public Point getCenter() {
 		return getStartPoint();
 	}
-		
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+
+	/**
+	 * Generates textual representation of the circle.
 	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append(CIRCLE);
 		sb.append(" (").append(getCenter().x).append(",");
 		sb.append(getCenter().y).append("), ");
 		sb.append(calculateRadius());
-		
+
 		return sb.toString();
 	}
 

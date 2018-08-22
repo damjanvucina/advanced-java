@@ -52,7 +52,7 @@ public interface Tool {
 	public void mouseDragged(MouseEvent e);
 
 	/**
-	 * Paint.
+	 * Paints the geometrical object on the canvas.
 	 *
 	 * @param g2d
 	 *            the g 2 d

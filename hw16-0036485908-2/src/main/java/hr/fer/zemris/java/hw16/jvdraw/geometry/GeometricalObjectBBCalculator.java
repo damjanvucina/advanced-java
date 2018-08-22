@@ -7,20 +7,24 @@ import java.awt.Rectangle;
 import static java.lang.Math.abs;
 import static hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter.DEFAULT_STROKE;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GeometricalObjectBBCalculator.
+ * The class that is responsible for calculating the minimal rectangle that
+ * encapsulates all the objects currently drawn on the canvas. This is necessary
+ * for exporting the image so once exported, the blank space is minimal.
  */
 public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
-	
+
 	/** The Constant MARGIN. */
 	private static final int MARGIN = 1;
 
 	/** The bounding rectangle. */
 	private Rectangle boundingRectangle;
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.Line)
+	/**
+	 * Invoked when a Line has been visited.
+	 *
+	 * @param line
+	 *            the line
 	 */
 	@Override
 	public void visit(Line line) {
@@ -34,9 +38,10 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 	}
 
 	/**
-	 * Update bounding rectangle.
+	 * Updates bounding rectangle.
 	 *
-	 * @param objectRectangle the object rectangle
+	 * @param objectRectangle
+	 *            the object rectangle
 	 */
 	private void updateBoundingRectangle(Rectangle objectRectangle) {
 		if (boundingRectangle == null) {
@@ -47,24 +52,30 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.Circle)
+	/**
+	 * Invoked when a Circle has been visited.
+	 *
+	 * @param circle
+	 *            the circle
 	 */
 	@Override
 	public void visit(Circle circle) {
 		int radius = circle.calculateRadius();
 		Point center = circle.getCenter();
-		
+
 		int topLeftX = center.x - radius;
 		int topLeftY = center.y - radius;
-		int diameter = 2*radius;
-		
+		int diameter = 2 * radius;
+
 		Rectangle circleRectangle = new Rectangle(topLeftX, topLeftY, diameter, diameter);
 		updateBoundingRectangle(circleRectangle);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.FilledCircle)
+	/**
+	 * Invoked when a FilledCircle has been visited..
+	 *
+	 * @param filledCircle
+	 *            the filled circle
 	 */
 	@Override
 	public void visit(FilledCircle filledCircle) {
@@ -77,12 +88,13 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 	 * @return the bounding box
 	 */
 	public Rectangle getBoundingBox() {
-		//return boundingRectangle;//return value if margin pixels are not supposed to be taken into account
+		// return boundingRectangle;//return value if margin pixels are not supposed to
+		// be taken into account
 		return considerMarginPixels();
 	}
-	
+
 	/**
-	 * Consider margin pixels.
+	 * Takes margin pixels into account when returning the bounding rectangle.
 	 *
 	 * @return the rectangle
 	 */
@@ -98,7 +110,7 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 	//@formatter:off
 
 	/**
-	 * Reset bounding rectangle.
+	 * Resets bounding rectangle.
 	 */
 	public void resetBoundingRectangle() {
 		boundingRectangle = null;

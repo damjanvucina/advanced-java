@@ -8,28 +8,41 @@ import hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas;
 import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class FilledCircle.
+ * The class that represents a filled circle drawn on the canvas that is defined
+ * by its startPoint(i.e. center), endPoint(i.e. a Point that belongs to the
+ * circle), fgColor(i.e. color of the circular) and bgColor(i.e. color of the
+ * circle).
+ * 
+ * @author Damjan Vučina
  */
 public class FilledCircle extends Circle {
-	
+
 	/** The Constant FILLED_CIRCLE. */
 	private static final String FILLED_CIRCLE = "Filled circle";
-	
-	/** The bg color. */
+
+	/** The background color. */
 	private Color bgColor;
-	
-	/** The bg color provider. */
+
+	/**
+	 * The reference to the object responsible for tracking down the currently
+	 * selected background color.
+	 */
 	private IColorProvider bgColorProvider;
 
 	/**
 	 * Instantiates a new filled circle.
 	 *
-	 * @param documentModel the document model
-	 * @param fgColorProvider the fg color provider
-	 * @param bgColorProvider the bg color provider
-	 * @param drawingCanvas the drawing canvas
+	 * @param documentModel
+	 *            the document model
+	 * @param fgColorProvider
+	 *            The reference to the object responsible for tracking down the
+	 *            currently selected foreground color.r
+	 * @param bgColorProvider
+	 *            The reference to the object responsible for tracking down the
+	 *            currently selected background color.
+	 * @param drawingCanvas
+	 *            the drawing canvas
 	 */
 	//@formatter:off
 	public FilledCircle(DocumentModel documentModel,
@@ -55,11 +68,12 @@ public class FilledCircle extends Circle {
 		setBgColor(bgColor);
 	}
 	//@formatter:on
-	
+
 	/**
 	 * Sets the bg color.
 	 *
-	 * @param bgColor the new bg color
+	 * @param bgColor
+	 *            the new bg color
 	 */
 	public void setBgColor(Color bgColor) {
 		this.bgColor = bgColor;
@@ -73,7 +87,7 @@ public class FilledCircle extends Circle {
 	public Color getBgColor() {
 		return bgColor != null ? bgColor : bgColorProvider.getCurrentColor();
 	}
-	
+
 	/**
 	 * Gets the bg color provider.
 	 *
@@ -84,32 +98,41 @@ public class FilledCircle extends Circle {
 	}
 
 	/**
-	 * Sets the bg color provider.
+	 * Sets the background color provider.
 	 *
-	 * @param bgColorProvider the new bg color provider
+	 * @param bgColorProvider
+	 *            the new background color provider
 	 */
 	public void setBgColorProvider(IColorProvider bgColorProvider) {
 		this.bgColorProvider = bgColorProvider;
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.Circle#accept(hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor)
+	/**
+	 * Method used by GeometricalObjects allowing them to send references
+	 * to the object in charge of drawing on the canvas. Necessary since Visitor pattern is in use.
+	 *
+	 * @param v the visitor
 	 */
 	@Override
 	public void accept(GeometricalObjectVisitor v) {
 		v.visit(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.Circle#createGeometricalObjectEditor()
+	/**
+	 * Creates the geometrical object editor.
+	 *
+	 * @return the geometrical object editor
 	 */
 	@Override
 	public GeometricalObjectEditor createGeometricalObjectEditor() {
 		return new FilledCircleEditor(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.Circle#paint(java.awt.Graphics2D)
+	/**
+	 * Paints the geometrical object on the canvas.
+	 *
+	 * @param g2d
+	 *            the g 2 d
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {
@@ -120,8 +143,10 @@ public class FilledCircle extends Circle {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.Circle#cloneCurrentObject()
+	/**
+	 * Clones current object. Used when adding new objects to the document model's collection
+	 *
+	 * @return the geometrical object
 	 */
 	//@formatter:off
 	@Override
@@ -133,8 +158,8 @@ public class FilledCircle extends Circle {
 	}
 	//@formatter:on
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.Circle#toString()
+	/**
+	 * Generates textual representation of the filled circle.
 	 */
 	@Override
 	public String toString() {

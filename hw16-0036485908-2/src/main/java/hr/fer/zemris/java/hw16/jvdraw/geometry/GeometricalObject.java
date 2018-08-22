@@ -12,42 +12,60 @@ import hr.fer.zemris.java.hw16.jvdraw.Tool;
 import hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider;
 import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GeometricalObject.
+ * The abstract class that serves as a base class for objects that are drawn on
+ * the canvas. It defines methods for acquiring objects' attributes such as
+ * startPoint and endPoint as well as various other methods necessary for the
+ * proper functioning of all the services.
+ * 
+ * This includes methods for calculating distance between two points and
+ * (de)registering listeners since this class acts as a Subject in the Observer
+ * pattern notifying listeners about changes that have occured on an object's
+ * attributes.
+ * 
+ * This class also defines a handful of methods that need to be implemented by
+ * its subclasses.
+ * 
  */
 public abstract class GeometricalObject implements Tool {
 
 	/** The listeners. */
 	private List<GeometricalObjectListener> listeners = new ArrayList<>();
-	
+
 	/** The start point. */
 	private Point startPoint;
-	
+
 	/** The end point. */
 	private Point endPoint;
-	
+
 	/** The start point set. */
 	boolean startPointSet;
-	
+
 	/** The document model. */
 	private DocumentModel documentModel;
-	
-	/** The fg color provider. */
+
+	/**
+	 * The reference to the object responsible for tracking down the currently
+	 * selected foreground color.
+	 */
 	private IColorProvider fgColorProvider;
-	
+
 	/** The drawing canvas. */
 	private JDrawingCanvas drawingCanvas;
-	
-	/** The fg color. */
+
+	/** The foreground color. */
 	private Color fgColor;
 
 	/**
 	 * Instantiates a new geometrical object.
 	 *
-	 * @param documentModel the document model
-	 * @param fgColorProvider the fg color provider
-	 * @param drawingCanvas the drawing canvas
+	 * @param documentModel
+	 *            the document model
+	 * @param fgColorProvider
+	 *            The reference to the object responsible for tracking down the
+	 *            currently selected background color.
+	 * @param drawingCanvas
+	 *            the drawing canvas
 	 */
 	//@formatter:off
 	public GeometricalObject(DocumentModel documentModel,
@@ -67,9 +85,10 @@ public abstract class GeometricalObject implements Tool {
 	}
 
 	/**
-	 * Accept.
+	 * Method used by GeometricalObjects allowing them to send references
+	 * to the object in charge of drawing on the canvas. Necessary since Visitor pattern is in use.
 	 *
-	 * @param v the v
+	 * @param v the visitor
 	 */
 	public abstract void accept(GeometricalObjectVisitor v);
 
@@ -81,16 +100,16 @@ public abstract class GeometricalObject implements Tool {
 	public abstract GeometricalObjectEditor createGeometricalObjectEditor();
 
 	/**
-	 * Clone current object.
+	 * Clones current object. Used when adding new objects to the document model's collection
 	 *
 	 * @return the geometrical object
 	 */
 	public abstract GeometricalObject cloneCurrentObject();
 
 	/**
-	 * Sets the fg color.
+	 * Sets the foreground color.
 	 *
-	 * @param fgColor the new fg color
+	 * @param fgColor the new foreground color
 	 */
 	public void setFgColor(Color fgColor) {
 		this.fgColor = fgColor;
@@ -106,9 +125,9 @@ public abstract class GeometricalObject implements Tool {
 	}
 
 	/**
-	 * Gets the fg color.
+	 * Gets the foreground color.
 	 *
-	 * @return the fg color
+	 * @return the foreground color
 	 */
 	public Color getFgColor() {
 		return fgColor != null ? fgColor : fgColorProvider.getCurrentColor();
@@ -124,18 +143,18 @@ public abstract class GeometricalObject implements Tool {
 	}
 
 	/**
-	 * Gets the fg color provider.
+	 * Gets the foreground color provider.
 	 *
-	 * @return the fg color provider
+	 * @return the foreground color provider
 	 */
 	public IColorProvider getFgColorProvider() {
 		return fgColorProvider;
 	}
 
 	/**
-	 * Sets the fg color provider.
+	 * Sets the foreground color provider.
 	 *
-	 * @param fgColorProvider the new fg color provider
+	 * @param fgColorProvider the new foreground color provider
 	 */
 	public void setFgColorProvider(IColorProvider fgColorProvider) {
 		this.fgColorProvider = fgColorProvider;
@@ -180,7 +199,7 @@ public abstract class GeometricalObject implements Tool {
 	/**
 	 * Calculate points distance.
 	 *
-	 * @return the int
+	 * @return the distance
 	 */
 	//@formatter:off
 	public int calculatePointsDistance() {
@@ -193,7 +212,8 @@ public abstract class GeometricalObject implements Tool {
 	/**
 	 * Sets the end point.
 	 *
-	 * @param endPoint the new end point
+	 * @param endPoint
+	 *            the new end point
 	 */
 	public void setEndPoint(Point endPoint) {
 		this.endPoint = endPoint;
@@ -202,7 +222,8 @@ public abstract class GeometricalObject implements Tool {
 	/**
 	 * Adds the geometrical object listener.
 	 *
-	 * @param l the l
+	 * @param l
+	 *            the listener
 	 */
 	public void addGeometricalObjectListener(GeometricalObjectListener l) {
 		Objects.requireNonNull(l, "Cannot add null listener.");
@@ -213,7 +234,8 @@ public abstract class GeometricalObject implements Tool {
 	/**
 	 * Removes the geometrical object listener.
 	 *
-	 * @param l the l
+	 * @param l
+	 *            the listener
 	 */
 	public void removeGeometricalObjectListener(GeometricalObjectListener l) {
 		Objects.requireNonNull(l, "Cannot remove null listener.");
@@ -222,7 +244,7 @@ public abstract class GeometricalObject implements Tool {
 	}
 
 	/**
-	 * Notify listeners.
+	 * Notifies listeners.
 	 */
 	public void notifyListeners() {
 		for (GeometricalObjectListener listener : listeners) {
@@ -230,22 +252,31 @@ public abstract class GeometricalObject implements Tool {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.Tool#mousePressed(java.awt.event.MouseEvent)
+	/**
+	 * Mouse has been pressed.
+	 *
+	 * @param e
+	 *            the event
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.Tool#mouseReleased(java.awt.event.MouseEvent)
+	/**
+	 * Mouse has been released.
+	 *
+	 * @param e
+	 *            the event
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.Tool#mouseClicked(java.awt.event.MouseEvent)
+	/**
+	 * Mouse has been clicked.
+	 *
+	 * @param e
+	 *            the event
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -264,8 +295,11 @@ public abstract class GeometricalObject implements Tool {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.Tool#mouseMoved(java.awt.event.MouseEvent)
+	/**
+	 * Mouse has been moved.
+	 *
+	 * @param e
+	 *            the event
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
@@ -276,8 +310,11 @@ public abstract class GeometricalObject implements Tool {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.Tool#mouseDragged(java.awt.event.MouseEvent)
+	/**
+	 * Mouse has been dragged.
+	 *
+	 * @param e
+	 *            the event
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {

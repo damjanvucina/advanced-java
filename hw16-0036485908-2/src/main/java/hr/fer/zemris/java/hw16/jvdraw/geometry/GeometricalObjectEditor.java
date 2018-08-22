@@ -7,35 +7,43 @@ import javax.swing.JPanel;
 
 import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GeometricalObjectEditor.
+ * The abstract class that serves as a base class for objects representing
+ * editor for editing object's attributes.
+ * 
+ * @author Damjan Vučina
  */
 public abstract class GeometricalObjectEditor extends JPanel {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The Constant COLOR_VALIDATOR. */
 	private static final String COLOR_VALIDATOR = "#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})";
-	
-	/** The pattern. */
+
+	/** The regex for validating the color. */
 	private Pattern pattern = Pattern.compile(COLOR_VALIDATOR);
 
 	/**
-	 * Check editing.
+	 * Checks if f fields are correctly filled and if not, throws an instance of
+	 * ObjectModelException.
+	 * 
+	 * @throws ObjectModelException
+	 *             if fields are not correctly filled
 	 */
 	public abstract void checkEditing();
 
 	/**
-	 * Accept editing.
+	 * Accepts editing by writing values from all fields back into given
+	 * corresponding object.
 	 */
 	public abstract void acceptEditing();
 
 	/**
-	 * Validate color value.
+	 * Validates color value.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 */
 	public void validateColorValue(String value) {
 		boolean matches = pattern.matcher(value).matches();
@@ -45,9 +53,12 @@ public abstract class GeometricalObjectEditor extends JPanel {
 	}
 
 	/**
-	 * Validate coordinates.
+	 * Validates coordinates.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
+	 * @throws ObjectModelException
+	 *             if given coordinates are not valid
 	 */
 	public void validateCoordinates(String value) {
 		int parsed = parse(value);
@@ -57,9 +68,12 @@ public abstract class GeometricalObjectEditor extends JPanel {
 	}
 
 	/**
-	 * Validate radius.
+	 * Validates radius.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
+	 * @throws ObjectModelException
+	 *             if given radius is not valid
 	 */
 	public void validateRadius(String value) {
 		int radius = parse(value);
@@ -67,11 +81,12 @@ public abstract class GeometricalObjectEditor extends JPanel {
 			throw new ObjectModelException("Invalid radius");
 		}
 	}
-	
+
 	/**
-	 * Color to hex string.
+	 * Transforms color to hexadecimal string.
 	 *
-	 * @param color the color
+	 * @param color
+	 *            the color
 	 * @return the string
 	 */
 	protected String colorToHexString(Color color) {
@@ -79,9 +94,10 @@ public abstract class GeometricalObjectEditor extends JPanel {
 	}
 
 	/**
-	 * Parses the.
+	 * Helper method used for parsing the String representation of numbers.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the int
 	 */
 	private int parse(String value) {

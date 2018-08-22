@@ -7,9 +7,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-// TODO: Auto-generated Javadoc
+import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
+
 /**
- * The Class FilledCircleEditor.
+ * The class that represents an editor used for editing the attributes of a
+ * filled circle previously drawn on the canvas.
+ * 
+ * @author Damjan Vučina
  */
 public class FilledCircleEditor extends CircleEditor {
 	
@@ -19,7 +23,7 @@ public class FilledCircleEditor extends CircleEditor {
 	/** The filled circle. */
 	private FilledCircle filledCircle;
 	
-	/** The bg color. */
+	/** The background color. */
 	private JTextField bgColor;
 
 	/**
@@ -36,14 +40,14 @@ public class FilledCircleEditor extends CircleEditor {
 	}
 	
 	/**
-	 * Initialize filled circle.
+	 * Initializes filled circle.
 	 */
 	protected void initializeFilledCircle() {
 		bgColor = new JTextField(colorToHexString(filledCircle.getBgColor()));
 	}
 	
 	/**
-	 * Sets the up filled circle.
+	 * Sets the up filled circle editor.
 	 */
 	protected void setUpFilledCircle() {
 		JPanel bgColorPanel = new JPanel();
@@ -55,8 +59,12 @@ public class FilledCircleEditor extends CircleEditor {
 		add(bgColorPanel);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.CircleEditor#checkEditing()
+	/**
+	 * Checks if f fields are correctly filled and if not, throws an instance of
+	 * ObjectModelException.
+	 * 
+	 * @throws ObjectModelException
+	 *             if fields are not correctly filled
 	 */
 	@Override
 	public void checkEditing() {
@@ -65,8 +73,9 @@ public class FilledCircleEditor extends CircleEditor {
 		validateColorValue(bgColor.getText());
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.CircleEditor#acceptEditing()
+	/**
+	 * Accepts editing by writing values from all fields back into given
+	 * corresponding object.
 	 */
 	@Override
 	public void acceptEditing() {

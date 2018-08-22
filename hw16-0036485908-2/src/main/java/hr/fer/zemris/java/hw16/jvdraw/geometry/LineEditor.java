@@ -9,9 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-// TODO: Auto-generated Javadoc
+import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
+
 /**
- * The Class LineEditor.
+ * The class that represents an editor used for editing the attributes of a
+ * line previously drawn on the canvas.
+ * 
+ * @author Damjan Vučina
  */
 public class LineEditor extends GeometricalObjectEditor {
 	
@@ -21,19 +25,19 @@ public class LineEditor extends GeometricalObjectEditor {
 	/** The line. */
 	private Line line;
 	
-	/** The start point X. */
+	/** The abcissa of the line's start point. */
 	private JTextField startPointX;
 	
-	/** The start point Y. */
+	/** The ordinate of the line's start point. */
 	private JTextField startPointY;
 	
-	/** The end point X. */
+	/** The abcissa of the line's end point. */
 	private JTextField endPointX;
 	
-	/** The end point Y. */
+	/** The ordinate of the line's end point. */
 	private JTextField endPointY;
 	
-	/** The fg color. */
+	/** The foreground color. */
 	private JTextField fgColor;
 
 	/**
@@ -49,7 +53,7 @@ public class LineEditor extends GeometricalObjectEditor {
 	}
 
 	/**
-	 * Initialize.
+	 * Initializes line editor.
 	 */
 	private void initialize() {
 		startPointX = new JTextField(String.valueOf(line.getStartPoint().x));
@@ -62,7 +66,7 @@ public class LineEditor extends GeometricalObjectEditor {
 	}
 
 	/**
-	 * Sets the up.
+	 * Sets up the line editor.
 	 */
 	private void setUp() {
 		setLayout(new GridLayout(1, 0));
@@ -94,8 +98,12 @@ public class LineEditor extends GeometricalObjectEditor {
 		add(colorPanel);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor#checkEditing()
+	/**
+	 * Checks if f fields are correctly filled and if not, throws an instance of
+	 * ObjectModelException.
+	 * 
+	 * @throws ObjectModelException
+	 *             if fields are not correctly filled
 	 */
 	@Override
 	public void checkEditing() {
@@ -107,8 +115,9 @@ public class LineEditor extends GeometricalObjectEditor {
 		validateColorValue(fgColor.getText());
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor#acceptEditing()
+	/**
+	 * Accepts editing by writing values from all fields back into given
+	 * corresponding object.
 	 */
 	@Override
 	public void acceptEditing() {

@@ -4,16 +4,18 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GeometricalObjectPainter.
+ * The class representing the object responsible for drawing each object on the
+ * drawing canvas.
+ * 
+ * @author Damjan Vučina
  */
 public class GeometricalObjectPainter implements GeometricalObjectVisitor {
-	
+
 	/** The Constant DEFAULT_STROKE. */
 	public static final int DEFAULT_STROKE = 2;
 
-	/** The g 2 d. */
+	/** The drawing object. */
 	private Graphics2D g2d;
 
 	/**
@@ -23,64 +25,76 @@ public class GeometricalObjectPainter implements GeometricalObjectVisitor {
 	}
 
 	/**
-	 * Gets the g 2 d.
+	 * Gets the drawing object.
 	 *
-	 * @return the g 2 d
+	 * @return the drawing object
 	 */
 	public Graphics2D getG2d() {
 		return g2d;
 	}
 
 	/**
-	 * Sets the g 2 d.
+	 * Sets the drawing object
 	 *
-	 * @param g2d the new g 2 d
+	 * @param g2d
+	 *            the new drawing object
 	 */
 	public void setG2d(Graphics2D g2d) {
 		this.g2d = g2d;
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.Line)
+	/**
+	 * Invoked when a Line has been visited. Draws given Line on the canvas.
+	 *
+	 * @param line
+	 *            the line
 	 */
 	@Override
 	public void visit(Line line) {
 		setUpStroke(g2d);
-		
+
 		g2d.setColor(line.getFgColor());
 		g2d.drawLine(line.getStartPoint().x, line.getStartPoint().y, line.getEndPoint().x, line.getEndPoint().y);
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.Circle)
+	/**
+	 * Invoked when a Circle has been visited. Draws given Circle on the canvas.
+	 *
+	 * @param line
+	 *            the line
 	 */
 	@Override
 	public void visit(Circle circle) {
 		setUpStroke(g2d);
 		int radius = circle.calculateRadius();
-	
+
 		g2d.setColor(circle.getFgColor());
 		g2d.drawOval(circle.getStartPoint().x - radius, circle.getStartPoint().y - radius, 2 * radius, 2 * radius);
 	}
-	
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.FilledCircle)
+
+	/**
+	 * Invoked when a FilledCircle has been visited. Draws given FilledCircle on the canvas.
+	 *
+	 * @param line
+	 *            the line
 	 */
 	@Override
 	public void visit(FilledCircle filledCircle) {
 		setUpStroke(g2d);
 		int radius = filledCircle.calculateRadius();
-		
+
 		g2d.setColor(filledCircle.getBgColor());
-		g2d.fillOval(filledCircle.getStartPoint().x - radius, filledCircle.getStartPoint().y - radius, 2 * radius, 2 * radius);
-		
-		visit((Circle) filledCircle); 
+		g2d.fillOval(filledCircle.getStartPoint().x - radius, filledCircle.getStartPoint().y - radius, 2 * radius,
+				2 * radius);
+
+		visit((Circle) filledCircle);
 	}
-	
+
 	/**
 	 * Sets the up stroke.
 	 *
-	 * @param g2d the new up stroke
+	 * @param g2d
+	 *            the new up stroke
 	 */
 	private void setUpStroke(Graphics2D g2d) {
 		g2d.setStroke(new BasicStroke(DEFAULT_STROKE));
