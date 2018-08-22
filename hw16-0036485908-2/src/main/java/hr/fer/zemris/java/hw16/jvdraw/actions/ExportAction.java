@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectBBCalculator;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter;
 
 import static hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas.CANVAS_COLOR;
+import static hr.fer.zemris.java.hw16.jvdraw.actions.UtilityProvider.JVD_EXTENSION;
 
 public class ExportAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
@@ -56,11 +58,16 @@ public class ExportAction extends AbstractAction {
 		}
 
 		Path savePath = jfc.getSelectedFile().toPath();
-		if (UtilityProvider.extensionNotSet(savePath) || UtilityProvider.isInvalidExtension(savePath, Arrays.asList(UtilityProvider.getExportExtensions()))) {
+		if (UtilityProvider.isInvalidExtension(savePath, Arrays.asList(UtilityProvider.getExportExtensions()))) {
 			JOptionPane.showMessageDialog(window,
 					"Requested file name is not valid." + " Supported file extensions: .jpg, .jpeg, .png and .gif",
 					"Invalid file name", JOptionPane.WARNING_MESSAGE);
 			return;
+		}
+		
+		if(UtilityProvider.extensionNotSet(savePath)) {
+			savePath = Paths.get(String.valueOf(savePath) + "." + UtilityProvider.getExportExtensions()[0]);
+			JOptionPane.showMessageDialog(window, "JPG extension will be set by default.", "Extension info", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		for (GeometricalObject object : objects) {
