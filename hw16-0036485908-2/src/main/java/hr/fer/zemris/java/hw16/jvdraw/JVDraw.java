@@ -49,12 +49,37 @@ import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.DrawingObjectListModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class JVDraw.
+ * The main window of the program. This class is responsible for setting up the
+ * UI, wiring all the neccessary listeners as well as various other components
+ * of the program such as tools and actions required for the proper functioning.
+ * 
+ * This is the main class of the developed program that allows the user to draw
+ * lines, circles and filled circles. Program features menubar, toolbar, drawing
+ * canvas and object list.
+ * 
+ * Each added object has its textual representation on the side of the canvas.
+ * Performing double click on the textual representation opens the editor for
+ * editing object's attributes.
+ * 
+ * For lines, user is able to modify start and end coordinate and line color.
+ * For (unfilled) circle user is able to modify center point, radius and color.
+ * For filled circle user is able to modify center point, radius, circle outline
+ * and circle area color.
+ * 
+ * When user press DEL-key while the list of textual representations of objects
+ * has focus, the object selected in list is deleted; if user presses ‘+’ (plus)
+ * key, the selected object is shifted one place up; if user presses ‘-’ (minus)
+ * key, the selected object is shifted one place down changing the overlapping.
+ * 
+ * Program also features menubar allowing the user for saving the drawn image in
+ * JVD format, opening stored images as well as exporting the currently drawn
+ * image in jpg, png or gif format.
+ * 
+ * @author Damjan Vučina
  */
 public class JVDraw extends JFrame {
-	
+
 	/** The Constant FILE_MENU. */
 	private static final String FILE_MENU = "File";
 
@@ -63,116 +88,143 @@ public class JVDraw extends JFrame {
 
 	/** The Constant TITLE. */
 	private static final String TITLE = "JVDraw";
-	
+
 	/** The Constant DEFAULT_FOREGROUND_COLOR. */
 	private static final Color DEFAULT_FOREGROUND_COLOR = Color.RED;
-	
+
 	/** The Constant DEFAULT_BACKGROUND_COLOR. */
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.BLUE;
-	
+
 	/** The Constant FOREGROUND_TOOLTIP. */
 	private static final String FOREGROUND_TOOLTIP = "Set foreground color";
-	
+
 	/** The Constant BACKGROUND_TOOLTIP. */
 	private static final String BACKGROUND_TOOLTIP = "Set background color";
-	
+
 	/** The Constant LINE_TOOL. */
 	private static final String LINE_TOOL = "line";
-	
+
 	/** The Constant CIRCLE_TOOL. */
 	private static final String CIRCLE_TOOL = "circle";
-	
+
 	/** The Constant FILLED_CIRCLE_TOOL. */
 	private static final String FILLED_CIRCLE_TOOL = "filledCircle";
-	
-	/** The Constant OPEN_EDITOR. */
+
+	/**
+	 * The number of clicks required for opening the editor for editing the object's
+	 * attributes.
+	 */
 	private static final int OPEN_EDITOR = 2;
-	
+
 	/** The Constant DIALOG_MESSAGE. */
 	private static final String DIALOG_MESSAGE = "Do you want to edit properties?";
-	
+
 	/** The Constant SHIFT_UP. */
 	public static final int SHIFT_UP = 1;
-	
+
 	/** The Constant SHIFT_DOWN. */
 	public static final int SHIFT_DOWN = -1;
 
-	/** The panel. */
+	/** The main panel. */
 	private JPanel panel;
-	
+
 	/** The canvas panel. */
 	private JPanel canvasPanel;
-	
+
 	/** The color area label panel. */
 	private JPanel colorAreaLabelPanel;
-	
-	/** The fg color area. */
+
+	/**
+	 * The reference to the object responsible for tracking down the currently
+	 * selected foreground color.
+	 */
 	private JColorArea fgColorArea;
-	
-	/** The bg color area. */
+
+	/**
+	 * The reference to the object responsible for tracking down the currently
+	 * selected background color.
+	 */
 	private JColorArea bgColorArea;
-	
-	/** The color area label. */
+
+	/**
+	 * The reference to the object responsible for writing out the currently
+	 * selected colors.
+	 */
 	private JColorAreaLabel colorAreaLabel;
-	
+
 	/** The tool bar. */
 	private JToolBar toolBar;
-	
-	/** The btn line. */
+
+	/** The button used for setting the line as the current tool */
 	private JToggleButton btnLine;
-	
-	/** The btn circle. */
+
+	/** The button used for setting the circle as the current tool */
 	private JToggleButton btnCircle;
-	
-	/** The btn filled circle. */
+
+	/** The button used for setting the filled circle as the current tool */
 	private JToggleButton btnFilledCircle;
-	
-	/** The current tool. */
+
+	/** The currently selected tool. */
 	private Tool currentTool;
-	
+
 	/** The drawing canvas. */
 	private JDrawingCanvas drawingCanvas;
-	
+
 	/** The document model. */
 	private DocumentModel documentModel;
-	
+
 	/** The tools. */
 	private Map<String, Tool> tools;
-	
-	/** The j list. */
+
+	/** The list of textual representations of currently drawn objects. */
 	private JList<GeometricalObject> jList;
-	
-	/** The j list model. */
+
+	/** The model used for representing currently drawn objects.. */
 	private DrawingObjectListModel jListModel;
-	
+
 	/** The j menu bar. */
 	private JMenuBar jMenuBar;
-	
-	/** The open action. */
+
+	/**
+	 * The reference to the object responsible for opening an existing image stored
+	 * in jvd format.
+	 */
 	private OpenAction openAction;
-	
-	/** The save action. */
+
+	/**
+	 * The reference to the object responsible for saving the current image as new
+	 * document in jvd format.
+	 */
 	private SaveAction saveAction;
-	
-	/** The save as action. */
+
+	/**
+	 * The reference to the object responsible for saving the currently drawn image
+	 * stored in jvd format.
+	 */
 	private SaveAsAction saveAsAction;
-	
-	/** The export action. */
+
+	/**
+	 * The reference to the object responsible for exporting the currently drawn
+	 * image in jpg, png or gif format.
+	 */
 	private ExportAction exportAction;
-	
-	/** The exit action. */
+
+	/**
+	 * The reference to the object responsible for opening an exiting the program
+	 * making sure the currenty drawn image does not get lost in the process.
+	 */
 	private ExitAction exitAction;
-	
-	/** The image path. */
+
+	/** The path of the currently drawn image. */
 	private Path imagePath;
 
 	/**
-	 * Instantiates a new JV draw.
+	 * Instantiates a new JVDraw frame.
 	 */
 	public JVDraw() {
 		setSize(1000, 600);
 		setLocation(50, 50);
-		
+
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -180,12 +232,12 @@ public class JVDraw extends JFrame {
 				exitAction.actionPerformed(null);
 			}
 		});
-		
+
 		initGui();
 	}
 
 	/**
-	 * Inits the gui.
+	 * Initalizes the gui.
 	 */
 	private void initGui() {
 		Container cp = getContentPane();
@@ -193,7 +245,7 @@ public class JVDraw extends JFrame {
 
 		panel = new JPanel(new BorderLayout());
 		cp.add(panel, BorderLayout.CENTER);
-		
+
 		setTitle(TITLE);
 
 		initializeColorAreas();
@@ -217,26 +269,28 @@ public class JVDraw extends JFrame {
 		panel.add(canvasPanel);
 		canvasPanel.add(drawingCanvas, BorderLayout.CENTER);
 		canvasPanel.add(new JScrollPane(jList), BorderLayout.EAST);
-		
+
 		jMenuBar = new JMenuBar();
 		setJMenuBar(jMenuBar);
 		setUpActions();
 		setUpMenu();
 	}
-	
+
 	/**
 	 * Gets the save as action.
 	 *
-	 * @return the save as action
+	 * @return The reference to the object responsible for saving the currently
+	 *         drawn image stored in jvd format.
 	 */
 	public SaveAsAction getSaveAsAction() {
 		return saveAsAction;
 	}
-	
+
 	/**
 	 * Gets the save action.
 	 *
-	 * @return the save action
+	 * @return The reference to the object responsible for saving the current image
+	 *         as new document in jvd format.
 	 */
 	public SaveAction getSaveAction() {
 		return saveAction;
@@ -245,7 +299,7 @@ public class JVDraw extends JFrame {
 	/**
 	 * Gets the image path.
 	 *
-	 * @return the image path
+	 * @return The path of the currently drawn image.
 	 */
 	public Path getImagePath() {
 		return imagePath;
@@ -254,7 +308,8 @@ public class JVDraw extends JFrame {
 	/**
 	 * Sets the image path.
 	 *
-	 * @param imagePath the new image path
+	 * @param imagePath
+	 *            The path of the currently drawn image.
 	 */
 	public void setImagePath(Path imagePath) {
 		this.imagePath = imagePath;
@@ -266,7 +321,7 @@ public class JVDraw extends JFrame {
 	private void setUpMenu() {
 		JMenu fileMenu = new JMenu(FILE_MENU);
 		jMenuBar.add(fileMenu);
-		
+
 		fileMenu.add(openAction);
 		fileMenu.addSeparator();
 		fileMenu.add(saveAction);
@@ -275,7 +330,7 @@ public class JVDraw extends JFrame {
 		fileMenu.add(exportAction);
 		fileMenu.addSeparator();
 		fileMenu.add(exitAction);
-		
+
 	}
 
 	/**
@@ -288,28 +343,28 @@ public class JVDraw extends JFrame {
 		openAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
 		openAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
 		openAction.putValue(Action.SHORT_DESCRIPTION, "Opens existing file.");
-		
+
 		saveAction = new SaveAction(this);
 		saveAction.putValue(Action.NAME, "Save");
 		saveAction.putValue(Action.SMALL_ICON, acquireIcon("save.png"));
 		saveAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
 		saveAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
 		saveAction.putValue(Action.SHORT_DESCRIPTION, "Saves current file.");
-		
+
 		saveAsAction = new SaveAsAction(this);
 		saveAsAction.putValue(Action.NAME, "Save As");
 		saveAsAction.putValue(Action.SMALL_ICON, acquireIcon("saveas.png"));
 		saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt S"));
 		saveAsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
 		saveAsAction.putValue(Action.SHORT_DESCRIPTION, "Saves file to new location.");
-		
+
 		exportAction = new ExportAction(this);
 		exportAction.putValue(Action.NAME, "Export");
 		exportAction.putValue(Action.SMALL_ICON, acquireIcon("export.png"));
 		exportAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control E"));
 		exportAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_E);
 		exportAction.putValue(Action.SHORT_DESCRIPTION, "Exports file.");
-		
+
 		exitAction = new ExitAction(this);
 		exitAction.putValue(Action.NAME, "Exit");
 		exitAction.putValue(Action.SMALL_ICON, acquireIcon("open.png"));
@@ -317,11 +372,12 @@ public class JVDraw extends JFrame {
 		exitAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_X);
 		exitAction.putValue(Action.SHORT_DESCRIPTION, "Closes current file.");
 	}
-	
+
 	/**
-	 * Acquire icon.
+	 * Acquires icon for the actions.
 	 *
-	 * @param iconName the icon name
+	 * @param iconName
+	 *            the icon name
 	 * @return the image icon
 	 */
 	public ImageIcon acquireIcon(String iconName) {
@@ -363,7 +419,7 @@ public class JVDraw extends JFrame {
 	}
 
 	/**
-	 * Sets the up J list.
+	 * Sets the up list of textual representations of currently drawn objects.
 	 */
 	private void setUpJList() {
 		jListModel = new DrawingObjectListModel(documentModel);
@@ -453,7 +509,7 @@ public class JVDraw extends JFrame {
 	}
 
 	/**
-	 * Gets the tools.
+	 * Gets the available tools.
 	 *
 	 * @return the tools
 	 */
@@ -464,14 +520,14 @@ public class JVDraw extends JFrame {
 	/**
 	 * Gets the j list model.
 	 *
-	 * @return the j list model
+	 * @return the model of textual representations of currently drawn objects
 	 */
 	public DrawingObjectListModel getjListModel() {
 		return jListModel;
 	}
 
 	/**
-	 * Initialize tools.
+	 * Initializes tools.
 	 */
 	private void initializeTools() {
 		tools = new HashMap<>();
@@ -482,21 +538,21 @@ public class JVDraw extends JFrame {
 	}
 
 	/**
-	 * Initialize document model.
+	 * Initializes document model.
 	 */
 	private void initializeDocumentModel() {
 		documentModel = new DocumentModel();
 	}
 
 	/**
-	 * Initialize canvas.
+	 * Initializes canvas.
 	 */
 	private void initializeCanvas() {
 		drawingCanvas = new JDrawingCanvas(this, documentModel);
 	}
 
 	/**
-	 * Initialize button listeners.
+	 * Initializes button listeners.
 	 */
 	private void initializeButtonListeners() {
 		btnLine.addActionListener(createActionListener(LINE_TOOL));
@@ -553,7 +609,8 @@ public class JVDraw extends JFrame {
 	}
 
 	/**
-	 * Initialize color area label.
+	 * Initialize the object responsible for writing out the currently
+	 * selected colors.
 	 */
 	private void initializeColorAreaLabel() {
 		colorAreaLabel = new JColorAreaLabel(fgColorArea, bgColorArea);

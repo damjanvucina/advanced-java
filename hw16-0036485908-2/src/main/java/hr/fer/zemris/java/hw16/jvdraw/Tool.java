@@ -3,51 +3,59 @@ package hr.fer.zemris.java.hw16.jvdraw;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Interface Tool.
+ * The interface defining the methods that must be implemented by every type of
+ * drawing tool. State pattern is in use.
+ * 
+ * @author Damjan Vučina
  */
 public interface Tool {
-	
+
 	/**
-	 * Mouse pressed.
+	 * Mouse has been pressed.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the event
 	 */
 	public void mousePressed(MouseEvent e);
 
 	/**
-	 * Mouse released.
+	 * Mouse has been released.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the event
 	 */
 	public void mouseReleased(MouseEvent e);
 
 	/**
-	 * Mouse clicked.
+	 * Mouse has been clicked.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the event
 	 */
 	public void mouseClicked(MouseEvent e);
 
 	/**
-	 * Mouse moved.
+	 * Mouse has been moved.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the event
 	 */
 	public void mouseMoved(MouseEvent e);
 
 	/**
-	 * Mouse dragged.
+	 * Mouse has been dragged.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the event
 	 */
 	public void mouseDragged(MouseEvent e);
 
 	/**
 	 * Paint.
 	 *
-	 * @param g2d the g 2 d
+	 * @param g2d
+	 *            the g 2 d
 	 */
 	public void paint(Graphics2D g2d);
 }

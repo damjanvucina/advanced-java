@@ -16,41 +16,55 @@ import hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener;
 
 /**
- * The Class JDrawingCanvas.
+ * The class that represents a drawing canvas allowing the user to draw lines,
+ * circles and filled circles. It acts as a listener in the Observer pattern
+ * where DocumentModel class operates as a subject notifying this class whenever
+ * a new object is added to the collection. As a result, newly added object is
+ * to be drawn on the canvas.
  * 
  * @author Damjan Vučina
  */
 public class JDrawingCanvas extends JComponent implements DrawingModelListener {
-	
-	/** The Constant CANVAS_COLOR. */
+
+	/** The color of the canvas' background */
 	public static final Color CANVAS_COLOR = Color.WHITE;
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The document model. */
+	/**
+	 * The reference to the object responsible for storing the currently drawn
+	 * objects. This objects acts as a Subject in the Observer pattern.
+	 */
 	private DocumentModel documentModel;
-	
-	/** The go painter. */
+
+	/**
+	 * The reference to the object responsible for drawing each object on the
+	 * drawing canvas.
+	 */
 	private GeometricalObjectPainter goPainter;
-	
-	/** The info. */
+
+	/** The reference to the main frame of the program. */
 	private JVDraw info;
 
 	/**
-	 * Gets the go painter.
+	 * Gets the object responsible for drawing each object on the drawing canvas.
 	 *
-	 * @return the go painter
+	 * @return the object responsible for drawing each object on the drawing canvas.
 	 */
 	public GeometricalObjectPainter getGoPainter() {
 		return goPainter;
 	}
 
 	/**
-	 * Instantiates a new j drawing canvas.
+	 * Instantiates a new drawing canvas.
 	 *
-	 * @param info the info
-	 * @param documentModel the document model
+	 * @param info
+	 *            The reference to the main frame of the program.
+	 * @param documentModel
+	 *            The reference to the object responsible for storing the currently
+	 *            drawn objects. This objects acts as a Subject in the Observer
+	 *            pattern.
 	 */
 	public JDrawingCanvas(JVDraw info, DocumentModel documentModel) {
 		this.info = info;
@@ -76,40 +90,72 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 	}
 
 	/**
-	 * Gets the info.
+	 * Gets the main window of this program.
 	 *
-	 * @return the info
+	 * @return The reference to the object responsible for storing the currently
+	 *         drawn objects. This objects acts as a Subject in the Observer
+	 *         pattern.
 	 */
 	public JVDraw getInfo() {
 		return info;
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener#objectsAdded(hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel, int, int)
+	/**
+	 * Method invoked whenever some geometrical objects have been added to the
+	 * DocumentModel's collection of geometrical objects.
+	 *
+	 * @param source
+	 *            reference to the source object that acts as a Subject in the
+	 *            Observer pattern
+	 * @param index0
+	 *            the starting index of the newly added objects
+	 * @param index1
+	 *            the ending index of the newly added objects
 	 */
 	@Override
 	public void objectsAdded(DrawingModel source, int index0, int index1) {
 		repaint();
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener#objectsRemoved(hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel, int, int)
+	/**
+	 * Method invoked whenever some geometrical objects have been removed to the
+	 * DocumentModel's collection of geometrical objects.
+	 *
+	 * @param source
+	 *            reference to the source object that acts as a Subject in the
+	 *            Observer pattern
+	 * @param index0
+	 *            the starting index of the removed objects
+	 * @param index1
+	 *            the ending index of the removed objects
 	 */
 	@Override
 	public void objectsRemoved(DrawingModel source, int index0, int index1) {
 		repaint();
 	}
 
-	/* (non-Javadoc)
-	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener#objectsChanged(hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel, int, int)
+	/**
+	 * Method invoked whenever some geometrical objects in the DocumentModel's
+	 * collection of geometrical objects have been changed.
+	 *
+	 * @param source
+	 *            reference to the source object that acts as a Subject in the
+	 *            Observer pattern
+	 * @param index0
+	 *            the starting index of the changed objects
+	 * @param index1
+	 *            the ending index of the changed objects
 	 */
 	@Override
 	public void objectsChanged(DrawingModel source, int index0, int index1) {
 		repaint();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	/**
+	 * Method responsible for invoking the UI delegate's paint method, if the UI
+	 * delegate is non-null. The result of the invocation of this method is updating
+	 * the canvas to its up to date state. Delegates to GeometricalObjectPainter
+	 * class for printing the objects.
 	 */
 	@Override
 	protected void paintComponent(Graphics g) {
