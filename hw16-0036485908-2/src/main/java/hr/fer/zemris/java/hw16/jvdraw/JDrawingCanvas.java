@@ -15,19 +15,43 @@ import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener;
 
+/**
+ * The Class JDrawingCanvas.
+ * 
+ * @author Damjan Vučina
+ */
 public class JDrawingCanvas extends JComponent implements DrawingModelListener {
+	
+	/** The Constant CANVAS_COLOR. */
 	public static final Color CANVAS_COLOR = Color.WHITE;
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The document model. */
 	private DocumentModel documentModel;
+	
+	/** The go painter. */
 	private GeometricalObjectPainter goPainter;
+	
+	/** The info. */
 	private JVDraw info;
 
+	/**
+	 * Gets the go painter.
+	 *
+	 * @return the go painter
+	 */
 	public GeometricalObjectPainter getGoPainter() {
 		return goPainter;
 	}
 
+	/**
+	 * Instantiates a new j drawing canvas.
+	 *
+	 * @param info the info
+	 * @param documentModel the document model
+	 */
 	public JDrawingCanvas(JVDraw info, DocumentModel documentModel) {
 		this.info = info;
 		this.documentModel = documentModel;
@@ -51,25 +75,42 @@ public class JDrawingCanvas extends JComponent implements DrawingModelListener {
 
 	}
 
+	/**
+	 * Gets the info.
+	 *
+	 * @return the info
+	 */
 	public JVDraw getInfo() {
 		return info;
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener#objectsAdded(hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel, int, int)
+	 */
 	@Override
 	public void objectsAdded(DrawingModel source, int index0, int index1) {
 		repaint();
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener#objectsRemoved(hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel, int, int)
+	 */
 	@Override
 	public void objectsRemoved(DrawingModel source, int index0, int index1) {
 		repaint();
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.model.DrawingModelListener#objectsChanged(hr.fer.zemris.java.hw16.jvdraw.model.DrawingModel, int, int)
+	 */
 	@Override
 	public void objectsChanged(DrawingModel source, int index0, int index1) {
 		repaint();
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;

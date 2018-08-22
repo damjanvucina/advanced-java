@@ -7,11 +7,21 @@ import java.awt.Rectangle;
 import static java.lang.Math.abs;
 import static hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter.DEFAULT_STROKE;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GeometricalObjectBBCalculator.
+ */
 public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
+	
+	/** The Constant MARGIN. */
 	private static final int MARGIN = 1;
 
+	/** The bounding rectangle. */
 	private Rectangle boundingRectangle;
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.Line)
+	 */
 	@Override
 	public void visit(Line line) {
 		int topLeftX = min(line.getStartPoint().x, line.getEndPoint().x);
@@ -23,6 +33,11 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 		updateBoundingRectangle(lineRectangle);
 	}
 
+	/**
+	 * Update bounding rectangle.
+	 *
+	 * @param objectRectangle the object rectangle
+	 */
 	private void updateBoundingRectangle(Rectangle objectRectangle) {
 		if (boundingRectangle == null) {
 			boundingRectangle = objectRectangle;
@@ -32,6 +47,9 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.Circle)
+	 */
 	@Override
 	public void visit(Circle circle) {
 		int radius = circle.calculateRadius();
@@ -45,16 +63,29 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 		updateBoundingRectangle(circleRectangle);
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectVisitor#visit(hr.fer.zemris.java.hw16.jvdraw.geometry.FilledCircle)
+	 */
 	@Override
 	public void visit(FilledCircle filledCircle) {
 		visit((Circle) filledCircle);
 	}
 
+	/**
+	 * Gets the bounding box.
+	 *
+	 * @return the bounding box
+	 */
 	public Rectangle getBoundingBox() {
-		//return boundingRectangle;
+		//return boundingRectangle;//return value if margin pixels are not supposed to be taken into account
 		return considerMarginPixels();
 	}
 	
+	/**
+	 * Consider margin pixels.
+	 *
+	 * @return the rectangle
+	 */
 	//@formatter:off
 	private Rectangle considerMarginPixels() {
 		Rectangle result = new Rectangle(boundingRectangle.x - MARGIN,
@@ -66,6 +97,9 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 	}
 	//@formatter:off
 
+	/**
+	 * Reset bounding rectangle.
+	 */
 	public void resetBoundingRectangle() {
 		boundingRectangle = null;
 	}

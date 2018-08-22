@@ -9,16 +9,35 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CircleEditor.
+ */
 public class CircleEditor extends GeometricalObjectEditor {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The object. */
 	private GeometricalObject object;
+	
+	/** The center X. */
 	private JTextField centerX;
+	
+	/** The center Y. */
 	private JTextField centerY;
+	
+	/** The radius. */
 	private JTextField radius;
+	
+	/** The fg color. */
 	private JTextField fgColor;
 
+	/**
+	 * Instantiates a new circle editor.
+	 *
+	 * @param object the object
+	 */
 	public CircleEditor(GeometricalObject object) {
 		this.object = object;
 		
@@ -26,6 +45,9 @@ public class CircleEditor extends GeometricalObjectEditor {
 		setUpCircle();
 	}
 
+	/**
+	 * Sets the up circle.
+	 */
 	protected void setUpCircle() {
 		setLayout(new GridLayout(1, 0));
 
@@ -54,6 +76,9 @@ public class CircleEditor extends GeometricalObjectEditor {
 		add(fgColorPanel);
 	}
 
+	/**
+	 * Initialize circle.
+	 */
 	protected void initializeCircle() {
 		centerX = new JTextField(String.valueOf(object.getStartPoint().x));
 		centerY = new JTextField(String.valueOf(object.getStartPoint().y));
@@ -62,6 +87,9 @@ public class CircleEditor extends GeometricalObjectEditor {
 		fgColor = new JTextField(colorToHexString(object.getFgColor()));
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor#checkEditing()
+	 */
 	@Override
 	public void checkEditing() {
 		validateCoordinates(centerX.getText());
@@ -70,6 +98,9 @@ public class CircleEditor extends GeometricalObjectEditor {
 		validateColorValue(fgColor.getText());
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor#acceptEditing()
+	 */
 	//@formatter:off
 	@Override
 	public void acceptEditing() {

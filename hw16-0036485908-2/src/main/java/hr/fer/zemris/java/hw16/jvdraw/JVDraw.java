@@ -49,48 +49,126 @@ import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.DrawingObjectListModel;
 import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JVDraw.
+ */
 public class JVDraw extends JFrame {
+	
+	/** The Constant FILE_MENU. */
 	private static final String FILE_MENU = "File";
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The Constant TITLE. */
 	private static final String TITLE = "JVDraw";
+	
+	/** The Constant DEFAULT_FOREGROUND_COLOR. */
 	private static final Color DEFAULT_FOREGROUND_COLOR = Color.RED;
+	
+	/** The Constant DEFAULT_BACKGROUND_COLOR. */
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.BLUE;
+	
+	/** The Constant FOREGROUND_TOOLTIP. */
 	private static final String FOREGROUND_TOOLTIP = "Set foreground color";
+	
+	/** The Constant BACKGROUND_TOOLTIP. */
 	private static final String BACKGROUND_TOOLTIP = "Set background color";
+	
+	/** The Constant LINE_TOOL. */
 	private static final String LINE_TOOL = "line";
+	
+	/** The Constant CIRCLE_TOOL. */
 	private static final String CIRCLE_TOOL = "circle";
+	
+	/** The Constant FILLED_CIRCLE_TOOL. */
 	private static final String FILLED_CIRCLE_TOOL = "filledCircle";
+	
+	/** The Constant OPEN_EDITOR. */
 	private static final int OPEN_EDITOR = 2;
+	
+	/** The Constant DIALOG_MESSAGE. */
 	private static final String DIALOG_MESSAGE = "Do you want to edit properties?";
+	
+	/** The Constant SHIFT_UP. */
 	public static final int SHIFT_UP = 1;
+	
+	/** The Constant SHIFT_DOWN. */
 	public static final int SHIFT_DOWN = -1;
 
+	/** The panel. */
 	private JPanel panel;
+	
+	/** The canvas panel. */
 	private JPanel canvasPanel;
+	
+	/** The color area label panel. */
 	private JPanel colorAreaLabelPanel;
+	
+	/** The fg color area. */
 	private JColorArea fgColorArea;
+	
+	/** The bg color area. */
 	private JColorArea bgColorArea;
+	
+	/** The color area label. */
 	private JColorAreaLabel colorAreaLabel;
+	
+	/** The tool bar. */
 	private JToolBar toolBar;
+	
+	/** The btn line. */
 	private JToggleButton btnLine;
+	
+	/** The btn circle. */
 	private JToggleButton btnCircle;
+	
+	/** The btn filled circle. */
 	private JToggleButton btnFilledCircle;
+	
+	/** The current tool. */
 	private Tool currentTool;
+	
+	/** The drawing canvas. */
 	private JDrawingCanvas drawingCanvas;
+	
+	/** The document model. */
 	private DocumentModel documentModel;
+	
+	/** The tools. */
 	private Map<String, Tool> tools;
+	
+	/** The j list. */
 	private JList<GeometricalObject> jList;
+	
+	/** The j list model. */
 	private DrawingObjectListModel jListModel;
+	
+	/** The j menu bar. */
 	private JMenuBar jMenuBar;
+	
+	/** The open action. */
 	private OpenAction openAction;
+	
+	/** The save action. */
 	private SaveAction saveAction;
+	
+	/** The save as action. */
 	private SaveAsAction saveAsAction;
+	
+	/** The export action. */
 	private ExportAction exportAction;
+	
+	/** The exit action. */
 	private ExitAction exitAction;
+	
+	/** The image path. */
 	private Path imagePath;
 
+	/**
+	 * Instantiates a new JV draw.
+	 */
 	public JVDraw() {
 		setSize(1000, 600);
 		setLocation(50, 50);
@@ -106,6 +184,9 @@ public class JVDraw extends JFrame {
 		initGui();
 	}
 
+	/**
+	 * Inits the gui.
+	 */
 	private void initGui() {
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
@@ -143,22 +224,45 @@ public class JVDraw extends JFrame {
 		setUpMenu();
 	}
 	
+	/**
+	 * Gets the save as action.
+	 *
+	 * @return the save as action
+	 */
 	public SaveAsAction getSaveAsAction() {
 		return saveAsAction;
 	}
 	
+	/**
+	 * Gets the save action.
+	 *
+	 * @return the save action
+	 */
 	public SaveAction getSaveAction() {
 		return saveAction;
 	}
 
+	/**
+	 * Gets the image path.
+	 *
+	 * @return the image path
+	 */
 	public Path getImagePath() {
 		return imagePath;
 	}
 
+	/**
+	 * Sets the image path.
+	 *
+	 * @param imagePath the new image path
+	 */
 	public void setImagePath(Path imagePath) {
 		this.imagePath = imagePath;
 	}
 
+	/**
+	 * Sets the up menu.
+	 */
 	private void setUpMenu() {
 		JMenu fileMenu = new JMenu(FILE_MENU);
 		jMenuBar.add(fileMenu);
@@ -174,6 +278,9 @@ public class JVDraw extends JFrame {
 		
 	}
 
+	/**
+	 * Sets the up actions.
+	 */
 	private void setUpActions() {
 		openAction = new OpenAction(this);
 		openAction.putValue(Action.NAME, "Open");
@@ -211,6 +318,12 @@ public class JVDraw extends JFrame {
 		exitAction.putValue(Action.SHORT_DESCRIPTION, "Closes current file.");
 	}
 	
+	/**
+	 * Acquire icon.
+	 *
+	 * @param iconName the icon name
+	 * @return the image icon
+	 */
 	public ImageIcon acquireIcon(String iconName) {
 		StringBuilder sb = new StringBuilder("icons");
 		sb.append("/").append(iconName);
@@ -231,14 +344,27 @@ public class JVDraw extends JFrame {
 		return new ImageIcon(bytes);
 	}
 
+	/**
+	 * Gets the drawing canvas.
+	 *
+	 * @return the drawing canvas
+	 */
 	public JDrawingCanvas getDrawingCanvas() {
 		return drawingCanvas;
 	}
 
+	/**
+	 * Gets the document model.
+	 *
+	 * @return the document model
+	 */
 	public DocumentModel getDocumentModel() {
 		return documentModel;
 	}
 
+	/**
+	 * Sets the up J list.
+	 */
 	private void setUpJList() {
 		jListModel = new DrawingObjectListModel(documentModel);
 		jList = new JList<>(jListModel);
@@ -318,19 +444,35 @@ public class JVDraw extends JFrame {
 		});
 	}
 
+	/**
+	 * Sets the default tool.
+	 */
 	private void setDefaultTool() {
 		btnLine.doClick();
 		currentTool = tools.get(LINE_TOOL);
 	}
 
+	/**
+	 * Gets the tools.
+	 *
+	 * @return the tools
+	 */
 	public Map<String, Tool> getTools() {
 		return tools;
 	}
 
+	/**
+	 * Gets the j list model.
+	 *
+	 * @return the j list model
+	 */
 	public DrawingObjectListModel getjListModel() {
 		return jListModel;
 	}
 
+	/**
+	 * Initialize tools.
+	 */
 	private void initializeTools() {
 		tools = new HashMap<>();
 
@@ -339,20 +481,35 @@ public class JVDraw extends JFrame {
 		tools.put(FILLED_CIRCLE_TOOL, new FilledCircle(documentModel, fgColorArea, bgColorArea, drawingCanvas));
 	}
 
+	/**
+	 * Initialize document model.
+	 */
 	private void initializeDocumentModel() {
 		documentModel = new DocumentModel();
 	}
 
+	/**
+	 * Initialize canvas.
+	 */
 	private void initializeCanvas() {
 		drawingCanvas = new JDrawingCanvas(this, documentModel);
 	}
 
+	/**
+	 * Initialize button listeners.
+	 */
 	private void initializeButtonListeners() {
 		btnLine.addActionListener(createActionListener(LINE_TOOL));
 		btnCircle.addActionListener(createActionListener(CIRCLE_TOOL));
 		btnFilledCircle.addActionListener(createActionListener(FILLED_CIRCLE_TOOL));
 	}
 
+	/**
+	 * Creates the action listener.
+	 *
+	 * @param newTool the new tool
+	 * @return the action listener
+	 */
 	private ActionListener createActionListener(String newTool) {
 		return new ActionListener() {
 
@@ -363,14 +520,27 @@ public class JVDraw extends JFrame {
 		};
 	}
 
+	/**
+	 * Gets the current tool.
+	 *
+	 * @return the current tool
+	 */
 	public Tool getCurrentTool() {
 		return currentTool;
 	}
 
+	/**
+	 * Sets the current tool.
+	 *
+	 * @param currentTool the new current tool
+	 */
 	public void setCurrentTool(Tool currentTool) {
 		this.currentTool = currentTool;
 	}
 
+	/**
+	 * Initialize geometrical object buttons.
+	 */
 	private void initializeGeometricalObjectButtons() {
 		btnLine = new JToggleButton("Line");
 		btnCircle = new JToggleButton("Circle");
@@ -382,20 +552,32 @@ public class JVDraw extends JFrame {
 		btnGroup.add(btnFilledCircle);
 	}
 
+	/**
+	 * Initialize color area label.
+	 */
 	private void initializeColorAreaLabel() {
 		colorAreaLabel = new JColorAreaLabel(fgColorArea, bgColorArea);
 	}
 
+	/**
+	 * Initialize color areas.
+	 */
 	private void initializeColorAreas() {
 		fgColorArea = new JColorArea(DEFAULT_FOREGROUND_COLOR, FOREGROUND_TOOLTIP);
 		bgColorArea = new JColorArea(DEFAULT_BACKGROUND_COLOR, BACKGROUND_TOOLTIP);
 	}
 
+	/**
+	 * Sets the up color area label panel.
+	 */
 	private void setUpColorAreaLabelPanel() {
 		colorAreaLabelPanel = new JPanel();
 		colorAreaLabelPanel.add(colorAreaLabel);
 	}
 
+	/**
+	 * Sets the up toolbar.
+	 */
 	private void setUpToolbar() {
 		toolBar = new JToolBar();
 		toolBar.setFloatable(true);
@@ -414,6 +596,11 @@ public class JVDraw extends JFrame {
 		toolBar.add(btnFilledCircle);
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> new JVDraw().setVisible(true));
 	}

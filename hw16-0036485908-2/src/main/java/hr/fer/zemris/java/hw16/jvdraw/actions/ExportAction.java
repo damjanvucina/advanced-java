@@ -23,18 +23,35 @@ import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter;
 
 import static hr.fer.zemris.java.hw16.jvdraw.JDrawingCanvas.CANVAS_COLOR;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ExportAction.
+ */
 public class ExportAction extends AbstractAction {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The window. */
 	private JVDraw window;
+	
+	/** The bb calculator. */
 	private GeometricalObjectBBCalculator bbCalculator;
 
+	/**
+	 * Instantiates a new export action.
+	 *
+	 * @param window the window
+	 */
 	public ExportAction(JVDraw window) {
 		this.window = window;
 
 		bbCalculator = new GeometricalObjectBBCalculator();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		List<GeometricalObject> objects = window.getDocumentModel().getObjects();

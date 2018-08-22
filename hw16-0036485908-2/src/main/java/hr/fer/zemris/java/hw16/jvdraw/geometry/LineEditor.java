@@ -9,16 +9,38 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LineEditor.
+ */
 public class LineEditor extends GeometricalObjectEditor {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The line. */
 	private Line line;
+	
+	/** The start point X. */
 	private JTextField startPointX;
+	
+	/** The start point Y. */
 	private JTextField startPointY;
+	
+	/** The end point X. */
 	private JTextField endPointX;
+	
+	/** The end point Y. */
 	private JTextField endPointY;
+	
+	/** The fg color. */
 	private JTextField fgColor;
 
+	/**
+	 * Instantiates a new line editor.
+	 *
+	 * @param line the line
+	 */
 	public LineEditor(Line line) {
 		this.line = line;
 
@@ -26,6 +48,9 @@ public class LineEditor extends GeometricalObjectEditor {
 		setUp();
 	}
 
+	/**
+	 * Initialize.
+	 */
 	private void initialize() {
 		startPointX = new JTextField(String.valueOf(line.getStartPoint().x));
 		startPointY = new JTextField(String.valueOf(line.getStartPoint().y));
@@ -36,6 +61,9 @@ public class LineEditor extends GeometricalObjectEditor {
 		fgColor = new JTextField(colorToHexString(line.getFgColor()));
 	}
 
+	/**
+	 * Sets the up.
+	 */
 	private void setUp() {
 		setLayout(new GridLayout(1, 0));
 
@@ -66,6 +94,9 @@ public class LineEditor extends GeometricalObjectEditor {
 		add(colorPanel);
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor#checkEditing()
+	 */
 	@Override
 	public void checkEditing() {
 		validateCoordinates(startPointX.getText());
@@ -76,6 +107,9 @@ public class LineEditor extends GeometricalObjectEditor {
 		validateColorValue(fgColor.getText());
 	}
 
+	/* (non-Javadoc)
+	 * @see hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectEditor#acceptEditing()
+	 */
 	@Override
 	public void acceptEditing() {
 		line.setStartPoint(new Point(Integer.parseInt(startPointX.getText()), Integer.parseInt(startPointY.getText())));

@@ -14,15 +14,30 @@ import javax.swing.JOptionPane;
 import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OpenAction.
+ */
 public class OpenAction extends AbstractAction {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The window. */
 	private JVDraw window;
 
+	/**
+	 * Instantiates a new open action.
+	 *
+	 * @param window the window
+	 */
 	public OpenAction(JVDraw window) {
 		this.window = window;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JFileChooser jfc = new JFileChooser();

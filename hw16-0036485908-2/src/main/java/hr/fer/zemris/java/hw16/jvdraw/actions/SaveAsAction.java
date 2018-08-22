@@ -13,15 +13,30 @@ import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
 
 import static hr.fer.zemris.java.hw16.jvdraw.actions.UtilityProvider.JVD_EXTENSION;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SaveAsAction.
+ */
 public class SaveAsAction extends AbstractAction {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The window. */
 	private JVDraw window;
 	
+	/**
+	 * Instantiates a new save as action.
+	 *
+	 * @param window the window
+	 */
 	public SaveAsAction(JVDraw window) {
 		this.window = window;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JFileChooser jfc = new JFileChooser();
