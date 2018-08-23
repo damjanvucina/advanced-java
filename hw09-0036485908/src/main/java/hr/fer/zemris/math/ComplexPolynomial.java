@@ -6,11 +6,12 @@ import java.util.Objects;
 
 /**
  * The class that represents a complex polynomial in regular(non-rooted) form,
- * i.e. f(z) = zn*zn+zn-1*zn-1+...+z2*z2+z1*z+z0, z(i) being factors that user
- * must provide. It provides user with method for calculating the value of the
- * polynomial in the specified abscissa coordinate, a method for calculating the
- * order of this polynomial, a method for multiplying polynomials, deriving this
- * polynomial and acquiring String representation of this polynomial.
+ * i.e. f(z) = z(n)*z^(n)+z(n-1)*z^(n-1)+...+z(1)*z+z(0), z(i) being factors
+ * that user must provide. It provides user with method for calculating the
+ * value of the polynomial in the specified abscissa coordinate, a method for
+ * calculating the order of this polynomial, a method for multiplying
+ * polynomials, deriving this polynomial and acquiring String representation of
+ * this polynomial.
  * 
  * @author Damjan Vučina
  */
@@ -37,7 +38,7 @@ public class ComplexPolynomial {
 	/**
 	 * Calculates the order of this ComplexPolyomial.
 	 *
-	 * @return the  order of this ComplexPolyomial.
+	 * @return the order of this ComplexPolyomial.
 	 */
 	public short order() {
 		return (short) (factors.size() - 1);
@@ -49,39 +50,31 @@ public class ComplexPolynomial {
 	 * @param p
 	 *            the given complex polynomial is null
 	 * @return the complex polynomial as the result of the multiplication
-	 * @throws NullPointerException if given complex polynomial is null
+	 * @throws NullPointerException
+	 *             if given complex polynomial is null
 	 */
 	public ComplexPolynomial multiply(ComplexPolynomial p) {
 		Objects.requireNonNull(p, "Given complex polynomial cannot be null.");
 
 		Complex[] productFactors = new Complex[factors.size() + p.factors.size() - 1];
-		productFactors = multiplicationSetUp(productFactors.length);
 
 		for (int i = 0, firstSize = factors.size(); i < firstSize; i++) {
-			for (int j = 0, resultIndex = i + j, secondSize = p.factors.size(); j < secondSize; j++) {
-				productFactors[resultIndex] = productFactors[resultIndex]
-						.add(factors.get(i).multiply(p.factors.get(j)));
+			for (int j = 0, secondSize = p.factors.size(); j < secondSize; j++) {
+
+				int resultIndex = i + j;
+				Complex currentResult = factors.get(i).multiply(p.factors.get(j));
+				
+				if (productFactors[resultIndex] == null) {
+					productFactors[resultIndex] = currentResult;
+
+				} else {
+					productFactors[resultIndex] = productFactors[resultIndex].add(currentResult);
+				}
+
 			}
 		}
 
 		return new ComplexPolynomial(productFactors);
-	}
-
-	/**
-	 * Helper method used for initializing an array prior to multiplication operation.
-	 *
-	 * @param length
-	 *            the length of the array to be containing factors
-	 * @return the complex[] array
-	 */
-	private Complex[] multiplicationSetUp(int length) {
-		Complex[] initialized = new Complex[length];
-
-		for (int i = 0; i < length; i++) {
-			initialized[i] = Complex.ZERO;
-		}
-
-		return initialized;
 	}
 
 	/**
@@ -102,7 +95,7 @@ public class ComplexPolynomial {
 	 * Calculates the value of the polynomial in the specified abscissa coordinate
 	 *
 	 * @param z
-	 *             the z complex number defining the abscissa coordinate
+	 *            the z complex number defining the abscissa coordinate
 	 * @return the complex number calculated as the value of the polynomial in the
 	 *         specified abscissa coordinate
 	 */
@@ -120,8 +113,7 @@ public class ComplexPolynomial {
 	}
 
 	/**
-	 * Prints a String representation of this ComplexPolynomial to the
-	 * console.
+	 * Prints a String representation of this ComplexPolynomial to the console.
 	 */
 	@Override
 	public String toString() {

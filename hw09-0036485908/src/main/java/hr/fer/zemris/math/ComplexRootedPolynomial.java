@@ -60,6 +60,7 @@ public class ComplexRootedPolynomial {
 		return result;
 	}
 
+	
 	/**
 	 * Transforms this ComplexRootedPolynomial into regular (non-root) form
 	 * polynomial.
@@ -67,9 +68,9 @@ public class ComplexRootedPolynomial {
 	 * @return the complex polynomial in regular (non-root) form
 	 */
 	public ComplexPolynomial toComplexPolynom() {
-		ComplexPolynomial explicitForm = new ComplexPolynomial(roots.get(0), Complex.ONE);
+		ComplexPolynomial explicitForm = new ComplexPolynomial(Complex.ONE);
 
-		for (int i = 1, size = roots.size(); i < size; i++) {
+		for (int i = 0, size = roots.size(); i < size; i++) {
 			explicitForm = explicitForm.multiply(new ComplexPolynomial(roots.get(i).negate(), Complex.ONE));
 		}
 
