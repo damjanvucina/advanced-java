@@ -63,7 +63,7 @@ public class ComplexPolynomial {
 
 				int resultIndex = i + j;
 				Complex currentResult = factors.get(i).multiply(p.factors.get(j));
-				
+
 				if (productFactors[resultIndex] == null) {
 					productFactors[resultIndex] = currentResult;
 
@@ -84,8 +84,8 @@ public class ComplexPolynomial {
 	 */
 	public ComplexPolynomial derive() {
 		Complex derivative[] = new Complex[factors.size() - 1];
-		for (int i = 0, length = derivative.length, factorsSize = factors.size(); i < length; i++) {
-			derivative[i] = factors.get(i).multiply(new Complex(factorsSize - 1 - i, 0));
+		for (int i = 1, length = factors.size(); i < length; i++) {
+			derivative[i - 1] = factors.get(i).multiply(new Complex(i, 0));
 		}
 
 		return new ComplexPolynomial(derivative);
