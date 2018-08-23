@@ -95,32 +95,32 @@ public class ComplexRootedPolynomial {
 
 	/**
 	 * Calculates the index of closest root for the for given complex number z that
-	 * is within treshold; if there is no such returns -1.
+	 * is within threshold; if there is no such returns -1.
 	 *
 	 * @param z
 	 *            the complex number whose roots are inspected
-	 * @param treshold
-	 *            the treshold defining the distance between the roots
-	 * @return the indef of the closest root or -1 if there is none within the treshold
-	 * @throws NullPointerException if the given complex number is null
+	 * @param threshold
+	 *            the threshold defining the distance between the roots
+	 * @return the index of the closest root or -1 if there is none within the
+	 *         threshold
+	 * @throws NullPointerException
+	 *             if the given complex number is null
 	 */
-	public int indexOfClosestRootFor(Complex z, double treshold) {
+	public int indexOfClosestRootFor(Complex z, double threshold) {
 		Objects.requireNonNull(z, "Given complex number cannot be null.");
 
-		int closesRootIndex = -1;
+		double minimumDistance = threshold + 1;
+		int closestRootIndex = -1;
 		double currentDistance;
 
-		double minimumDistance = z.sub(roots.get(0)).module();
-		closesRootIndex = 0;
-
-		for (int i = 1, size = roots.size(); i < size; i++) {
+		for (int i = 0, size = roots.size(); i < size; i++) {
 			currentDistance = z.sub(roots.get(i)).module();
 
-			if (currentDistance < minimumDistance) {
+			if (currentDistance <= threshold && currentDistance < minimumDistance) {
 				minimumDistance = currentDistance;
-				closesRootIndex = i;
+				closestRootIndex = i + 1;
 			}
 		}
-		return closesRootIndex;
+		return closestRootIndex;
 	}
 }

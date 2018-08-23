@@ -12,7 +12,7 @@ import java.util.Objects;
  * altering the attributes of the instance they were invoked upon. This class
  * provides user with standard methods for performing basic arithmetic
  * operations on vectors such as normalizing, adding, subtracting, calculating
- * dot product and cross product, scaling and calculating the cosinus of the
+ * dot product and cross product, scaling and calculating the cosine of the
  * angle between two vectors.
  * 
  * @author Damjan Vučina
@@ -195,7 +195,7 @@ public class Vector3 {
 	}
 
 	/**
-	 * Calculates the cosinus of the angle between this vector and the vector
+	 * Calculates the cosine of the angle between this vector and the vector
 	 * provided via arguments.
 	 *
 	 * @param other

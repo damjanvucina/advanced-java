@@ -14,7 +14,7 @@ import static java.lang.Math.abs;
 
 /**
  * The class that represents a complex number and provides user with methods for
- * performing operations over it. These operations include calcluating module of
+ * performing operations over it. These operations include calculating module of
  * the complex number, addition, subtraction, multiplication, division, negation
  * as well as calculating complex number roots and its power. *
  * 
