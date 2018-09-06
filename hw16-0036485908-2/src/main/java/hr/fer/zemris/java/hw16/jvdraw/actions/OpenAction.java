@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import hr.fer.zemris.java.hw16.jvdraw.JVDraw;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
+import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
 
 /**
  * The class responsible for opening an existing image stored in jvd format.
@@ -52,19 +53,34 @@ public class OpenAction extends AbstractAction {
 			return;
 		}
 
+		window.getExitAction().checkIfImageIsEdited(e, window -> {}, ExitAction.CORRUPT_JVD_OPEN);
+
 		File fileName = jfc.getSelectedFile();
 		Path filePath = fileName.toPath();
 
 		//@formatter:off
-		if (!Files.isReadable(filePath) || UtilityProvider.isInvalidExtension(filePath, Arrays.asList(UtilityProvider.getJvdExtension()))) {
-			JOptionPane.showMessageDialog(window, fileName.getAbsolutePath() +
-					" is not readable. Supported extensions: .jvd", "File not readable",
-					JOptionPane.ERROR_MESSAGE);
+		if (!Files.isReadable(filePath) ||
+			UtilityProvider.isInvalidExtension(filePath, Arrays.asList(UtilityProvider.getJvdExtension()))) {
+			JOptionPane.showMessageDialog(
+						window,
+						fileName.getAbsolutePath() + " is not readable. Supported extensions: .jvd",
+						"File not readable",
+						JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		
 		List<String> lines = UtilityProvider.loadFile(filePath);
-		List<GeometricalObject> loadedObjects = UtilityProvider.fromFile(lines);
+		List<GeometricalObject> loadedObjects;
+		try {
+			loadedObjects = UtilityProvider.fromFile(lines);
+		} catch (ObjectModelException exc) {
+			JOptionPane.showMessageDialog(window,
+										  exc.getMessage(),
+										  "Error reading file",
+										  JOptionPane.WARNING_MESSAGE);
+					  					  return;
+		}
+		
 		
 		if(loadedObjects == null) {
 			JOptionPane.showMessageDialog(window,

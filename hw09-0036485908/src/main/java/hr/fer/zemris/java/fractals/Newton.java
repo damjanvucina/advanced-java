@@ -10,7 +10,7 @@ import hr.fer.zemris.math.ComplexRootedPolynomial;
 
 /**
  * The main program which is responsible for obtaining complex roots from the
- * user, parsing them and storing them apporopriately and lastly invoking the
+ * user, parsing them and storing them appropriately and lastly invoking the
  * method for viewing the fractal.
  * 
  * @author Damjan Vučina

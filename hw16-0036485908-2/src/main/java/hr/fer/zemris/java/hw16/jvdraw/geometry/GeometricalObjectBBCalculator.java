@@ -11,6 +11,8 @@ import static hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectPainter.D
  * The class that is responsible for calculating the minimal rectangle that
  * encapsulates all the objects currently drawn on the canvas. This is necessary
  * for exporting the image so once exported, the blank space is minimal.
+ * 
+ * @author Damjan Vučina
  */
 public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 
@@ -87,18 +89,27 @@ public class GeometricalObjectBBCalculator implements GeometricalObjectVisitor {
 	 *
 	 * @return the bounding box
 	 */
+	//@formatter:off
 	public Rectangle getBoundingBox() {
-		// return boundingRectangle;//return value if margin pixels are not supposed to
+		Rectangle result = new Rectangle(boundingRectangle.x,
+										 boundingRectangle.y,
+										 boundingRectangle.width,
+										 boundingRectangle.height);
+		resetBoundingRectangle();
+		return result;// return value if margin pixels are not supposed to
 		// be taken into account
-		return considerMarginPixels();
+		// return considerMarginPixels();
 	}
+	//@formatter:on
 
 	/**
 	 * Takes margin pixels into account when returning the bounding rectangle.
+	 * NOTICE: not used by default
 	 *
 	 * @return the rectangle
 	 */
 	//@formatter:off
+	@SuppressWarnings("unused")
 	private Rectangle considerMarginPixels() {
 		Rectangle result = new Rectangle(boundingRectangle.x - MARGIN,
 										 boundingRectangle.y - MARGIN,

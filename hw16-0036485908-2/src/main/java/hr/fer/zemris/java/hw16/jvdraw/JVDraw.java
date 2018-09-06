@@ -51,8 +51,8 @@ import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
 
 /**
  * The main window of the program. This class is responsible for setting up the
- * UI, wiring all the neccessary listeners as well as various other components
- * of the program such as tools and actions required for the proper functioning.
+ * UI, wiring all the necessary listeners as well as various other components of
+ * the program such as tools and actions required for the proper functioning.
  * 
  * This is the main class of the developed program that allows the user to draw
  * lines, circles and filled circles. Program features menubar, toolbar, drawing
@@ -192,7 +192,8 @@ public class JVDraw extends JFrame {
 	private OpenAction openAction;
 
 	/**
-	 * The reference to the object responsible for updating the currently drawn image.
+	 * The reference to the object responsible for updating the currently drawn
+	 * image.
 	 */
 	private SaveAction saveAction;
 
@@ -293,6 +294,15 @@ public class JVDraw extends JFrame {
 	 */
 	public SaveAction getSaveAction() {
 		return saveAction;
+	}
+
+	/**
+	 * Gets exit action.
+	 * 
+	 * @return reference to the exit action
+	 */
+	public ExitAction getExitAction() {
+		return exitAction;
 	}
 
 	/**
@@ -449,6 +459,7 @@ public class JVDraw extends JFrame {
 								try {
 									editor.checkEditing();
 									editor.acceptEditing();
+									
 								} catch (ObjectModelException exc) {
 									JOptionPane.showMessageDialog(getDrawingCanvas(), exc.getMessage(),"Warning", JOptionPane.WARNING_MESSAGE);
 									jList.clearSelection();

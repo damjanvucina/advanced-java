@@ -25,7 +25,7 @@ public class CircleEditor extends GeometricalObjectEditor {
 	/** The object. */
 	private GeometricalObject object;
 
-	/** The abcissa of the circle's center. */
+	/** The abscissa of the circle's center. */
 	private JTextField centerX;
 
 	/** The ordinate of the circle's center*/
@@ -82,7 +82,7 @@ public class CircleEditor extends GeometricalObjectEditor {
 	}
 
 	/**
-	 * Initialize circle.
+	 * Initializes circle editor.
 	 */
 	protected void initializeCircle() {
 		centerX = new JTextField(String.valueOf(object.getStartPoint().x));

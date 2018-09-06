@@ -1,8 +1,7 @@
 package hr.fer.zemris.java.raytracer.model;
 
 import static java.lang.Math.sqrt;
-import static java.lang.Math.pow;
-import static java.lang.Math.abs;
+import static java.lang.Math.min;
 
 /**
  * The class used for the purpose of implementing a Sphere graphical object that
@@ -66,8 +65,8 @@ public class Sphere extends GraphicalObject {
 				  double kdr, double kdg, double kdb,
 				  double krr, double krg, double krb,
 				  double krn) {
-	//@formatter:off
-		
+	//@formatter:on
+
 		this.center = center;
 		this.radius = radius;
 		this.kdr = kdr;
@@ -80,50 +79,55 @@ public class Sphere extends GraphicalObject {
 	}
 
 	/**
-	 * Method used for the purpose of finding the closest intersection with the ray if one exists. 
- 	*/
-	//pseudocode and algorithm used available at: http://www.lighthouse3d.com/tutorials/maths/ray-sphere-intersection/
+	 * Method used for the purpose of finding the closest intersection with the ray
+	 * if one exists.
+	 */
+	// algortihm and formulas as described in ray-sphere intersection page at
+	// https://www.scratchapixel.com;
+	// |P−C^2−R^2=0
+	// |O+tD−C|^2−R^2=0.
+	// a=1
+	// b=2D(O−C)
+	// c=|O−C|^2−R^2
 	@Override
 	public RayIntersection findClosestRayIntersection(Ray ray) {
-		
-		Point3D vpc = center.sub(ray.start);
-		Point3D d = ray.direction;
-		double scalarProduct = vpc.scalarProduct(d);
-		boolean isOuter;
-		
-		//p is outside of the sphere
-		if(scalarProduct < 0) {
-			return null;
-		}
-		//distance can be computed
-		
-		vpc.scalarProduct(d);
-		
-		Point3D pc = center.vectorProduct(ray.direction); //projection of c on the line, to be calcuated
-		
-		//no intersection
-		if((abs(distanceBeetweenPoints(pc, center)) > radius)){
-			return null;
+		Point3D rayOC = ray.start.sub(center);
+
+		double a = 1;
+		double b = ray.direction.scalarMultiply(2).scalarProduct(rayOC);
+		double c = rayOC.scalarProduct(rayOC) - radius * radius;
+
+		double discriminant = b * b - 4 * a * c;
+		if (discriminant < 0) {
+			return null;// when Δ < 0, there is not root at (which means that the ray doesn't intersect
+						// the sphere)
+
 		}
 		
-		double dist = sqrt(pow(radius, 2) - pow(abs(distanceBeetweenPoints(pc, center)), 2));
-		double di1;
-		
-		//origin is outside of sphere
-		if(vpc.norm() > radius) {
-			di1 = abs(abs(distanceBeetweenPoints(pc, ray.direction))) - dist;
-			isOuter = true;
-			
-			//origin is inside of sphere
-		} else {
-			di1 = abs(abs(distanceBeetweenPoints(pc, ray.direction))) + dist;
-			isOuter = false;
+		double nominatorArgument = sqrt(discriminant);
+		double firstSolution = (-b + nominatorArgument) / (2 * a);
+		double secondSolution = (-b - nominatorArgument) / (2 * a);
+
+		if (firstSolution < 0 && secondSolution < 0) {
+			return null;// negative roots mean that the ray intersects the sphere but behind the origin
 		}
-		return new RayIntersection(ray.start.add(ray.direction.normalize().scalarMultiply(di1)), dist, isOuter) {
+		
+		Point3D firstIntersection = ray.start.add(ray.direction.scalarMultiply(firstSolution));
+		Point3D secondIntersection = ray.start.add(ray.direction.scalarMultiply(secondSolution));
+		
+		double firstDistance = ray.start.sub(firstIntersection).norm();
+		double secondDistance = ray.start.sub(secondIntersection).norm();
+		
+		
+		Point3D intersection = (firstDistance < secondDistance) ? firstIntersection : secondIntersection;
+		double intersectionDistance = min(firstDistance, secondDistance);
+		boolean isOuter = center.sub(intersection).norm() - radius > 0;
+		
+		return new RayIntersection(intersection, intersectionDistance, isOuter) {
 			
 			@Override
 			public Point3D getNormal() {
-				return getPoint().normalize();
+				return getPoint().sub(center).normalize();
 			}
 			
 			@Override
@@ -162,16 +166,4 @@ public class Sphere extends GraphicalObject {
 			}
 		};
 	}
-	
-	/**
-	 * Helper method used for the purpose of calculating the distance between two Point3D objects in 3-dimensional space
-	 *
-	 * @param pointA the point A
-	 * @param pointB the point B
-	 * @return the double distance between the points
-	 */
-	private double distanceBeetweenPoints(Point3D pointA, Point3D pointB) {
-		 return sqrt(Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2) + Math.pow(pointA.z - pointB.z, 2));
-	}
-
 }

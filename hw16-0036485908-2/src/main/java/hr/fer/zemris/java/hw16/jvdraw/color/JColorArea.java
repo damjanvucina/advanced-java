@@ -53,7 +53,9 @@ public class JColorArea extends JButton implements IColorProvider {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Color newColor = JColorChooser.showDialog(JColorArea.this, "Please choose a color", getCurrentColor());
+				Color newColor = JColorChooser.showDialog(JColorArea.this,
+											  			  "Please choose a color",
+											  			  getCurrentColor());
 				if (newColor == null) {
 					return;
 				}
@@ -102,32 +104,27 @@ public class JColorArea extends JButton implements IColorProvider {
 		setBackground(selectedColor);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.swing.JComponent#getPreferredSize()
+	/**
+	 * Gets the preferred size of the component.
 	 */
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(DEFAULT_DIMENSION, DEFAULT_DIMENSION);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider#getCurrentColor()
+	/**
+	 * Gets current color.
 	 */
 	@Override
 	public Color getCurrentColor() {
 		return selectedColor;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider#addColorChangeListener(hr
-	 * .fer.zemris.java.hw16.jvdraw.color.ColorChangeListener)
+	/**
+	 * Adds the color change listener.
+	 *
+	 * @param l
+	 *            the listener
 	 */
 	@Override
 	public void addColorChangeListener(ColorChangeListener l) {
@@ -136,12 +133,11 @@ public class JColorArea extends JButton implements IColorProvider {
 		listeners.add(l);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * hr.fer.zemris.java.hw16.jvdraw.color.IColorProvider#removeColorChangeListener
-	 * (hr.fer.zemris.java.hw16.jvdraw.color.ColorChangeListener)
+	/**
+	 * Removes the color change listener.
+	 *
+	 * @param l
+	 *            the listener
 	 */
 	@Override
 	public void removeColorChangeListener(ColorChangeListener l) {
@@ -150,10 +146,8 @@ public class JColorArea extends JButton implements IColorProvider {
 		listeners.remove(l);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.Component#toString()
+	/**
+	 * Generates a String representation of the currently selected color.
 	 */
 	@Override
 	public String toString() {

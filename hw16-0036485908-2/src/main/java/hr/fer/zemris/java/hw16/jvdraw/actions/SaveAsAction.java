@@ -15,7 +15,8 @@ import static hr.fer.zemris.java.hw16.jvdraw.actions.UtilityProvider.JVD_EXTENSI
 
 /**
  * The class responsible for saving the current image as new document in jvd
- * format.
+ * format. Delegates the process of saving to the instance of
+ * GeometricalObjectSaver class since Visitor design pattern is in use.
  * 
  * @author Damjan Vučina
  */
@@ -70,14 +71,15 @@ public class SaveAsAction extends AbstractAction {
 			if (Files.exists(savePath)) {
 				overwriteResult = JOptionPane.showConfirmDialog(jfc,
 						"File already exists. Do you want to overwrite it?", "File exists", JOptionPane.YES_NO_OPTION);
+
 				if (overwriteResult == JOptionPane.NO_OPTION) {
 					return;
 				}
 			}
 		}
 
-		UtilityProvider.saveJVD(savePath, window.getDocumentModel().getObjects());
 		window.setImagePath(savePath);
+		window.getSaveAction().performSaving();
 
 		JOptionPane.showMessageDialog(window, "File saved successfully.", "File Saved",
 				JOptionPane.INFORMATION_MESSAGE);

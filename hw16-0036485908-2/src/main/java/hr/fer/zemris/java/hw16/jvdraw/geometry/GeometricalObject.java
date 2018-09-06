@@ -26,6 +26,8 @@ import hr.fer.zemris.java.hw16.jvdraw.model.DocumentModel;
  * This class also defines a handful of methods that need to be implemented by
  * its subclasses.
  * 
+ * @author Damjan Vučina
+ * 
  */
 public abstract class GeometricalObject implements Tool {
 

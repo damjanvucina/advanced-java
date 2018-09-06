@@ -60,7 +60,6 @@ public class ComplexRootedPolynomial {
 		return result;
 	}
 
-	
 	/**
 	 * Transforms this ComplexRootedPolynomial into regular (non-root) form
 	 * polynomial.
@@ -68,13 +67,44 @@ public class ComplexRootedPolynomial {
 	 * @return the complex polynomial in regular (non-root) form
 	 */
 	public ComplexPolynomial toComplexPolynom() {
-		ComplexPolynomial explicitForm = new ComplexPolynomial(Complex.ONE);
-
-		for (int i = 0, size = roots.size(); i < size; i++) {
-			explicitForm = explicitForm.multiply(new ComplexPolynomial(roots.get(i).negate(), Complex.ONE));
+		if (roots.size() == 0) {
+			throw new IllegalArgumentException("Polynomial must have at least a single root.");
 		}
 
-		return explicitForm;
+		Complex[] base = new Complex[] { roots.get(0), Complex.ONE };
+		if (roots.size() == 1) {
+			return new ComplexPolynomial(base);
+
+		} else {
+			base = performMultiplication(base, roots.get(1));
+			for (int i = 2, size = roots.size(); i < size; i++) {
+				base = performMultiplication(base, roots.get(i));
+			}
+
+			return new ComplexPolynomial(base);
+		}
+	}
+
+	/**
+	 * Helper method used for multiplying polynomials
+	 * 
+	 * @param base
+	 * @param current
+	 * @return
+	 */
+	private Complex[] performMultiplication(Complex[] base, Complex current) {
+		Complex[] result = new Complex[base.length + 1];
+
+		result[0] = base[0].multiply(current);
+		int baseLength = base.length;
+		result[baseLength] = base[baseLength - 1];
+
+		for (int i = 1; i < baseLength; i++) {
+			Complex step = base[i].multiply(current);
+			result[i] = step.add(base[i - 1]);
+		}
+
+		return result;
 	}
 
 	/**
@@ -110,7 +140,7 @@ public class ComplexRootedPolynomial {
 	public int indexOfClosestRootFor(Complex z, double threshold) {
 		Objects.requireNonNull(z, "Given complex number cannot be null.");
 
-		double minimumDistance = threshold + 1;
+		double minimumDistance = Double.MAX_VALUE;
 		int closestRootIndex = -1;
 		double currentDistance;
 
@@ -119,7 +149,7 @@ public class ComplexRootedPolynomial {
 
 			if (currentDistance <= threshold && currentDistance < minimumDistance) {
 				minimumDistance = currentDistance;
-				closestRootIndex = i + 1;
+				closestRootIndex = i;
 			}
 		}
 		return closestRootIndex;

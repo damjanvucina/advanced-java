@@ -26,6 +26,7 @@ public class FractalProducer implements IFractalProducer {
 	 * the process of calculating the fractals.
 	 */
 	public static final int WORKER_FACTOR = 8;
+	public static final int MAX_ITERATIONS = 16 * 16 * 16;
 
 	/** The regular form polynomial. */
 	ComplexPolynomial polynomial;
@@ -93,18 +94,18 @@ public class FractalProducer implements IFractalProducer {
 											  yMin * width, data);
 			//@formatter:on
 			results.add(threadPool.submit(job));
-
-			for (Future<Void> posao : results) {
-				try {
-
-					posao.get();
-				} catch (InterruptedException | ExecutionException e) {
-				}
-			}
-
-			System.out.println("Finished calculation process. Notifiying GUI!");
-			observer.acceptResult(data, (short) (polynomial.order() + 1), requestNo);
 		}
+
+		for (Future<Void> posao : results) {
+			try {
+
+				posao.get();
+			} catch (InterruptedException | ExecutionException e) {
+			}
+		}
+
+		System.out.println("Finished calculation process. Notifiying GUI!");
+		observer.acceptResult(data, (short) (polynomial.order() + 1), requestNo);
 
 	}
 }
@@ -160,7 +161,9 @@ class Calculation implements Callable<Void> {
 	 */
 	@Override
 	public Void call() throws Exception {
-		for (int y = yMin; y < yMax; y++) {
+		ComplexPolynomial derivedPolynomial = polynomial.derive();
+
+		for (int y = yMin; y <= yMax; y++) {
 			for (int x = 0; x < width; x++) {
 				double cre = x / (width - 1.0) * (reMax - reMin) + reMin;
 				double cim = (height - 1.0 - y) / (height - 1) * (imMax - imMin) + imMin;
@@ -176,24 +179,24 @@ class Calculation implements Callable<Void> {
 
 				do {
 					numerator = polynomial.apply(zn);
-					denominator = polynomial.derive().apply(zn);
+					denominator = derivedPolynomial.apply(zn);
 					fraction = numerator.divide(denominator);
 					zn1 = zn.sub(fraction);
 					iter++;
 					module = zn1.sub(zn).module();
+					zn = zn1;
 
 				} while (module > CONVERGENCE_TRESHOLD && iter < MAX_ITERATIONS);
 
-				index = (short) rootedPolynomial.indexOfClosestRootFor(zn1, MAX_ITERATIONS);
+				index = (short) rootedPolynomial.indexOfClosestRootFor(zn1, CONVERGENCE_TRESHOLD);
 
 				if (index == -1) {
 					data[offset++] = 0;
 				} else {
-					data[offset++] = index;
+					data[offset++] = (short) (index + 1);
 				}
 			}
 		}
 		return null;
 	}
-
 }

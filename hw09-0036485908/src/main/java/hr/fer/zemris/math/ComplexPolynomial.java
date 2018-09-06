@@ -102,11 +102,10 @@ public class ComplexPolynomial {
 	public Complex apply(Complex z) {
 		Objects.requireNonNull(z, "Given complex polynomial cannot be null.");
 
-		int currentPower = factors.size() - 1;
-		Complex result = factors.get(0).multiply(z.power(currentPower--));
+		Complex result = Complex.ZERO;
 
-		for (int i = 1, size = factors.size(); i < size; i++) {
-			result = result.add(factors.get(i).multiply(z.power(currentPower--)));
+		for (int i = 0, size = factors.size(); i < size; i++) {
+			result = result.add(factors.get(i).multiply(z.power(i)));
 		}
 
 		return result;
@@ -136,3 +135,4 @@ public class ComplexPolynomial {
 		return sb.toString();
 	}
 }
+

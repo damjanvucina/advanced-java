@@ -5,6 +5,8 @@ import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
 /**
  * The interface that defines the methods that need to be implemented by the
  * object that acts as a storage for objects drawn on the canvas.
+ * 
+ * @author Damjan Vučina
  */
 public interface DrawingModel {
 

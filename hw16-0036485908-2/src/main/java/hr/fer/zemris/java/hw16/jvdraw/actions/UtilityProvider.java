@@ -16,7 +16,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Circle;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.FilledCircle;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObject;
+import hr.fer.zemris.java.hw16.jvdraw.geometry.GeometricalObjectSaver;
 import hr.fer.zemris.java.hw16.jvdraw.geometry.Line;
+import hr.fer.zemris.java.hw16.jvdraw.model.ObjectModelException;
 
 /**
  * Helper class providing the user with various methods for manipulating and
@@ -31,19 +33,19 @@ import hr.fer.zemris.java.hw16.jvdraw.geometry.Line;
 public class UtilityProvider {
 
 	/** The Constant LINE. */
-	private static final String LINE = "LINE";
+	public static final String LINE = "LINE";
 
 	/** The Constant CIRCLE. */
-	private static final String CIRCLE = "CIRCLE";
+	public static final String CIRCLE = "CIRCLE";
 
 	/** The Constant FILLED_CIRCLE. */
-	private static final String FILLED_CIRCLE = "FCIRCLE";
+	public static final String FILLED_CIRCLE = "FCIRCLE";
 
 	/** The Constant ATTRIBUTE_SEPARATOR. */
-	private static final String ATTRIBUTE_SEPARATOR = " ";
+	public static final String ATTRIBUTE_SEPARATOR = " ";
 
 	/** The Constant GEOM_OBJECT_SEPARATOR. */
-	private static final String GEOM_OBJECT_SEPARATOR = "\n";
+	public static final String GEOM_OBJECT_SEPARATOR = "\n";
 
 	/** The Constant JVD_EXTENSION. */
 	public static final String JVD_EXTENSION = "jvd";
@@ -78,6 +80,8 @@ public class UtilityProvider {
 
 	/** The filled circle pattern. */
 	private static Pattern filledCirclePattern = Pattern.compile(FILLED_CIRCLE_REGEX);
+
+	private static GeometricalObjectSaver goSaver = new GeometricalObjectSaver();
 
 	/**
 	 * Gets the jvd filter.
@@ -116,41 +120,6 @@ public class UtilityProvider {
 	}
 
 	/**
-	 * Converts a list of geometrical objects to JVD string representation.
-	 *
-	 * @param objects
-	 *            the objects
-	 * @return the string
-	 */
-	public static String toJVD(List<GeometricalObject> objects) {
-		StringBuilder sbImage = new StringBuilder();
-
-		for (GeometricalObject object : objects) {
-			if (object instanceof Line) {
-				sbImage.append(LINE);
-				sbImage.append(acquireLineRepresentation((Line) object));
-
-			} else if (object instanceof FilledCircle) {
-				sbImage.append(FILLED_CIRCLE);
-				sbImage.append(acquireFilledCircleRepresentation((FilledCircle) object));
-
-			} else if (object instanceof Circle) {
-				sbImage.append(CIRCLE);
-				sbImage.append(acquireCircleRepresentation((Circle) object));
-
-			} else {
-				throw new IllegalArgumentException(
-						"JVD transformation supported only for Line, Circle and FilledCircle; was: "
-								+ object.getClass().getSimpleName());
-			}
-
-			sbImage.append(GEOM_OBJECT_SEPARATOR);
-		}
-
-		return sbImage.toString();
-	}
-
-	/**
 	 * Generates a list of geometrical objects by reading and inspecting the JVD
 	 * file.
 	 *
@@ -172,7 +141,7 @@ public class UtilityProvider {
 				objects.add(createFilledCircle(extractElements(jvdLine)));
 
 			} else {
-				return null;
+				throw new ObjectModelException("Unknown geometrical object in JVD file.");
 			}
 		}
 
@@ -218,7 +187,6 @@ public class UtilityProvider {
 						  new Point(elements[0], elements[1] + elements[2]),
 						  new Color(elements[3], elements[4], elements[5]));
 	}
-
 	
 	/**
 	 * Creates a line.
@@ -234,118 +202,8 @@ public class UtilityProvider {
 	//@formatter:on
 
 	/**
-	 * Acquires circle jvd representation.
-	 *
-	 * @param object
-	 *            the object
-	 * @return the string
-	 */
-	private static String acquireCircleRepresentation(Circle object) {
-		StringBuilder sbCircle = new StringBuilder();
-
-		sbCircle.append(ATTRIBUTE_SEPARATOR);
-		sbCircle.append(extractCoordinates(object.getCenter()));
-		sbCircle.append(ATTRIBUTE_SEPARATOR);
-		sbCircle.append(object.calculateRadius());
-		sbCircle.append(ATTRIBUTE_SEPARATOR);
-		sbCircle.append(extractColor(object.getFgColor()));
-
-		return sbCircle.toString();
-	}
-
-	/**
-	 * Acquires filled circle jvd representation.
-	 *
-	 * @param object
-	 *            the object
-	 * @return the string
-	 */
-	private static String acquireFilledCircleRepresentation(FilledCircle object) {
-		StringBuilder sbFilledCircle = new StringBuilder(acquireCircleRepresentation(object));
-
-		sbFilledCircle.append(ATTRIBUTE_SEPARATOR);
-		sbFilledCircle.append(extractColor(object.getBgColor()));
-
-		return sbFilledCircle.toString();
-	}
-
-	/**
-	 * Acquires line jvd representation.
-	 *
-	 * @param object
-	 *            the object
-	 * @return the string
-	 */
-	private static String acquireLineRepresentation(Line object) {
-		StringBuilder sbLine = new StringBuilder();
-
-		sbLine.append(ATTRIBUTE_SEPARATOR);
-		sbLine.append(extractCoordinates(object.getStartPoint()));
-		sbLine.append(ATTRIBUTE_SEPARATOR);
-		sbLine.append(extractCoordinates(object.getEndPoint()));
-		sbLine.append(ATTRIBUTE_SEPARATOR);
-		sbLine.append(extractColor(object.getFgColor()));
-
-		return sbLine.toString();
-	}
-
-	/**
-	 * Extracts color.
-	 *
-	 * @param color
-	 *            the color
-	 * @return the object
-	 */
-	private static Object extractColor(Color color) {
-		StringBuilder sbColor = new StringBuilder();
-
-		sbColor.append(color.getRed());
-		sbColor.append(ATTRIBUTE_SEPARATOR);
-		sbColor.append(color.getGreen());
-		sbColor.append(ATTRIBUTE_SEPARATOR);
-		sbColor.append(color.getBlue());
-
-		return sbColor.toString();
-	}
-
-	/**
-	 * Extracts coordinates.
-	 *
-	 * @param point
-	 *            the point
-	 * @return the string
-	 */
-	private static String extractCoordinates(Point point) {
-		StringBuilder sbCoordinates = new StringBuilder();
-
-		sbCoordinates.append(point.x);
-		sbCoordinates.append(ATTRIBUTE_SEPARATOR);
-		sbCoordinates.append(point.y);
-
-		return sbCoordinates.toString();
-	}
-
-	/**
-	 * Saves JVD file to the specified path.
-	 *
-	 * @param savePath
-	 *            the save path
-	 * @param objects
-	 *            the objects
-	 */
-	public static void saveJVD(Path savePath, List<GeometricalObject> objects) {
-		String jvdRepresentation = UtilityProvider.toJVD(objects);
-		byte[] bytes = jvdRepresentation.getBytes(StandardCharsets.UTF_8);
-
-		try {
-			Files.write(savePath, bytes);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
-
-	/**
-	 * Checks if the path is invalid, i.e. requested filename contains unsupported extension.
+	 * Checks if the path is invalid, i.e. requested filename contains unsupported
+	 * extension.
 	 *
 	 * @param path
 	 *            the path
@@ -411,13 +269,29 @@ public class UtilityProvider {
 	private static boolean areJvdRepresentationsDifferent(Path savedPath,
 			List<GeometricalObject> currentlyDrawnObjects) {
 
-		String currentlyDrawnJvd = UtilityProvider.toJVD(currentlyDrawnObjects);
-
+		String currentlyDrawnJvd = generateJVD(currentlyDrawnObjects);
 		List<String> jvdLines = UtilityProvider.loadFile(savedPath);
+
 		List<GeometricalObject> savedObjects = UtilityProvider.fromFile(jvdLines);
-		String savedJvd = UtilityProvider.toJVD(savedObjects);
+		String savedJvd = generateJVD(savedObjects);
 
 		return !savedJvd.equals(currentlyDrawnJvd);
+	}
+
+	/**
+	 * Initiates generating JVD representation of an image defined by the given
+	 * objects
+	 * 
+	 * @param objects
+	 *            objects defining the image
+	 * @return JVD representation of an image defined by the given objects
+	 */
+	private static String generateJVD(List<GeometricalObject> objects) {
+		for (GeometricalObject object : objects) {
+			object.accept(goSaver);
+		}
+
+		return goSaver.getJVD();
 	}
 
 	/**

@@ -75,23 +75,30 @@ public class ExportAction extends AbstractAction {
 		int dialogResult = jfc.showSaveDialog(window);
 
 		if (dialogResult == JFileChooser.CANCEL_OPTION) {
-			JOptionPane.showMessageDialog(window, "Exporting cancelled.", "Info", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(window,
+										  "Exporting cancelled.",
+										  "Info",
+										  JOptionPane.INFORMATION_MESSAGE);
 			return;
 
 		}
 
 		Path savePath = jfc.getSelectedFile().toPath();
 		if (UtilityProvider.isInvalidExtension(savePath, Arrays.asList(UtilityProvider.getExportExtensions()))) {
-			JOptionPane.showMessageDialog(window,
-					"Requested file name is not valid." + " Supported file extensions: .jpg, .jpeg, .png and .gif",
-					"Invalid file name", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(
+						window,
+						"Requested file name is not valid." + " Supported file extensions: .jpg, .jpeg, .png and .gif",
+						"Invalid file name",
+						JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 
 		if (UtilityProvider.extensionNotSet(savePath)) {
 			savePath = Paths.get(String.valueOf(savePath) + "." + UtilityProvider.getExportExtensions()[0]);
-			JOptionPane.showMessageDialog(window, "JPG extension will be set by default.", "Extension info",
-					JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(window,
+										  "JPG extension will be set by default.",
+										  "Extension info",
+										  JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		for (GeometricalObject object : objects) {
@@ -99,8 +106,9 @@ public class ExportAction extends AbstractAction {
 		}
 		Rectangle boundingBox = bbCalculator.getBoundingBox();
 
-		BufferedImage bufferedImage = new BufferedImage(boundingBox.width, boundingBox.height,
-				BufferedImage.TYPE_3BYTE_BGR);
+		BufferedImage bufferedImage = new BufferedImage(boundingBox.width,
+														boundingBox.height,
+														BufferedImage.TYPE_3BYTE_BGR);
 		Graphics2D g2d = bufferedImage.createGraphics();
 
 		g2d.translate(-boundingBox.x, -boundingBox.y);
@@ -118,8 +126,12 @@ public class ExportAction extends AbstractAction {
 		if (dialogResult == JFileChooser.APPROVE_OPTION) {
 			int overwriteResult = 0;
 			if (Files.exists(savePath)) {
-				overwriteResult = JOptionPane.showConfirmDialog(jfc,
-						"File already exists. Do you want to overwrite it?", "File exists", JOptionPane.YES_NO_OPTION);
+				overwriteResult = JOptionPane.showConfirmDialog(
+											  jfc,
+											  "File already exists. Do you want to overwrite it?",
+											  "File exists",
+											  JOptionPane.YES_NO_OPTION);
+				
 				if (overwriteResult == JOptionPane.NO_OPTION) {
 					return;
 				}
@@ -127,7 +139,10 @@ public class ExportAction extends AbstractAction {
 		}
 
 		try {
-			ImageIO.write(bufferedImage, UtilityProvider.acquireExtension(String.valueOf(savePath)), savePath.toFile());
+			ImageIO.write(bufferedImage,
+						  UtilityProvider.acquireExtension(String.valueOf(savePath)),
+						  savePath.toFile());
+			
 		} catch (IOException e1) {
 			JOptionPane.showMessageDialog(window, "Error exporting image.", "Error occurred",
 					JOptionPane.ERROR_MESSAGE);
