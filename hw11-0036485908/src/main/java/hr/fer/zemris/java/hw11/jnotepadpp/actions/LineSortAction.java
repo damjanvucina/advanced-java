@@ -22,31 +22,64 @@ import hr.fer.zemris.java.hw11.jnotepadpp.SingleDocumentListener;
 import hr.fer.zemris.java.hw11.jnotepadpp.SingleDocumentModel;
 import hr.fer.zemris.java.hw11.jnotepadpp.local.FormLocalizationProvider;
 
+/**
+ * The class responsible for the sorting of lines selected by the user.
+ * 
+ * @author Damjan Vučina
+ */
 public class LineSortAction extends AbstractAction implements SingleDocumentListener {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+
+	/** The ascending sorting. */
 	private final String ASC = "ascending";
+
+	/** The descending sorting. */
 	private final String DESC = "descending";
 
+	/** The model. */
 	private MultipleDocumentModel model;
+
+	/** The direction. */
 	private String direction;
+
+	/**
+	 * The reference to the object responsible for acquiring the text for the
+	 * current locale.
+	 */
 	private FormLocalizationProvider flp;
 
+	/**
+	 * Instantiates a new line sort action.
+	 *
+	 * @param flp
+	 *            The reference to the object responsible for acquiring the text for
+	 *            the current locale.
+	 * @param model
+	 *            the model
+	 * @param direction
+	 *            the direction
+	 */
 	public LineSortAction(FormLocalizationProvider flp, MultipleDocumentModel model, String direction) {
 		this.model = model;
 		this.direction = direction;
 		this.flp = flp;
 	}
 
+	/**
+	 * Performs the sorting of user's text selection.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
 		JTextArea editor = model.getDocument(indexOfSelectedTab).getTextComponent();
 		Document document = editor.getDocument();
-		
+
 		int selectionStartOffset = Math.min(editor.getCaret().getDot(), editor.getCaret().getMark());
 		int selectionLength = Math.abs(editor.getCaret().getDot() - editor.getCaret().getMark());
 		int selectionEndOffset = selectionStartOffset + selectionLength;
-		
+
 		int lineStartOffset = 0;
 		int lineEndOffset = 0;
 		try {
@@ -55,7 +88,7 @@ public class LineSortAction extends AbstractAction implements SingleDocumentList
 		} catch (BadLocationException e2) {
 			e2.printStackTrace();
 		}
-						
+
 		String view = null;
 		try {
 			view = document.getText(lineStartOffset, lineEndOffset - lineStartOffset);
@@ -63,7 +96,6 @@ public class LineSortAction extends AbstractAction implements SingleDocumentList
 			e1.printStackTrace();
 		}
 
-		
 		List<String> viewList = new LinkedList<>(Arrays.asList(view.split("\n")));
 		Locale locale = new Locale(flp.getCurrentLanguage());
 		Collator collator = Collator.getInstance(locale);
@@ -95,6 +127,10 @@ public class LineSortAction extends AbstractAction implements SingleDocumentList
 		setEnabled(false);
 	}
 
+	/**
+	 * Enables or disables this action depending on the existence of a text
+	 * selection.
+	 */
 	@Override
 	public void documentModifyStatusUpdated(SingleDocumentModel model) {
 		if (((DefaultSingleDocumentModel) model).getSelectionLength() > 0) {
@@ -104,6 +140,9 @@ public class LineSortAction extends AbstractAction implements SingleDocumentList
 		}
 	}
 
+	/**
+	 * Not implemented here.
+	 */
 	@Override
 	public void documentFilePathUpdated(SingleDocumentModel model) {
 	}

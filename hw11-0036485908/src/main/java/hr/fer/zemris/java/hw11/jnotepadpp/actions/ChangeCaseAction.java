@@ -16,37 +16,63 @@ import hr.fer.zemris.java.hw11.jnotepadpp.MultipleDocumentModel;
 import hr.fer.zemris.java.hw11.jnotepadpp.SingleDocumentListener;
 import hr.fer.zemris.java.hw11.jnotepadpp.SingleDocumentModel;
 
-public class ChangeCaseAction extends AbstractAction implements SingleDocumentListener{
+/**
+ * The action that is used for the purpose of transforming the text selection
+ * into uppercase, lowercase or inverting the caps.
+ * 
+ * @author Damjan Vučina
+ */
+public class ChangeCaseAction extends AbstractAction implements SingleDocumentListener {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The model. */
 	private MultipleDocumentModel model;
+
+	/** The window. */
 	private JNotepadPP window;
+
+	/** The function defining the transformation. */
 	private Function<Character, Character> format;
 
-	//toUpperCase, toLowerCase, invertCase
+	/**
+	 * Instantiates a new change case action.
+	 *
+	 * @param window
+	 *            the window
+	 * @param model
+	 *            the model
+	 * @param format
+	 *            the format
+	 */
+	// toUpperCase, toLowerCase, invertCase
 	public ChangeCaseAction(JNotepadPP window, MultipleDocumentModel model, Function<Character, Character> format) {
 		this.window = window;
 		this.model = model;
 		this.format = format;
 	}
-	
+
+	/**
+	 * Performs the transformation of the caps.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int indexOfSelectedTab = ((DefaultMultipleDocumentModel) model).getSelectedIndex();
 		JTextArea editor = model.getDocument(indexOfSelectedTab).getTextComponent();
 		Document document = editor.getDocument();
-		
+
 		int selectionLength = Math.abs(editor.getCaret().getDot() - editor.getCaret().getMark());
-		int offset=0;
+		int offset = 0;
 		if (selectionLength == 0) {
-			JOptionPane.showMessageDialog(window, "Text selection not found.", "Change case error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(window, "Text selection not found.", "Change case error",
+					JOptionPane.ERROR_MESSAGE);
 			return;
-			
+
 		} else {
 			offset = Math.min(editor.getCaret().getDot(), editor.getCaret().getMark());
 		}
-		
-		
+
 		char[] text = null;
 		try {
 			text = document.getText(offset, selectionLength).toCharArray();
@@ -54,8 +80,8 @@ public class ChangeCaseAction extends AbstractAction implements SingleDocumentLi
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
-		
-		for(int i = 0; i < selectionLength; i++) {
+
+		for (int i = 0; i < selectionLength; i++) {
 			text[i] = format.apply(text[i]);
 		}
 
@@ -65,18 +91,24 @@ public class ChangeCaseAction extends AbstractAction implements SingleDocumentLi
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
-		
+
 	}
-	
+
+	/**
+	 * Enables or disables itself, depending whether the user made a text selection.
+	 */
 	@Override
 	public void documentModifyStatusUpdated(SingleDocumentModel model) {
-		if(((DefaultSingleDocumentModel)model).getSelectionLength() > 0) {
+		if (((DefaultSingleDocumentModel) model).getSelectionLength() > 0) {
 			setEnabled(true);
 		} else {
 			setEnabled(false);
 		}
 	}
 
+	/**
+	 * Not implemented here.
+	 */
 	@Override
 	public void documentFilePathUpdated(SingleDocumentModel model) {
 	}
